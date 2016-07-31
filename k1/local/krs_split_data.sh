@@ -16,7 +16,7 @@ if [ $# -ne 3 ]; then
    echo "Three arguments should be assigned." 
    echo "1. Source data."
    echo "2. Spliting number. 4 options are avaiable: 5, 20, 115(whole datasets)"
-   echo "3. The folder generated files saved." &&  exit 1
+   echo "3. The folder generated files saved." && exit 1
 fi
 
 # Corpus directory: ./krs_data
@@ -28,7 +28,7 @@ save=$3
 
 
 if [ $split_num -ne 5 ] && [ $split_num -ne 20 ] && [ $split_num -ne 115 ]; then
-	echo "Data split option is incorrect. Please set it 5, 20, or 115." # && exit 1
+	echo "Data split option is incorrect. Please set it 5, 20, or 115." && exit 1
 fi
 
 # Generate directories.

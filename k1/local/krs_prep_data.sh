@@ -219,3 +219,4 @@ else
 	done
 fi
 echo "segments file was generated."
+
