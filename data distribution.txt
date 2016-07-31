@@ -1,0 +1,167 @@
+s_set (5)
+
+1 wav numbers/fv01: 930
+
+23 wav numbers/fx03: 930
+
+60 wav numbers/mv02: 930
+
+79 wav numbers/mw01: 930
+
+94 wav numbers/mw17: 930
+
+
+
+m_set (20)
+
+1 wav numbers/fv01: 930
+3 wav numbers/fv03: 930
+4 wav numbers/fv04: 930
+5 wav numbers/fv05: 930
+
+7 wav numbers/fv07: 930
+23 wav numbers/fx03: 930
+25 wav numbers/fx05: 930
+26 wav numbers/fx06: 930
+
+30 wav numbers/fx10: 930
+31 wav numbers/fx11: 930
+60 wav numbers/mv02: 930
+62 wav numbers/mv04: 930
+
+63 wav numbers/mv05: 930
+64 wav numbers/mv06: 930
+65 wav numbers/mv07: 930
+79 wav numbers/mw01: 930
+
+82 wav numbers/mw04: 930
+88 wav numbers/mw10: 930
+94 wav numbers/mw17: 930
+95 wav numbers/mw18: 930
+
+
+l_set (117)
+
+1 wav numbers/fv01: 930
+2 wav numbers/fv02: 929
+3 wav numbers/fv03: 930
+4 wav numbers/fv04: 930
+5 wav numbers/fv05: 930
+26 wav numbers/fx06: 930
+27 wav numbers/fx07: 928
+28 wav numbers/fx08: 370
+29 wav numbers/fx09: 927
+30 wav numbers/fx10: 930
+69 wav numbers/mv11: 919
+70 wav numbers/mv12: 930
+71 wav numbers/mv13: 924
+74 wav numbers/mv16: 927
+75 wav numbers/mv17: 928
+98 wav numbers/my01: 404
+99 wav numbers/my02: 404
+100 wav numbers/my03: 404
+101 wav numbers/my04: 404
+42 wav numbers/fy02: 404
+43 wav numbers/fy03: 400
+56 wav numbers/fy17: 403
+57 wav numbers/fy18: 404
+
+
+6 wav numbers/fv06: 929
+7 wav numbers/fv07: 930
+8 wav numbers/fv08: 930
+9 wav numbers/fv09: 930
+10 wav numbers/fv10: 930
+31 wav numbers/fx11: 930
+32 wav numbers/fx12: 930
+33 wav numbers/fx13: 930
+34 wav numbers/fx14: 929
+35 wav numbers/fx15: 929
+76 wav numbers/mv18: 138
+77 wav numbers/mv19: 930
+78 wav numbers/mv20: 929
+79 wav numbers/mw01: 930
+80 wav numbers/mw02: 922
+102 wav numbers/my05: 404
+103 wav numbers/my06: 403
+104 wav numbers/my07: 404
+105 wav numbers/my08: 404
+45 wav numbers/fy05: 404
+46 wav numbers/fy06: 404
+58 wav numbers/fz05: 404
+72 wav numbers/mv14: 440
+
+
+11 wav numbers/fv11: 930
+12 wav numbers/fv12: 929
+13 wav numbers/fv13: 925
+14 wav numbers/fv14: 930
+15 wav numbers/fv15: 930
+36 wav numbers/fx16: 930
+37 wav numbers/fx17: 930
+38 wav numbers/fx18: 930
+39 wav numbers/fx19: 930
+40 wav numbers/fx20: 930
+81 wav numbers/mw03: 927
+82 wav numbers/mw04: 930
+83 wav numbers/mw05: 926
+84 wav numbers/mw06: 929
+85 wav numbers/mw07: 929
+106 wav numbers/my09: 404
+107 wav numbers/my10: 404
+108 wav numbers/my11: 404
+109 wav numbers/mz01: 404
+47 wav numbers/fy07: 404
+48 wav numbers/fy08: 404
+49 wav numbers/fy09: 402
+96 wav numbers/mw19: 923
+
+
+16 wav numbers/fv16: 930
+17 wav numbers/fv17: 842
+18 wav numbers/fv18: 924
+19 wav numbers/fv19: 928
+20 wav numbers/fv20: 928
+59 wav numbers/mv01: 929
+60 wav numbers/mv02: 930
+61 wav numbers/mv03: 928
+62 wav numbers/mv04: 930
+63 wav numbers/mv05: 930
+86 wav numbers/mw08: 928
+87 wav numbers/mw09: 920
+88 wav numbers/mw10: 930
+89 wav numbers/mw11: 926
+90 wav numbers/mw13: 926
+110 wav numbers/mz02: 404
+111 wav numbers/mz03: 404
+112 wav numbers/mz04: 404
+113 wav numbers/mz05: 404
+50 wav numbers/fy10: 400
+51 wav numbers/fy11: 404
+52 wav numbers/fy12: 404
+97 wav numbers/mw20: 930
+
+
+21 wav numbers/fx01: 919
+22 wav numbers/fx02: 921
+23 wav numbers/fx03: 930
+24 wav numbers/fx04: 928
+25 wav numbers/fx05: 930
+64 wav numbers/mv06: 930
+65 wav numbers/mv07: 930
+66 wav numbers/mv08: 930
+67 wav numbers/mv09: 930
+68 wav numbers/mv10: 930
+91 wav numbers/mw14: 924
+92 wav numbers/mw15: 908
+93 wav numbers/mw16: 929
+94 wav numbers/mw17: 930
+95 wav numbers/mw18: 930
+114 wav numbers/mz06: 404
+115 wav numbers/mz07: 404
+116 wav numbers/mz08: 402
+117 wav numbers/mz09: 404
+53 wav numbers/fy13: 404
+54 wav numbers/fy14: 403
+55 wav numbers/fy16: 404
+73 wav numbers/mv15: 51

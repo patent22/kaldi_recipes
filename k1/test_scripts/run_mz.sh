@@ -3,11 +3,7 @@
 # 														Hyungwon Yang
 # 														hyung8758@gmail.com
 
-# This script buils Korean ASR model based on kaldi toolkit.
-# Before running this script, corpus dataset needs to be divided into 
-# two parts: train and test. Allocate datasets such as 'fv01', or 'mv07'
-# to train and test folders. This script will detect folder names and 
-# extract data features.
+# Test script only running on mediazen server.
 
 
 # Set path and requisite variables.
@@ -55,7 +51,6 @@ fi
 
 # In each train and test data folder, distribute 'text', 'utt2spk', 'spk2utt', 'wav.scp', 'segments'.
 for set in train test; do
-	echo -e "Generating prerequisite files...\nSource directory:$source/$set" | tee -a $logdir/$logfile.log 
 	. ./local/krs_prep_data.sh $source/$set $curdir/data/$set || exit 1
 done
 
@@ -75,7 +70,6 @@ echo START TIME: $log_s2 | tee -a $logdir/$logfile.log
 
 # Generate lexicon, lexiconp, silence, nonsilence, optional_silence, extra_questions
 # from the train dataset.
-echo "Generating dictionary related files..." | tee -a $logdir/$logfile.log 
 . ./local/krs_prep_dict.sh $source/train $curdir/data/local/dict || exit 1
 
 # Insert <UNK> in the lexicon.txt and lexiconp.txt.
@@ -83,7 +77,6 @@ sed -i '1 i\<UNK> <UNK>' $curdir/data/local/dict/lexicon.txt
 sed -i '1 i\<UNK> 1.0 <UNK>' $curdir/data/local/dict/lexiconp.txt
 
 # Make ./data/lang folder and other files.
-echo "Generating language models..." | tee -a $logdir/$logfile.log 
 utils/prepare_lang.sh $curdir/data/local/dict "<UNK>" $curdir/data/local/lang $curdir/data/lang
 
 # Set ngram-count folder.
@@ -115,24 +108,19 @@ echo START TIME: $log_s3 | tee -a $logdir/$logfile.log
 mkdir -p $curdir/conf
 echo -e '--use-energy=false\n--sample-frequency=16000' > $curdir/conf/mfcc.conf
 # mfcc feature extraction.
-echo "Extracting MFCC features..." | tee -a $logdir/$logfile.log 
 mfccdir=mfcc
 steps/make_mfcc.sh $curdir/data/train $curdir/exp/make_mfcc/train $mfccdir
 # Compute cvnm. (This steps should be processed right after mfcc features are extracted.)
-echo "Computing CMVN on MFCC..." | tee -a $logdir/$logfile.log 
 steps/compute_cmvn_stats.sh $curdir/data/train $curdir/exp/make_mfcc/train $curdir/$mfccdir
 
 ### PLP ###
 echo -e '--sample-frequency=16000' > $curdir/conf/plp.conf
 plpdir=plp
-echo "Extracting PLP features..." | tee -a $logdir/$logfile.log 
 steps/make_plp.sh $curdir/data/train $curdir/exp/make_plp/train $curdir/$plpdir
 # Compute cvnm. (This steps should be processed right after plp features are extracted.)
-echo "Computing CMVN on PLP..." | tee -a $logdir/$logfile.log 
 steps/compute_cmvn_stats.sh $curdir/data/train $curdir/exp/make_plp/train $curdir/$plpdir
 
 # data directories sanity check.
-echo "Examining generated datasets..." | tee -a $logdir/$logfile.log 
 utils/validate_data_dir.sh data/train
 utils/fix_data_dir.sh data/train
 
@@ -157,8 +145,7 @@ echo "Monophone trainig options: $mono_train_opt"
 echo "Monophone decoding options: $mono_decode_opt"
 
 # Monophone train.
-echo "Training monophone..." | tee -a $logdir/$logfile.log 
-steps/train_mono.sh $mono_train_opt $curdir/data/train $curdir/data/lang $curdir/exp/mono ||  exit1
+#steps/train_mono.sh $mono_train_opt $curdir/data/train $curdir/data/lang $curdir/exp/mono ||  exit1
 
 # Graph structuring.
 # make HCLG graph (optional! train과는 무관, 오직 decode만을 위해.)
@@ -168,18 +155,15 @@ steps/train_mono.sh $mono_train_opt $curdir/data/train $curdir/data/lang $curdir
 # that has word-ids on the output, and pdf-ids on the input (these are indexes
 # that resolve to Gaussian Mixture Models).
 # exp/mono/graph에 가면 결과 graph가 만들어져 있음
-echo "Generating monophone graph..." | tee -a $logdir/$logfile.log 
 utils/mkgraph.sh $curdir/data/lang $curdir/exp/mono $curdir/exp/mono/graph 
 
 # Monophone aglinment.
 # train된 model파일인 mdl과 occs로부터 새로운 align을 생성
-echo "Aligning..." | tee -a $logdir/$logfile.log 
 steps/align_si.sh $mono_decode_opt $curdir/data/train $curdir/data/lang $curdir/exp/mono $curdir/exp/mono_ali || exit 1
 
 ### Optional ###
 # Data decoding.
 # (This is just decoding the trained model, not part of training process.)
-echo "Decoding with monophone model..." | tee -a $logdir/$logfile.log 
 steps/decode.sh $mono_decode_opt $curdir/exp/mono/graph $curdir/data/train $curdir/exp/mono/decode_train
 
 # tree structuring.
@@ -207,19 +191,15 @@ echo "Triphone1 training options: $tri1_train_opt"
 echo "Triphone1 decoding options: $tri1_decode_opt"
 
 # Triphone1 training.
-echo "Training delta+double-delta..." | tee -a $logdir/$logfile.log 
 steps/train_deltas.sh $tri1_train_opt 2000 10000 $curdir/data/train $curdir/data/lang $curdir/exp/mono_ali $curdir/exp/tri1
 
 # Graph drawing.
-echo "Generating delta+double-delta graph..." | tee -a $logdir/$logfile.log 
 utils/mkgraph.sh $curdir/data/lang $curdir/exp/tri1 $curdir/exp/tri1/graph
 
 # Triphone1 aglining.
-echo "Aligning..." | tee -a $logdir/$logfile.log 
 steps/align_si.sh $tri1_decode_opt $curdir/data/train $curdir/data/lang $curdir/exp/tri1 $curdir/exp/tri1_ali
 
 # Data decoding.
-echo "Decoding with delta+double-delta model..." | tee -a $logdir/$logfile.log 
 steps/decode.sh $tri1_decode_opt $curdir/exp/tri1/graph $curdir/data/train $curdir/exp/tri1/decode_train
 
 
@@ -243,19 +223,15 @@ echo "Triphone2 trainig options: $tri2_train_opt"
 echo "Triphone2 decoding options: $tri2_decode_opt"
 
 # Triphone2 training.
-echo "Training LDA+MLLT..." | tee -a $logdir/$logfile.log 
 steps/train_lda_mllt.sh $tri2_train_opt 2500 15000 $curdir/data/train $curdir/data/lang $curdir/exp/tri1_ali $curdir/exp/tri2
 
 # Graph drawing.
-echo "Generating LDA+MLLT graph..." | tee -a $logdir/$logfile.log
 utils/mkgraph.sh $curdir/data/lang $curdir/exp/tri2 $curdir/exp/tri2/graph
 
 # Triphone2 aglining.
-echo "Aligning..." | tee -a $logdir/$logfile.log
 steps/align_si.sh $tri2_decode_opt $curdir/data/train $curdir/data/lang $curdir/exp/tri2 $curdir/exp/tri2_ali
 
 # Data decoding.
-echo "Decoding with LDA+MLLT model..." | tee -a $logdir/$logfile.log
 steps/decode.sh $tri2_decode_opt $curdir/exp/tri2/graph $curdir/data/train $curdir/exp/tri2/decode_train
 
 
@@ -279,19 +255,15 @@ echo "Triphone3 trainig options: $tri3_train_opt"
 echo "Tirphone3 decoding options: $tri3_decode_opt"
 
 # Triphone3 training.
-echo "Training LDA+MLLT+SAT..." | tee -a $logdir/$logfile.log
 steps/train_sat.sh $tri3_train_opt 2500 15000 $curdir/data/train $curdir/data/lang $curdir/exp/tri2_ali $curdir/exp/tri3
 
 # Graph drawing.
-echo "Generating LDA+MLLT+SAT graph..." | tee -a $logdir/$logfile.log
 utils/mkgraph.sh $curdir/data/lang $curdir/exp/tri3 $curdir/exp/tri3/graph
 
 # Triphone3 aglining.
-echo "ALigning..." | tee -a $logdir/$logfile.log
 steps/align_fmllr.sh $tri3_decode_opt $curdir/data/train $curdir/data/lang $curdir/exp/tri3 $curdir/exp/tri3_ali
 
 # Data decoding: train dataset.
-echo "Decoding with Training LDA+MLLT+SAT model..." | tee -a $logdir/$logfile.log
 steps/decode_fmllr.sh $tri3_decode_opt $curdir/exp/tri3/graph $curdir/data/train $curdir/exp/tri3/decode_train
 # Data decoding: test dataset.
 steps/decode_fmllr.sh $tri3_decode_opt $curdir/exp/tri3/graph $curdir/data/test $curdir/exp/tri3/decode_test
@@ -324,23 +296,18 @@ echo "SGMM2 trainig options: $sgmm2_train_opt"
 echo "SGMM2 decoding options: $sgmm2_decode_opt"
 
 # UBM training.
-echo "Training UBM..." | tee -a $logdir/$logfile.log
 steps/train_ubm.sh 400 $curdir/data/train $curdir/data/lang $curdir/exp/tri3_ali $curdir/exp/ubm
 
 # SGMM2 training.
-echo "Training SGMM2..." | tee -a $logdir/$logfile.log
 steps/train_sgmm2.sh $sgmm2_train_opt 5000 8000 $curdir/data/train $curdir/data/lang $curdir/exp/tri3_ali $curdir/exp/ubm/final.ubm $curdir/exp/sgmm
 
 # Graph drawing.
-echo "Generating SGMM2 graph..." | tee -a $logdir/$logfile.log
 utils/mkgraph.sh $curdir/data/lang $curdir/exp/sgmm $curdir/exp/sgmm/graph
 
 # SGMM2 aglining.
-echo "Aligning..." | tee -a $logdir/$logfile.log
 steps/align_sgmm2.sh $sgmm2_train_opt --transform-dir $curdir/exp/tri3_ali $curdir/data/train $curdir/data/lang $curdir/exp/sgmm $curdir/exp/sgmm_ali
 
 # Data decoding: train dataset.
-echo "Decoding with SGMM2 model..." | tee -a $logdir/$logfile.log
 steps/decode_sgmm2.sh $sgmm2_decode_opt $curdir/exp/tri3_ali $curdir/exp/sgmm/graph $curdir/data/train $curdir/exp/sgmm/decode_train
 
 # Data decoding: test dataset.
@@ -374,12 +341,10 @@ echo "SGMM2+MMI trainig options: $sgmmi_train_opt"
 echo "SGMM2+MMI decoding options: $sgmmi_decode_opt"
 
 # SGMM2+MMI training.
-echo "Training SGMM2+MMI..." | tee -a $logdir/$logfile.log
 steps/make_denlats_sgmm2.sh --nj "$nj" --sub-split 40 --transform-dir $curdir/exp/tri3_ali $curdir/data/train $curdir/data/lang $curdir/exp/sgmm_ali $curdir/exp/sgmm_denlats
 steps/train_mmi_sgmm2.sh $sgmmi_train_opt $curdir/exp/tri3_ali $curdir/data/train $curdir/data/lang $curdir/exp/sgmm_ali $curdir/exp/sgmm_denlats $curdir/exp/sgmm_mmi
 
 # Data decoding: train dataset.
-echo "Decoding with SGMM2+MMI model..." | tee -a $logdir/$logfile.log
 steps/decode_sgmm2_rescore.sh $sgmmi_decode_opt $curdir/exp/tri3/decode_train $curdir/data/lang $curdir/data/train $curdir/exp/sgmm/decode_train $curdir/exp/sgmm_mmi/decode_train
 
 # Data decoding: test dataset.
@@ -415,13 +380,12 @@ echo "DNN($dnn_function) decoding options: $dnn1_decode_opt"
 
 # DNN training.
 # train_tanh_fast.sh
-echo "Training DNN..." | tee -a $logdir/$logfile.log
 steps/nnet2/train_tanh_fast.sh $dnn1_train_opt $curdir/data/train $curdir/data/lang $curdir/exp/tri3_ali $curdir/exp/tri4
 # train_multisplice_accel2.sh
 
 # train_tdnn.sh
 
-echo "Decoding with DNN model..." | tee -a $logdir/$logfile.log
+
 # Data decoding: train dataset.
 steps/nnet2/decode.sh $dnn1_decode_opt $curdir/exp/tri3/decode_train $curdir/exp/tri3/graph $curdir/data/train $curdir/exp/tri4/decode_train
 
@@ -438,14 +402,13 @@ echo PROCESS TIME: $taken10 sec  | tee -a $logdir/$logfile.log
 echo ====================================================================== | tee -a $logdir/$logfile.log 
 echo "                             RESULTS  	                	      " | tee -a $logdir/$logfile.log 
 echo ====================================================================== | tee -a $logdir/$logfile.log 
-echo "Displaying results" | tee -a $logdir/$logfile.log
+
 
 
 
 ##########################################################
 # This is for final log.
-echo "Training procedure finished successfully..." | tee -a $logdir/$logfile.log
 END=`date +%s`
-taken=`. $curdir/local/track_time.sh $START $END`
+taken=`. $curdir/local/track_time.sh $STRAT $END`
 echo TOTAL TIME: $taken sec  | tee -a $logdir/$logfile.log 
 
