@@ -21,6 +21,7 @@ save=$2
 echo ======================================================================
 echo "                              NOTICE                                "
 echo ""
+echo -e "krs_prep_dict: Generate lexicon, lexiconp, silence, nonsilence, \n\toptional_silence, and extra_questions."
 echo "CURRENT SHELL: $0"
 echo -e "INPUT ARGUMENTS:\n$@"
 

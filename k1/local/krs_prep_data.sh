@@ -25,6 +25,7 @@ save=$2
 echo ======================================================================
 echo "                              NOTICE                                "
 echo ""
+echo "krs_prep_data.sh: Generate text, utt2spk, wav.scp, and segments."
 echo "CURRENT SHELL: $0"
 echo -e "INPUT ARGUMENTS:\n$@"
 
