@@ -6,8 +6,10 @@
 # This script split the dataset into n-number of groups and it
 # runs the cross validation through 5 divdied datasets.
 
-rm -rf tmp data4cv cv_data path.sh log steps utils report
+# RECOMMENDATION
+# 1. Name your decoding directories as decode_train and decode_test.
 
+. local/unset_all.sh
 # Kaldi root: Where is your kaldi directory?
 kaldi=/Users/hyungwonyang/kaldi
 # Source data: Where is your source (wavefile) data directory?
@@ -734,6 +736,7 @@ else
 	echo ====================================================================== | tee -a $logdir/$logfile.log 
 	echo "                             RESULTS  	                	      " | tee -a $logdir/$logfile.log 
 	echo ====================================================================== | tee -a $logdir/$logfile.log 
+	
 	echo "Displaying results" | tee -a $logdir/$logfile.log
 	local/make_result.sh $main_dir/exp $main_dir/log result_part$turn
 	echo "Reporting results..." | tee -a $logdir/$logfile.log

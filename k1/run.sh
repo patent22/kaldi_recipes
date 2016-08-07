@@ -12,6 +12,7 @@
 # RECOMMENDATION
 # 1. Name your decoding directories as decode_train and decode_test.
 
+. local/unset_all.sh
 # Set path and requisite variables.
 # Kaldi root: Where is your kaldi directory?
 kaldi=/Users/hyungwonyang/kaldi
@@ -172,7 +173,7 @@ echo "Monophone decoding options: $mono_decode_opt"
 
 # Monophone train.
 echo "Training monophone..." | tee -a $logdir/$logfile.log 
-steps/train_mono.sh $mono_train_opt $curdir/data/train $curdir/data/lang $curdir/exp/mono ||  exit1
+steps/train_mono.sh $mono_train_opt $curdir/data/train $curdir/data/lang $curdir/exp/mono || exit 1
 
 # Graph structuring.
 # make HCLG graph (optional! train과는 무관, 오직 decode만을 위해.)
@@ -237,7 +238,11 @@ steps/align_si.sh $tri1_align_opt $curdir/data/train $curdir/data/lang $curdir/e
 
 # Data decoding.
 echo "Decoding with delta+double-delta model..." | tee -a $logdir/$logfile.log 
-steps/decode.sh $tri1_decode_opt $curdir/exp/tri1/graph $curdir/data/train $curdir/exp/tri1/decode_train
+steps/decode.sh \
+	$tri1_decode_opt \
+	$curdir/exp/tri1/graph \
+	$curdir/data/train \
+	$curdir/exp/tri1/decode_train
 
 
 end5=`date +%s`; log_e5=`date | awk '{print $4}'`
@@ -474,8 +479,7 @@ echo ====================================================================== | te
 echo "Displaying results" | tee -a $logdir/$logfile.log
 
 # Save result in the log folder.
-int_result=(mono tri1 tri2 tri4)
-. local/make_result.sh $curdir/exp $int_result $curdir/log
+local/make_result.sh $curdir/exp $curdir/log result
 
 ##########################################################
 # This is for final log.
