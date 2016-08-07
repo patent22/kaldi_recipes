@@ -1,0 +1,1 @@
+This script trains Korean seoul corpus datasets

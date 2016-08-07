@@ -7,16 +7,19 @@
 # lexicon, lexiconp, silence, nonsilence, optional_silence, extra_questions
 
 
-if [ $# -ne 2 ]; then
+if [ $# -ne 3 ]; then
    echo "Two arguments should be assigned." 
    echo "1. Source data."
+   echo "2. Current direcotry."
    echo "2. The folder generated files saved." && exit 1
 fi
 
 # corpus directory: ./krs_data
 data=$1
+# Current directory.
+curdir=$2
 # savining directory: ./data/local/dict
-save=$2
+save=$3
 
 echo ======================================================================
 echo "                              NOTICE                                "
@@ -47,7 +50,7 @@ if [ ! -d $save ]; then
 fi
 # Just write any name as a saving argument. then it will generate two .txt files.
 # ex) $save/egsname; then it will generate > egsname.txt and egsnamep.txt 
-python ./local/text2lexicon.py $data $save/lexicon
+python $curdir/local/text2lexicon.py $data $save/lexicon
 echo "lexicon.txt and lexiconp.txt files were generated."
 
 # silence.

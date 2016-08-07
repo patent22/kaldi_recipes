@@ -1,29 +1,68 @@
 #!/bin/bash
 
-for folder in 1 2 3 4 5; do
-	mkdir -p $save/part$folder
 
-	if [ $split_num -eq 5 ]; then
-		name=${s_set[((folder-1))]}
-		ln -s $data/$name $save/part$folder
-		echo "split_num: $split_num"
-		echo 
 
-	elif [ $split_num -eq 20 ]; then
-		for data in 0 1 2 3; do
-			name=${m_set[((data+con))]}
-			ln -s $data/$name $save/part$folder
-		done
-		con=$((con+4))
+echo "$name is exist!"
 
-	elif [ $split_num -eq 115 ]; then
-		for data in `seq 0 22`; do
-			name=${l_set[((data+cin))]}
-			ln -s $data/$name $save/part$folder
-		done
-		cin=$((cin+23))
-	fi
-done
+
+
+
+
+
+# if [[ -z $(find $KALDI_ROOT/tools/srilm/bin -name ngram-count) ]]; then
+# 	echo "SRILM might not be installed on your computer. Please find kaldi/tools/install_srilm.sh and install the package." #&& exit 1
+# else
+# 	nc=`find $KALDI_ROOT/tools/srilm/bin -name ngram-count`
+# 	# Make lm.arpa from textraw.
+# 	$nc -text $curdir/data/train/textraw -lm $curdir/data/lang/lm.arpa
+# fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# for folder in 1 2 3 4 5; do
+# 	mkdir -p $save/part$folder
+
+# 	if [ $split_num -eq 5 ]; then
+# 		name=${s_set[((folder-1))]}
+# 		ln -s $data/$name $save/part$folder
+# 		echo "split_num: $split_num"
+# 		echo 
+
+# 	elif [ $split_num -eq 20 ]; then
+# 		for data in 0 1 2 3; do
+# 			name=${m_set[((data+con))]}
+# 			ln -s $data/$name $save/part$folder
+# 		done
+# 		con=$((con+4))
+
+# 	elif [ $split_num -eq 115 ]; then
+# 		for data in `seq 0 22`; do
+# 			name=${l_set[((data+cin))]}
+# 			ln -s $data/$name $save/part$folder
+# 		done
+# 		cin=$((cin+23))
+# 	fi
+# done
 
 
 

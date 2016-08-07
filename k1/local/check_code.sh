@@ -9,7 +9,7 @@
 # This script checks several prerequsite codes.
 
 if [ $# -ne 1 ]; then
-   echo "kadi directory should be assigned." && exit 1
+   echo "Please check your input arguments. Only kaldi directory path is needed." && exit 1
 fi
 
 KALDI_ROOT=$1

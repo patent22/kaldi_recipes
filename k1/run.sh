@@ -8,7 +8,9 @@
 # two parts: train and test. Allocate datasets such as 'fv01', or 'mv07'
 # to train and test folders. This script will detect folder names and 
 # extract data features.
-# cd ~/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1
+
+# RECOMMENDATION
+# 1. Name your decoding directories as decode_train and decode_test.
 
 # Set path and requisite variables.
 # Kaldi root: Where is your kaldi directory?
@@ -27,7 +29,7 @@ train_nj=2
 test_nj=1
 
 # Start logging.
-mkdir -p $curdir/log
+mkdir -p $logdir
 echo ====================================================================== | tee $logdir/$logfile.log
 echo "                       Kaldi ASR Project	                		  " | tee -a $logdir/$logfile.log
 echo ====================================================================== | tee -a $logdir/$logfile.log
@@ -37,7 +39,7 @@ echo DATA_ROOT: $source | tee -a $logdir/$logfile.log
 START=`date +%s`
 
 # This step will generate path.sh based on written path above.
-# . local/make_path.sh $kaldi 
+. local/make_path.sh $kaldi $curdir
 . cmd.sh
 . local/check_code.sh $kaldi
 
@@ -57,7 +59,7 @@ fi
 # In each train and test data folder, distribute 'text', 'utt2spk', 'spk2utt', 'wav.scp', 'segments'.
 for set in train test; do
 	echo -e "Generating prerequisite files...\nSource directory:$source/$set" | tee -a $logdir/$logfile.log 
-	. local/krs_prep_data.sh $source/$set $curdir/data/$set || exit 1
+	. local/krs_prep_data.sh $source/$set $curdir $curdir/data/$set || exit 1
 done
 
 
@@ -77,7 +79,7 @@ echo START TIME: $log_s2 | tee -a $logdir/$logfile.log
 # Generate lexicon, lexiconp, silence, nonsilence, optional_silence, extra_questions
 # from the train dataset.
 echo "Generating dictionary related files..." | tee -a $logdir/$logfile.log 
-. local/krs_prep_dict.sh $source/train $curdir/data/local/dict || exit 1
+. local/krs_prep_dict.sh $source/train $curdir $curdir/data/local/dict || exit 1
 
 # Insert <UNK> in the lexicon.txt and lexiconp.txt.
 sed -i '1 i\<UNK> <UNK>' $curdir/data/local/dict/lexicon.txt
@@ -88,9 +90,13 @@ echo "Generating language models..." | tee -a $logdir/$logfile.log
 utils/prepare_lang.sh $curdir/data/local/dict "<UNK>" $curdir/data/local/lang $curdir/data/lang
 
 # Set ngram-count folder.
-nc=`find $KALDI_ROOT/tools/srilm/bin -name ngram-count`
-# Make lm.arpa from textraw.
-$nc -text $curdir/data/train/textraw -lm $curdir/data/lang/lm.arpa
+if [[ -z $(find $KALDI_ROOT/tools/srilm/bin -name ngram-count) ]]; then
+	echo "SRILM might not be installed on your computer. Please find kaldi/tools/install_srilm.sh and install the package." #&& exit 1
+else
+	nc=`find $KALDI_ROOT/tools/srilm/bin -name ngram-count`
+	# Make lm.arpa from textraw.
+	$nc -text $curdir/data/train/textraw -lm $curdir/data/lang/lm.arpa
+fi
 
 # Make G.fst from lm.arpa.
 cat $curdir/data/lang/lm.arpa | $KALDI_ROOT/src/lmbin/arpa2fst --disambig-symbol=#0 --read-symbol-table=$curdir/data/lang/words.txt - $curdir/data/lang/G.fst
@@ -219,7 +225,7 @@ echo "Triphone1 decoding options: $tri1_decode_opt"
 
 # Triphone1 training.
 echo "Training delta+double-delta..." | tee -a $logdir/$logfile.log 
-steps/train_deltas.sh $tri1_train_opt 2000 10000 $curdir/data/train $curdir/data/lang $curdir/exp/mono_ali $curdir/exp/tri1
+steps/train_deltas.sh $tri1_train_opt 2000 10000 $curdir/data/train $curdir/data/lang $curdir/exp/mono_ali $curdir/exp/tri1 ||  exit1
 
 # Graph drawing.
 echo "Generating delta+double-delta graph..." | tee -a $logdir/$logfile.log 
@@ -227,7 +233,7 @@ utils/mkgraph.sh $curdir/data/lang $curdir/exp/tri1 $curdir/exp/tri1/graph
 
 # Triphone1 aglining.
 echo "Aligning..." | tee -a $logdir/$logfile.log 
-steps/align_si.sh $tri1_align_opt $curdir/data/train $curdir/data/lang $curdir/exp/tri1 $curdir/exp/tri1_ali
+steps/align_si.sh $tri1_align_opt $curdir/data/train $curdir/data/lang $curdir/exp/tri1 $curdir/exp/tri1_ali ||  exit1
 
 # Data decoding.
 echo "Decoding with delta+double-delta model..." | tee -a $logdir/$logfile.log 
@@ -258,7 +264,7 @@ echo "Triphone2 decoding options: $tri2_decode_opt"
 
 # Triphone2 training.
 echo "Training LDA+MLLT..." | tee -a $logdir/$logfile.log 
-steps/train_lda_mllt.sh $tri2_train_opt 2500 15000 $curdir/data/train $curdir/data/lang $curdir/exp/tri1_ali $curdir/exp/tri2
+steps/train_lda_mllt.sh $tri2_train_opt 2500 15000 $curdir/data/train $curdir/data/lang $curdir/exp/tri1_ali $curdir/exp/tri2 ||  exit1
 
 # Graph drawing.
 echo "Generating LDA+MLLT graph..." | tee -a $logdir/$logfile.log
@@ -266,7 +272,7 @@ utils/mkgraph.sh $curdir/data/lang $curdir/exp/tri2 $curdir/exp/tri2/graph
 
 # Triphone2 aglining.
 echo "Aligning..." | tee -a $logdir/$logfile.log
-steps/align_si.sh $tri2_align_opt $curdir/data/train $curdir/data/lang $curdir/exp/tri2 $curdir/exp/tri2_ali
+steps/align_si.sh $tri2_align_opt $curdir/data/train $curdir/data/lang $curdir/exp/tri2 $curdir/exp/tri2_ali ||  exit1
 
 # Data decoding.
 echo "Decoding with LDA+MLLT model..." | tee -a $logdir/$logfile.log
@@ -299,7 +305,7 @@ echo "Tirphone3 test-decoding options: $tri3_test_decode_opt"
 
 # Triphone3 training.
 echo "Training LDA+MLLT+SAT..." | tee -a $logdir/$logfile.log
-steps/train_sat.sh $tri3_train_opt 2500 15000 $curdir/data/train $curdir/data/lang $curdir/exp/tri2_ali $curdir/exp/tri3
+steps/train_sat.sh $tri3_train_opt 2500 15000 $curdir/data/train $curdir/data/lang $curdir/exp/tri2_ali $curdir/exp/tri3 ||  exit1
 
 # Graph drawing.
 echo "Generating LDA+MLLT+SAT graph..." | tee -a $logdir/$logfile.log
@@ -307,7 +313,7 @@ utils/mkgraph.sh $curdir/data/lang $curdir/exp/tri3 $curdir/exp/tri3/graph
 
 # Triphone3 aglining.
 echo "ALigning..." | tee -a $logdir/$logfile.log
-steps/align_fmllr.sh $tri3_align_opt $curdir/data/train $curdir/data/lang $curdir/exp/tri3 $curdir/exp/tri3_ali
+steps/align_fmllr.sh $tri3_align_opt $curdir/data/train $curdir/data/lang $curdir/exp/tri3 $curdir/exp/tri3_ali ||  exit1
 
 # Data decoding: train and test datasets.
 echo "Decoding with Training LDA+MLLT+SAT model..." | tee -a $logdir/$logfile.log
@@ -348,11 +354,11 @@ echo "SGMM2 test-decoding options: $sgmm2_test_decode_opt"
 
 # UBM training.
 echo "Training UBM..." | tee -a $logdir/$logfile.log
-steps/train_ubm.sh 400 $curdir/data/train $curdir/data/lang $curdir/exp/tri3_ali $curdir/exp/ubm
+steps/train_ubm.sh 400 $curdir/data/train $curdir/data/lang $curdir/exp/tri3_ali $curdir/exp/ubm ||  exit1
 
 # SGMM2 training.
 echo "Training SGMM2..." | tee -a $logdir/$logfile.log
-steps/train_sgmm2.sh $sgmm2_train_opt 5000 8000 $curdir/data/train $curdir/data/lang $curdir/exp/tri3_ali $curdir/exp/ubm/final.ubm $curdir/exp/sgmm
+steps/train_sgmm2.sh $sgmm2_train_opt 5000 8000 $curdir/data/train $curdir/data/lang $curdir/exp/tri3_ali $curdir/exp/ubm/final.ubm $curdir/exp/sgmm ||  exit1
 
 # Graph drawing.
 echo "Generating SGMM2 graph..." | tee -a $logdir/$logfile.log
@@ -360,7 +366,7 @@ utils/mkgraph.sh $curdir/data/lang $curdir/exp/sgmm $curdir/exp/sgmm/graph
 
 # SGMM2 aglining.
 echo "Aligning..." | tee -a $logdir/$logfile.log
-steps/align_sgmm2.sh $sgmm2_align_opt $curdir/data/train $curdir/data/lang $curdir/exp/sgmm $curdir/exp/sgmm_ali
+steps/align_sgmm2.sh $sgmm2_align_opt $curdir/data/train $curdir/data/lang $curdir/exp/sgmm $curdir/exp/sgmm_ali ||  exit1
 
 # Data decoding: train and test datasets.
 echo "Decoding with SGMM2 model..." | tee -a $logdir/$logfile.log
@@ -403,8 +409,8 @@ echo "SGMM2+MMI test-decoding options: $sgmmi_test_decode_opt"
 echo "Training SGMM2+MMI..." | tee -a $logdir/$logfile.log
 # In mac, copy issue occurred, so the lang directory needs to be copied.
 mkdir -p $curdir/exp/sgmm_denlats; cp -r $curdir/data/lang $curdir/exp/sgmm_denlats
-steps/make_denlats_sgmm2.sh $sgmm_denlats_opt $curdir/data/train $curdir/data/lang $curdir/exp/sgmm_ali $curdir/exp/sgmm_denlats
-steps/train_mmi_sgmm2.sh $sgmmi_train_opt $curdir/data/train $curdir/data/lang $curdir/exp/sgmm_ali $curdir/exp/sgmm_denlats $curdir/exp/sgmm_mmi
+steps/make_denlats_sgmm2.sh $sgmm_denlats_opt $curdir/data/train $curdir/data/lang $curdir/exp/sgmm_ali $curdir/exp/sgmm_denlats ||  exit1
+steps/train_mmi_sgmm2.sh $sgmmi_train_opt $curdir/data/train $curdir/data/lang $curdir/exp/sgmm_ali $curdir/exp/sgmm_denlats $curdir/exp/sgmm_mmi ||  exit1
 
 # Data decoding: train and test datasets.
 echo "Decoding with SGMM2+MMI model..." | tee -a $logdir/$logfile.log
@@ -444,7 +450,7 @@ echo "DNN($dnn_function) test-decoding options: $dnn1_test_decode_opt"
 # DNN training.
 # train_tanh_fast.sh
 echo "Training DNN..." | tee -a $logdir/$logfile.log
-steps/nnet2/$dnn_function $dnn1_train_opt $curdir/data/train $curdir/data/lang $curdir/exp/tri3_ali $curdir/exp/tri4
+steps/nnet2/$dnn_function $dnn1_train_opt $curdir/data/train $curdir/data/lang $curdir/exp/tri3_ali $curdir/exp/tri4 ||  exit1
 # train_multisplice_accel2.sh
 
 # train_tdnn.sh
@@ -467,6 +473,9 @@ echo "                             RESULTS  	                	      " | tee -a $
 echo ====================================================================== | tee -a $logdir/$logfile.log 
 echo "Displaying results" | tee -a $logdir/$logfile.log
 
+# Save result in the log folder.
+int_result=(mono tri1 tri2 tri4)
+. local/make_result.sh $curdir/exp $int_result $curdir/log
 
 ##########################################################
 # This is for final log.

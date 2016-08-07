@@ -11,16 +11,19 @@
 # ./local/dict => lexicon.txt
 # ./wavtxt => raw wav와 txt 파일
 
-if [ $# -ne 2 ]; then
+if [ $# -ne 3 ]; then
    echo "Two arguments should be assigned." 
    echo "1. Source data."
-   echo "2. The folder generated files saved." && exit 1
+   echo "2. Current directory."
+   echo "3. The folder generated files saved." && exit 1
 fi
 
 # Corpus directory: ./krs_data
 data=$1
+# Current directory.
+curdir=$2
 # Result directory: ./data/local/data
-save=$2
+save=$3
 
 echo ======================================================================
 echo "                              NOTICE                                "
@@ -134,7 +137,7 @@ else
 fi
 
 # Make a spk2utt file.
-utils/utt2spk_to_spk2utt.pl $save/utt2spk > $save/spk2utt || exit 1
+$curdir/utils/utt2spk_to_spk2utt.pl $save/utt2spk > $save/spk2utt || exit 1
 echo "utt2spk and spk2utt files were generated."
 
 # wav.scp
