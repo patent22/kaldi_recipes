@@ -12,7 +12,7 @@
 # ./wavtxt => raw wav와 txt 파일
 
 if [ $# -ne 3 ]; then
-   echo "Two arguments should be assigned." 
+   echo "Three arguments should be assigned." 
    echo "1. Source data."
    echo "2. Current directory."
    echo "3. The folder generated files saved." && exit 1

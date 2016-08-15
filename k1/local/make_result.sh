@@ -1,8 +1,8 @@
 #!/bin/bash
-# 														EMCS Labs
+# 2016.08.01											EMCS Labs
 # 														Hyungwon Yang
 # 														hyung8758@gmail.com
-
+#
 # This script gathers the information of best_wer and displays
 # the training result.
 
@@ -23,13 +23,18 @@ filename=$3
 if [ ! -d $save ]; then
 	mkdir -p $save
 fi
+if [ -f $save/$filename ]; then
+	rm $save/$filename
+	echo "Previous $filename is removed."
+fi
 
-echo ====================================================================== | > $save/$filename.txt 
-echo "                             RESULTS  	                	      " | >> $save/$filename.txt 
-echo ====================================================================== | >> $save/$filename.txt 
-echo RESULT REPORT ON... `date` >> $save/$filename.txt
-echo  																		  >> $save/$filename.txt
-echo  																		  >> $save/$filename.txt
+
+echo ====================================================================== | > $save/$filename
+echo "                             RESULTS  	                	      " | >> $save/$filename 
+echo ====================================================================== | >> $save/$filename
+echo RESULT REPORT ON... `date` 											  >> $save/$filename
+echo  																		  >> $save/$filename
+echo  																		  >> $save/$filename
 # Result calculation.
 exam_list=`ls $data`
 exam_num=`echo $exam_list | wc -w`
@@ -41,40 +46,67 @@ for skim in $exam_list; do
 
 		train_box=`ls $data/$skim | grep "train" | head -1`
 		test_box=`ls $data/$skim | grep "test" | head -1`
+		title_tmp=`echo $skim`
+		if [ "$title_tmp" == "mono" ]; then
+			title_name="MONOPHONE"
+		elif [ "$title_tmp" == "tri1" ]; then
+			title_name="TRIPHONE1 (DELTA + DOUBLE DELTA)"
+		elif [ "$title_tmp" == "tri2" ]; then
+			title_name="TRIPHONE2 (LDA + MLLT)"
+		elif [ "$title_tmp" == "tri3" ]; then
+			title_name="TRIPHONE3 (LDA + MLLT + SAT)"
+		elif [ "$title_tmp" == "tri4" ]; then
+			title_name="TRIPHONE4 (DEEP NEURAL NETWORK)"
+		elif [ "$title_tmp" == "sgmm" ]; then
+			title_name="SGMM2"
+		elif [ "$title_tmp" == "sgmm_mmi" ]; then
+			title_name="SGMM2+MMI"
+		else
+			title_name=`echo $skim | tr '[:lower:]' '[:upper:]'`
+		fi
 
-		title_name=`echo $skim | tr '[:lower:]' '[:upper:]'`
-		echo "$title_name   													    " >> $save/$filename.txt
-		echo "======================================================================" >> $save/$filename.txt
-		echo "																	    " >> $save/$filename.txt
+		echo "$title_name" 																>> $save/$filename
+		echo "======================================================================" 	>> $save/$filename
+		echo 	 																		>> $save/$filename
 		if [ ${#train_box} -ne 0 ]; then
 			train_best=`cat $data/$skim/$train_box/scoring_kaldi/best_wer`
-			train_forward=`echo $train_best | cut -c2- | awk -F']' '{print $1}'`
+			train_for=`echo $train_best | cut -c2- | awk -F']' '{print $1}'`
+			train_forward=`echo $train_for]`
 			train_backword=`echo $train_best | cut -c2- | awk -F']' '{print $2}' | cut -c2-`
-			echo "TRAIN DATA														   " >> $save/$filename.txt
-			echo "- BEST : $train_forward											   " >> $save/$filename.txt
-			echo "		 : $train_backword											   " >> $save/$filename.txt
-			echo "																	   " >> $save/$filename.txt
+			if [ -z "$train_for" ]; then
+				train_forward="WER CANNOT BE DISPLAYED."
+				train_backword="ERROR MIGHT BE OCCURRED IN THE DECODING PROCESS."
+			fi
+			echo "TRAIN DATA" 															>> $save/$filename
+			echo "- BEST : $train_forward" 												>> $save/$filename
+			echo "		 : $train_backword" 											>> $save/$filename
+			echo 	 																	>> $save/$filename
 		else
-			echo "TRAIN DATA: DIRECTORY IS NOT FOUND			   					   " >> $save/$filename.txt
-			echo "																	   " >> $save/$filename.txt
+			echo "TRAIN DATA: DIRECTORY IS NOT FOUND." 									>> $save/$filename
+			echo 	 																	>> $save/$filename
 		fi
 		if [ ${#test_box} -ne 0 ]; then
 			test_best=`cat $data/$skim/$test_box/scoring_kaldi/best_wer`
-			test_forward=`echo $test_best | cut -c2- | awk -F']' '{print $1}'`
-			test_backword=`echo $test_best | cut -c2- | awk -F']' '{print $2}' | cut -c2-`			
-			echo "TEST DATA 														   " >> $save/$filename.txt
-			echo "- BEST : $test_forward											   " >> $save/$filename.txt
-			echo "       : $test_backword											   " >> $save/$filename.txt
-			echo "																	   " >> $save/$filename.txt
+			test_for=`echo $test_best | cut -c2- | awk -F']' '{print $1}'`
+			test_forward=`echo $test_for]`
+			test_backword=`echo $test_best | cut -c2- | awk -F']' '{print $2}' | cut -c2-`
+			if [ -z "$test_for" ]; then
+				test_forward="WER CANNOT BE DISPLAYED."
+				test_backword="ERROR MIGHT BE OCCURRED IN THE DECODING PROCESS."
+			fi
+			echo "TEST DATA" 															>> $save/$filename
+			echo "- BEST : $test_forward" 												>> $save/$filename
+			echo "       : $test_backword" 												>> $save/$filename
+			echo 	 																	>> $save/$filename
 		else
-			echo "TEST DATA: DIRECTORY IS NOT FOUND			   					       " >> $save/$filename.txt
-			echo "																	   " >> $save/$filename.txt
+			echo "TEST DATA: DIRECTORY IS NOT FOUND." 									>> $save/$filename
+			echo 	 																	>> $save/$filename
 		fi
-		echo ====================================================================== >> $save/$filename.txt
-		echo "																		   " >> $save/$filename.txt
+		echo ====================================================================== 	>> $save/$filename
+		echo 																			>> $save/$filename
 	fi
 done
 
-
+echo "$filename is newly generated in $save."
 
 

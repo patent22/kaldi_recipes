@@ -27,14 +27,14 @@ fi
 
 # opt match
 optcatch=`find $data/param1/5fold1/exp/$myexp -type d | grep "$opt"`
-if [ -z $optcatch ]; then
+if [ -z "$optcatch" ]; then
     echo "$opt directory is not present in the $myexp directory. $opt data might not be decoded." && exit 1
 fi
 
 
 # data sanity check
 param_check=`ls $data | grep "param1" | head -1`
-if [ -z $param_check ]; then
+if [ -z "$param_check" ]; then
     echo param folders are not present in your $data directory && exit 1
 fi
 

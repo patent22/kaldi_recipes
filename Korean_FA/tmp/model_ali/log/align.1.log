@@ -1,0 +1,17 @@
+# compile-train-graphs tmp/model_ali/tree model/dnn/final.mdl main/data/lang/L.fst "ark:utils/sym2int.pl --map-oov 1 -f 2- main/data/lang/words.txt main/data/trans_data/split1/1/text|" ark:- | nnet-align-compiled --transition-scale=1.0 --acoustic-scale=0.1 --self-loop-scale=0.1 --use-gpu=no --beam=10 --retry-beam=40 model/dnn/final.mdl ark:- "ark,s,cs:apply-cmvn  --utt2spk=ark:main/data/trans_data/split1/1/utt2spk scp:main/data/trans_data/split1/1/cmvn.scp scp:main/data/trans_data/split1/1/feats.scp ark:- | splice-feats  ark:- ark:- | transform-feats tmp/model_ali/final.mat ark:- ark:- |" "ark:|gzip -c >tmp/model_ali/ali.1.gz" 
+# Started at Mon Aug 15 21:08:44 KST 2016
+#
+compile-train-graphs tmp/model_ali/tree model/dnn/final.mdl main/data/lang/L.fst 'ark:utils/sym2int.pl --map-oov 1 -f 2- main/data/lang/words.txt main/data/trans_data/split1/1/text|' ark:- 
+nnet-align-compiled --transition-scale=1.0 --acoustic-scale=0.1 --self-loop-scale=0.1 --use-gpu=no --beam=10 --retry-beam=40 model/dnn/final.mdl ark:- 'ark,s,cs:apply-cmvn  --utt2spk=ark:main/data/trans_data/split1/1/utt2spk scp:main/data/trans_data/split1/1/cmvn.scp scp:main/data/trans_data/split1/1/feats.scp ark:- | splice-feats  ark:- ark:- | transform-feats tmp/model_ali/final.mat ark:- ark:- |' 'ark:|gzip -c >tmp/model_ali/ali.1.gz' 
+LOG (compile-train-graphs:main():compile-train-graphs.cc:145) compile-train-graphs: succeeded for 2 graphs, failed for 0
+splice-feats ark:- ark:- 
+apply-cmvn --utt2spk=ark:main/data/trans_data/split1/1/utt2spk scp:main/data/trans_data/split1/1/cmvn.scp scp:main/data/trans_data/split1/1/feats.scp ark:- 
+LOG (apply-cmvn:main():apply-cmvn.cc:146) Applied cepstral mean normalization to 2 utterances, errors on 0
+transform-feats tmp/model_ali/final.mat ark:- ark:- 
+LOG (transform-feats:main():transform-feats.cc:158) Overall average [pseudo-]logdet is -93.5739 over 814 frames.
+LOG (transform-feats:main():transform-feats.cc:161) Applied transform to 2 utterances; 0 had errors.
+LOG (nnet-align-compiled:main():nnet-align-compiled.cc:139) Overall log-likelihood per frame is -0.0157984 over 814 frames.
+LOG (nnet-align-compiled:main():nnet-align-compiled.cc:141) Retried 0 out of 2 utterances.
+LOG (nnet-align-compiled:main():nnet-align-compiled.cc:143) Done 2, errors on 0
+# Accounting: time=0 threads=1
+# Ended (code 0) at Mon Aug 15 21:08:44 KST 2016, elapsed time 0 seconds

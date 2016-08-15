@@ -1,5 +1,5 @@
 #!/bin/bash
-# 														EMCS Labs
+# 2016.08.08 											EMCS Labs
 # 														Hyungwon Yang
 # 														hyung8758@gmail.com
 
@@ -21,8 +21,9 @@ list_num=`echo $listup | wc -w`
 
 for check in $listup; do
 
-	if [ "$check" == "README.md" ] || [ "$check" == "cmd.sh" ] || [ "$check" == "local" ] || [ "$check" == "run.sh" ] ||
-	   [ "$check" == "run_cv.sh" ] || [ "$check" == "test.sh" ] || [ "$check" == "test_local" ]; then
+	if [ "$check" == "README.md" ]  || [ "$check" == "cmd.sh" ]    || [ "$check" == "local" ]   || 
+	   [ "$check" == "run_cv.sh" ]  || [ "$check" == "run.sh" ]    || [ "$check" == "test.sh" ] || 
+	   [ "$check" == "test_local" ] || [ "$check" == "nohup.out" ]; then
 	   this=1
 	else
 	   rm -rf $check

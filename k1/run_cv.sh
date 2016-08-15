@@ -9,7 +9,7 @@
 # RECOMMENDATION
 # 1. Name your decoding directories as decode_train and decode_test.
 
-. local/unset_all.sh
+# . local/unset_all.sh
 # Kaldi root: Where is your kaldi directory?
 kaldi=/Users/hyungwonyang/kaldi
 # Source data: Where is your source (wavefile) data directory?
@@ -413,8 +413,8 @@ else
 		15000 \
 		$main_dir/data/train \
 		$main_dir/data/lang \
-		$main_dir/exp/tri1_ali $ \
-		main_dir/exp/tri2 ||  exit1
+		$main_dir/exp/tri1_ali \
+		$main_dir/exp/tri2 ||  exit1
 
 	# Graph drawing.
 	echo "Generating LDA+MLLT graph..." | tee -a $logdir/$logfile.log
