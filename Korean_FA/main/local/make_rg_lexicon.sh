@@ -5,6 +5,7 @@
 #
 # This script combine romanized and pronunciation texts together.
 # It will be used for second word tier in Textgrid.
+
 [ -f tmp/romanized/text_num ] && rm tmp/romanized/text_num
 [ -f tmp/romanized/rom_graph_lexicon.txt ] && rm tmp/romanized/rom_graph_lexicon.txt
 if [ -f "tmp/romanized/list_test01.rom" ]; then

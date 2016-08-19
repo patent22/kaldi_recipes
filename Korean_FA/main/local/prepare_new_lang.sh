@@ -47,19 +47,6 @@ sed -i '1 i\<UNK> <UNK>' $dict_dir/lexicon.txt
 sed -i '1 i\<UNK> 1.0 <UNK>' $dict_dir/lexiconp.txt
 
 ### lang directory ###
-utils/prepare_lang.sh $dict_dir $oov_word main/data/local/lang $lang_dir
-
-# Set ngram-count folder.
-# if [[ -z $(find $KALDI_ROOT/tools/srilm/bin -name ngram-count) ]]; then
-#   echo "SRILM might not be installed on your computer. Please find kaldi/tools/install_srilm.sh and install the package." #&& exit 1
-# else
-#   nc=`find $KALDI_ROOT/tools/srilm/bin -name ngram-count`
-#   # Make lm.arpa from textraw.
-#   $nc -text $data_dir/textraw -lm $lang_dir/lm.arpa
-# fi
-
-# # Make G.fst from lm.arpa.
-# echo "Generating G.fst from lm.arpa..." 
-# cat $lang_dir/lm.arpa | $KALDI_ROOT/src/lmbin/arpa2fst --disambig-symbol=#0 --read-symbol-table=$lang_dir/words.txt - $lang_dir/G.fst
+utils/prepare_lang.sh $dict_dir $oov_word main/data/local/lang $lang_dir 1>/dev/null
 
 

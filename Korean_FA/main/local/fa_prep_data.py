@@ -46,14 +46,13 @@ Generate text
 '''
 text_cont=[]
 for rd in text_list:
-    with open ('/'.join([data_dir,rd]),'r') as txt:
+    with open('/'.join([data_dir,rd]),'r') as txt:
         text_cont.append(txt.read())
 
 with open('/'.join([save_dir,'text']),'w') as text:
-
     for turn in range(len(sound_list)):
         tmp_sound = re.sub('.wav','',sound_list[turn])
-        text.write(tmp_sound + ' ' + text_cont[turn])
+        text.write(tmp_sound + ' ' + text_cont[turn] + '\n')
 
 ### textraw
 '''
@@ -66,7 +65,7 @@ for rd in text_list:
 
 with open('/'.join([save_dir,'textraw']),'w') as text:
     for turn in text_cont:
-        text.write(turn)
+        text.write(turn + '\n')
 
 ## segments
 '''
@@ -77,7 +76,7 @@ with open('/'.join([save_dir,'segments']),'w') as seg:
     for sd in sound_list:
         sig = wave.open('/'.join([data_dir, sd]), 'rb')
         sig_dur = sig.getnframes() / sig.getframerate()
-        dur = "{0:.3f}".format(sig_dur)
+        dur = "{0:.2f}".format(sig_dur)
         if float(dur) > sig_dur:
             tmp_dur = float(dur)
             tmp_dur -= 0.001
@@ -99,9 +98,12 @@ with open ('/'.join([save_dir,'wav.scp']),'w') as scp:
 Generate utt2spk
 '''
 with open ('/'.join([save_dir,'utt2spk']),'w') as u2s:
+    dir_name = data_dir.split('/')[-1]
+    if dir_name == '':
+        print("WARNING: Please remove '/' at the end of the data directory path next time.")
+        dir_name =data_dir.split('/')[-2]
     for uin in range(len(sound_list)):
-        nowav = re.sub('.wav', '', sound_list[uin])
-        dir_name = data_dir.split('/')[-1]
-        u2s.write(nowav + ' ' + dir_name + '\n')
+        utwav = re.sub('.wav', '', sound_list[uin])
+        u2s.write(utwav + ' ' + dir_name + '\n')
 
 print("All prerequisite data files are successfully generated.")

@@ -9,7 +9,8 @@
 # RECOMMENDATION
 # 1. Name your decoding directories as decode_train and decode_test.
 
-# . local/unset_all.sh
+# Remove all unrelated files.
+bash local/unset_all.sh
 # Kaldi root: Where is your kaldi directory?
 kaldi=/Users/hyungwonyang/kaldi
 # Source data: Where is your source (wavefile) data directory?
@@ -58,7 +59,8 @@ for turn in 1 2 3 4 5; do
 
 		# Start logging.
 		mkdir -p $logdir
-		echo ====================================================================== | tee $logdir/$logfile.log
+		echo "$logfile"																| tee $logdir/$logfile.log
+		echo ====================================================================== | tee -a $logdir/$logfile.log
 		echo "                       Kaldi ASR Project	                		  " | tee -a $logdir/$logfile.log
 		echo ====================================================================== | tee -a $logdir/$logfile.log
 		echo Tracking the training procedure on: `date` | tee -a $logdir/$logfile.log
@@ -738,7 +740,7 @@ else
 	echo ====================================================================== | tee -a $logdir/$logfile.log 
 	
 	echo "Displaying results" | tee -a $logdir/$logfile.log
-	local/make_result.sh $main_dir/exp $main_dir/log result_part$turn
+	local/make_result.sh $main_dir/exp $main_dir/log result_part$turn.txt
 	echo "Reporting results..." | tee -a $logdir/$logfile.log
 	cat $main_dir/log/result_part$turn.txt | tee -a $logdir/$logfile.log
 
@@ -761,6 +763,11 @@ else
 	mv $main_dir/log $curdir/report/subject$split_num-$turn
 	mv $curdir/conf $curdir/report/subject$split_num-$turn
 	rm -rf $main_dir/cv$turn
+	# Save grand-log information to report directory. 
+	cat $curdir/report/subject$split_num-$turn/log/cv-$turn.log >> $curdir/report/grand_cv.log
+	echo "$logfile" >> $curdir/report/grand_result.txt
+	cat $curdir/report/subject$split_num-$turn/log/result_part$turn.txt >> $curdir/report/grand_result.txt
+	
 
 done
 

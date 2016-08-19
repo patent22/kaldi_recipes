@@ -79,7 +79,7 @@ for skim in $exam_list; do
 			fi
 			echo "TRAIN DATA" 															>> $save/$filename
 			echo "- BEST : $train_forward" 												>> $save/$filename
-			echo "		 : $train_backword" 											>> $save/$filename
+			echo "       : $train_backword" 											>> $save/$filename
 			echo 	 																	>> $save/$filename
 		else
 			echo "TRAIN DATA: DIRECTORY IS NOT FOUND." 									>> $save/$filename

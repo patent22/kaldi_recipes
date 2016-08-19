@@ -1,10 +1,11 @@
 #!/bin/bash
 # Copyright 2009-2012  Microsoft Corporation  Johns Hopkins University (Author: Daniel Povey)
 # Apache 2.0.
-
-# 														EMCS Labs
-# 											adjusted by	Hyungwon Yang
-# 														hyung8758@gmail.com
+#
+# 											                          Modified by...
+#                                                 Hyungwon Yang
+# 														                    hyung8758@gmail.com
+#                                                 EMCS Labs
 
 # This script checks several prerequsite codes.
 

@@ -22,7 +22,7 @@ dict_dir=main/data/local/dict
 # language directory
 lang_dir=main/data/lang
 # FA data directory
-data_dir=example/readspeech
+data_dir=$PWD/example/readspeech
 # align data directory
 ali_dir=fa_dir
 # result direcotry
@@ -63,6 +63,7 @@ source path.sh $kaldi
 
 # Sound data preprocessing.
 echo "preprocessing the input data..."  
+python3 main/local/check_text.py $data_dir || exit 1
 python3 main/local/fa_prep_data.py $data_dir main/data/trans_data || exit 1
 utils/utt2spk_to_spk2utt.pl main/data/trans_data/utt2spk > main/data/trans_data/spk2utt 
 
@@ -185,3 +186,6 @@ python3 main/local/generate_textgrid.py \
 						$word_opt
 
 echo "Aligning the input data has been successfully finished."
+echo "===================== FINISHED SUCCESSFULLY ====================="
+echo "$(date)"
+echo

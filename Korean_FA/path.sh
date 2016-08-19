@@ -1,6 +1,7 @@
 # This script add paths for kaldi tools
 # 2016-04-18
 # modified by JK
+# modified by HW
 
 #---------------------------------------------#
 # change your directory in line 9 and line 37 #
@@ -30,6 +31,6 @@ else
   export PATH=`pwd`/bin/:${root}/tools/openfst/bin:$PATH
 fi
 
-# export LC_ALL=C
-# export LC_LOCALE_ALL=C
+export LC_ALL=ko_KR.UTF-8
+export LC_LOCALE_ALL=ko_KR.UTF-8
 export PATH=$PATH:$PWD/utils:$PWD/steps:$root/src/nnet2bin:$root/src/sgmm2bin
