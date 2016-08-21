@@ -17,9 +17,9 @@ Python 3.5
 ### PREREQUEISTE
 1. **Install Kaldi**
  - Type below in command line.
-    $ git clone https://github.com/kaldi-asr/kaldi.git kaldi --origin upstream
-    $ cd kaldi
-    $ git pull 
+    - $ git clone https://github.com/kaldi-asr/kaldi.git kaldi --origin upstream
+    - $ cd kaldi
+    - $ git pull 
  - Read INSTALL and follow the direction written there.
 
 2. **Install Sox, xlrd**
