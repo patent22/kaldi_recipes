@@ -1,11 +1,13 @@
-# Korean_FA: Force-Alginer  
+# Korean_FA: Forced-Alginer  
                                                                          Hyungwon Yang
                                                                            Jaekoo Kang
                                                                             2016.08.14
                                                                               EMCS lab    
 
-### MacOSX and Linux(Testing is on going. unstable by now.)
+### MacOSX and Linux
 ----------------------------------------------------------------
+Mac OSX (El Capitan 10.11.6) : Tested successfully.
+Linux (Ubuntu 14.04) : Tested successfully.
 
 Bash
 Python 3.5
@@ -14,14 +16,30 @@ Python 3.5
 
 ### PREREQUEISTE
 1. Install Kaldi
+- Follow the steps below.
+-- $ git clone https://github.com/kaldi-asr/kaldi.git kaldi --origin upstream
+-- $ cd kaldi
+-- $ git pull
+-- Read INSTALL and follow the direction written there.
+
 2. Install Sox, xlrd
+-  On mac
+-- $ brew install sox
+-- $ pip3 install xlrd (Make sure to install xlrd into python3 library not in python2. If you use anaconda then you have to install in there. Otherwise, install it into proper directory.)
+- On Ubuntu
+
 
 ### MATERIALS
 1. Wave files. (sampling rate 16000)
 - If the sampling rate of wave files is not set to 16000 it will be changed automatically.
 2. Text files.
-- Do not add any symbols or marks. (period, semicolon, etc)
-- Remove any white pace in the end of the line.
+- Do not add any symbols or marks such as period, comma in the text file which contains one full sentence. (period, semicolon, etc)
+- Since this is Korean Forced-Aligner, sentences should be written in Korean letters and less spaces between characters are strongly recommended.
+-- For example, write the sentence as the speaker read, not followed by any grammatical or spacing words rule.
+-- If a speaker readas... "나는 그시절 사람들과 사는것이 좋았어요"
+-- Bad example: "나는 그 시절 사람들과 사는 것이 좋았어요"
+-- Good example: "나는 그시절 사람들과 사는것이 좋았어요"
+- Remove any white space or tap in the end of the line.
 
 ### DIRECTION
 

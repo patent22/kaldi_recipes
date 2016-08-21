@@ -35,7 +35,9 @@ for one in whole_list:
         sound_list.append(one)
     elif re.findall('txt',one) != []:
         text_list.append(one)
-
+# Sorting the list.
+sound_list.sort()
+text_list.sort()
 if len(sound_list) != len(text_list):
     raise ValueError('The number of sound and text files are not matched.\n'
                      'Each sound file should pair with each text file.')

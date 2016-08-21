@@ -165,14 +165,14 @@ echo "Reconstructing the alinged data..."
 python3 $result_dir/id2phone.py  $result_dir/phones.txt \
 								$result_dir/segments \
 								$result_dir/merged_ali.txt \
-								$result_dir/final_ali.txt 
+								$result_dir/final_ali.txt || exit 1;
 
 # Split the whole text files.
 echo "Spliting the whole aligned data..."
-python3 $result_dir/splitAlignments.py $result_dir/final_ali.txt $result_dir
+python3 $result_dir/splitAlignments.py $result_dir/final_ali.txt $result_dir || exit 1;
 
 # Combining prono and rom texts. (It also generate text_num.)
-bash main/local/make_rg_lexicon.sh 
+bash main/local/make_rg_lexicon.sh || exit 1;
 
 
 # Generate Textgrid files and save it to the data directory.
@@ -183,7 +183,7 @@ python3 main/local/generate_textgrid.py \
 						tmp/romanized/rom_graph_lexicon.txt \
 						tmp/romanized/text_num \
 						$data_dir \
-						$word_opt
+						$word_opt || exit 1;
 
 echo "Aligning the input data has been successfully finished."
 echo "===================== FINISHED SUCCESSFULLY ====================="

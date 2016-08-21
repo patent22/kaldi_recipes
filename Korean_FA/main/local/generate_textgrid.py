@@ -31,6 +31,7 @@ if not os.path.exists(save_dir):
 # Reading data.
 # Search directories.
 dir_list = os.listdir(source_dir)
+dir_list.sort()
 txt_box=[]
 file_name=[]
 for check in dir_list:

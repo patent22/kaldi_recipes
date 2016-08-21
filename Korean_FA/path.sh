@@ -31,6 +31,6 @@ else
   export PATH=`pwd`/bin/:${root}/tools/openfst/bin:$PATH
 fi
 
-export LC_ALL=ko_KR.UTF-8
-export LC_LOCALE_ALL=ko_KR.UTF-8
+LC_ALL=ko_KR.UTF-8
+LC_LOCALE_ALL=ko_KR.UTF-8
 export PATH=$PATH:$PWD/utils:$PWD/steps:$root/src/nnet2bin:$root/src/sgmm2bin
