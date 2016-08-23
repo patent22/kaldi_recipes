@@ -33,9 +33,14 @@ log_dir=tmp/log
 mfcc_nj=1
 align_nj=1
 
+# Check kaldi directory.
+if [ ! -d $kaldi ]; then
+	echo -e "ERROR: Kaldi directory is not found. Please reset the kaldi directory by editing force_align.sh.\nCurrent kaldi directory : $kaldi" && exit 1
+fi
+
 
 if [ $# -ne 2 ]; then
-   echo "Three arguments should be assigned." 
+   echo "Two arguments should be assigned." 
    echo "1. Model option: gmm, dnn(recommend), sgmm_mmi ."
    echo "2. Sound and text file saved directory." && exit 1
 fi
@@ -48,11 +53,14 @@ else
 	echo "Model option is incorrect. Please choose among 'dnn', 'sgmm', or 'sgmm_mmi'." && exit 1
 fi
 # Folder directory that contains wav and text files.
-data_dir=$2
+tmp_data_dir=$2
+# Check data_dir
+alias realpath="perl -MCwd -e 'print Cwd::realpath(\$ARGV[0]),qq<\n>'"
+data_dir=`realpath $tmp_data_dir`
 
 # This is just test line remove when the script is completed.
 echo "Previouse generated files were removed."
-rm -rf mfcc conf tmp main/data
+rm -rf tmp main/data
 
 # Directory check.
 source path.sh $kaldi
@@ -93,11 +101,10 @@ paste -d'\n' tmp/prono/new_lexicon model/lexicon.txt | sort | uniq | sed '/^\s*$
 bash main/local/prepare_new_lang.sh $dict_dir $lang_dir main/data/trans_data "<UNK>"
 
 
-# MFCC default setting.
+# # MFCC default setting.
 echo "Extracting the features from the input data..."
 mfccdir=mfcc
 cmd="utils/run.pl"
-freq_set=16000
 
 # wav file sanitiy check.
 wav_list=`ls $data_dir | grep ".wav"`
@@ -114,11 +121,9 @@ for wav in $wav_list; do
 done
 
 # Extracting MFCC features and calculate CMVN.
-mkdir -p conf
-echo -e "--use-energy=false\n--sample-frequency=$freq_set" > conf/mfcc.conf
-steps/make_mfcc.sh --nj $mfcc_nj --cmd "$cmd" main/data/trans_data $log_dir $mfccdir
+steps/make_mfcc.sh --nj $mfcc_nj --cmd "$cmd" main/data/trans_data $log_dir tmp/$mfccdir
 utils/fix_data_dir.sh main/data/trans_data
-steps/compute_cmvn_stats.sh main/data/trans_data $log_dir $mfccdir
+steps/compute_cmvn_stats.sh main/data/trans_data $log_dir tmp/$mfccdir
 utils/fix_data_dir.sh main/data/trans_data
 
 # Forced alignment: aligning data.
@@ -173,7 +178,6 @@ python3 $result_dir/splitAlignments.py $result_dir/final_ali.txt $result_dir || 
 
 # Combining prono and rom texts. (It also generate text_num.)
 bash main/local/make_rg_lexicon.sh || exit 1;
-
 
 # Generate Textgrid files and save it to the data directory.
 echo "Organizing the aligned data to textgrid format."

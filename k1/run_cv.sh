@@ -66,7 +66,7 @@ for turn in 1 2 3 4 5; do
 		echo Tracking the training procedure on: `date` | tee -a $logdir/$logfile.log
 		echo KALDI_ROOT: $kaldi | tee -a $logdir/$logfile.log
 		echo DATA_ROOT: $source | tee -a $logdir/$logfile.log
-		START=`date +%s`
+		INIT_START=`date +%s`; START=`date +%s`
 
 
 		echo ====================================================================== | tee -a $logdir/$logfile.log
@@ -116,6 +116,7 @@ for turn in 1 2 3 4 5; do
 
 	if [ $turn -gt 1 ]; then mkdir -p $logdir
 		START=`date +%s`
+		echo "$logfile"
 		echo ====================================================================== | tee $logdir/$logfile.log
 	else
 		echo ====================================================================== | tee -a $logdir/$logfile.log; fi
@@ -779,7 +780,7 @@ mv $curdir/conf $curdir/report
 
 echo "All training procedure has been finished successfully." | tee -a $logdir/$logfile.log
 FINISH=`date +%s`
-taken_cv=`local/track_time.sh $START $FINISH`
+taken_cv=`local/track_time.sh $INIT_START $FINISH`
 echo 5 CV_TRAINING TOTAL DURATION: $taken_cv sec | tee -a $logdir/$logfile.log
 
 

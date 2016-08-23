@@ -73,21 +73,20 @@ with open(text_num,'r') as tn:
     tn_list=tn.readlines()
 # Adding SIL numbers.
 tn_hold=[]
+ct=0
 for interm in whole_list:
     tn_count=0
     for interm_list in interm:
         if re.findall('SIL',interm_list) != []:
             tn_count +=1
-    tn_hold.append(str(tn_count))
-
+    tn_hold.append(str(tn_count + int(tn_list[ct])))
+    ct += 1
 
 
 # Writing textgrid.
 rg_rem = 0
 for piece in range(len(file_name)):
     new_name=re.sub('txt','TextGrid',file_name[piece])
-    # text numbers
-    tn_box=str(int(tn_list[piece][0]) + int(tn_hold[piece]))
     with open('/'.join([save_dir,new_name]),'w') as tg:
         tg.write('File type = "ooTextFile short"\n')
         tg.write('"TextGrid"\n\n')
@@ -133,18 +132,31 @@ for piece in range(len(file_name)):
         # Word tier.
         tg.write('\n"IntervalTier"\n')
         tg.write('"Word"\n' + '0\n' + str(end_time) + '\n')
-        tg.write(tn_box + '\n')
+        tg.write(tn_hold[piece] + '\n')
         rgc=0
         time=[]
         for down in range(len(mid)):
             rgc +=1
-            # First line.
+            # First line. The reason for separating first line from rest is to mark 0 at the
+            # beginning. If the first line is marked with 0.00 or 0.0 instead of 0 itself,
+            # it causes error.
             if rgc == 1:
                 if re.findall('[<>]', mid[down].split('\t')[-5]) != []:
                     tg.write('0' + '\n' + "{0:.2f}".format(float(mid[down].split('\t')[-1])) + '\n')
                     tg.write('"' + mid[down].split('\t')[-5] + '"' + '\n')
-                else:
-                    tg.write('0' + '\n')
+                elif re.findall('[<>]', mid[down].split('\t')[-5]) == [] and rgc - 1 == down:
+                    str_len = len(rg_list[rg_rem]) - 2
+                    for i in range(str_len):
+                        # Time marking
+                        if rg_list[rg_rem][2 + i] == mid[rgc - 1].split('\t')[-5][0:2]:
+                            time.append(mid[rgc - 1].split('\t')[-2])
+                            time.append(mid[rgc - 1].split('\t')[-1])
+                            rgc += 1
+                    tg.write('0' + '\n' + "{0:.2f}".format(float(time[-1])) + '\n')
+                    tg.write('"' + rg_list[rg_rem][int(word_opt)] + '"' + '\n')
+                    rg_rem += 1
+                    rgc -= 1
+                    time = []
             # Last line
             elif down == len(mid) and rgc - 1 == len(mid):
                 tg.write("{0:.2f}".format(float(mid[down].split('\t')[-2])) + '\n' + str(end_time) + '\n')

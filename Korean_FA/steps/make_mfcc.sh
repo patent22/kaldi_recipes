@@ -8,7 +8,7 @@
 # Begin configuration section.
 nj=4
 cmd=run.pl
-mfcc_config=conf/mfcc.conf
+mfcc_config=main/conf/mfcc.conf
 compress=true
 # End configuration section.
 

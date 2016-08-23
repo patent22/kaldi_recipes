@@ -1,8 +1,8 @@
 # Korean_FA: Forced-Alginer  
-                                        Hyungwon Yang
-                                        Jaekoo Kang
-                                        2016.08.14
-                                        EMCS lab    
+                                                    Hyungwon Yang
+                                                    Jaekoo Kang
+                                                    2016.08.14
+                                                    EMCS lab    
 
 ### MacOSX and Linux
 ----------------------------------------------------------------
@@ -29,11 +29,11 @@ Python 3.5
  - On Ubuntu
 
 
-### MATERIALS
+### MATERIALS (Data Preparation)
 1. **Wave files.** (sampling rate 16000)
  - If the sampling rate of wave files is not set to 16000 it will be changed automatically.
 2. **Text files.**
- - Name your text files with numbers such as name01.txt, name02.txt, etc.
+ - Name your text files with ordered numbers such as name01.txt, name02.txt, etc.
  - Do not add any symbols or marks such as period, comma in the text file which contains one full sentence. (period, semicolon, etc)
  - Since this is Korean Forced-Aligner, sentences should be written in Korean letters and less spaces between characters are strongly recommended.
     - For example, write the sentence as the speaker read, not followed by any grammatical or spacing words rule.
@@ -45,9 +45,10 @@ Python 3.5
 ### DIRECTION
 
 1. Nevigate to 'Korean_FA' directory.
-2. Open force_align.sh and reassign a kaldi directory variable.
+2. Open force_align.sh and reassign a kaldi directory path variable.
+- Change 'kaldi' name variable. (initial setting: kaldi=/home/kaldi)
 3. Run the code. 
- - ex) $ force_align.sh dnn $PWD/example/readspeech
+ - ex) $ force_align.sh dnn ./example/readspeech
  -     $ (Main code: force_align.sh) (Model option) (Abosolute path to the data directory)
  - Choose different models(dnn, gmm, sgmm_mmi) and check the different results.
 5. Textgrid will be saved into data directoy.
