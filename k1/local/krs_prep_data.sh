@@ -1,5 +1,7 @@
 #!/bin/bash
-# EMCS Labs
+# 														EMCS Labs
+# 														Hyungwon Yang
+# 														hyung8758@gmail.com
 
 # This scripts generate prerequsite datasets.
 # text, utt2spk, wav.scp, segments.
@@ -9,20 +11,24 @@
 # ./local/dict => lexicon.txt
 # ./wavtxt => raw wav와 txt 파일
 
-if [ $# -ne 2 ]; then
-   echo "Two arguments should be assigned." 
+if [ $# -ne 3 ]; then
+   echo "Three arguments should be assigned." 
    echo "1. Source data."
-   echo "2. The folder generated files saved." && exit 1
+   echo "2. Current directory."
+   echo "3. The folder generated files saved." && exit 1
 fi
 
 # Corpus directory: ./krs_data
 data=$1
+# Current directory.
+curdir=$2
 # Result directory: ./data/local/data
-save=$2
+save=$3
 
-echo ========================================================================
-echo "                              NOTICE                                  "
+echo ======================================================================
+echo "                              NOTICE                                "
 echo ""
+echo "krs_prep_data.sh: Generate text, utt2spk, wav.scp, and segments."
 echo "CURRENT SHELL: $0"
 echo -e "INPUT ARGUMENTS:\n$@"
 
@@ -30,7 +36,7 @@ echo -e "INPUT ARGUMENTS:\n$@"
 if [ ! -d $data ]; then
 	echo "Corpus data is not present." && exit 1
 	echo ""
-	echo ========================================================================
+	echo ======================================================================
 fi
 for check in text utt2spk spk2utt wav.scp segments glm stm ; do
 	if [ -f $save/$check ] && [ ! -z $save/$check ]; then
@@ -38,7 +44,7 @@ for check in text utt2spk spk2utt wav.scp segments glm stm ; do
 	fi
 done
 echo ""
-echo ========================================================================
+echo ======================================================================
 
 # text
 if [ ! -d $save ]; then
@@ -54,7 +60,7 @@ if [ -f $save/text ] && [ ! -z $save/text ]; then
 
 	for txt in `seq 1 $data_num`; do
 		data_name=`echo $data_list | cut -d' ' -f$txt`
-		snt_list=`ls $data/$data_name | grep TextGrid`
+		snt_list=`ls $data/$data_name | grep .TextGrid`
 		snt_num=`echo $snt_list | wc -w`
 
 		for snt in `seq 1 $snt_num`; do
@@ -62,7 +68,7 @@ if [ -f $save/text ] && [ ! -z $save/text ]; then
 			tmp1=`echo $get_snt | sed 's/\.TextGrid//g'`
 			tmp2=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | grep '"' | egrep -v "sil|sp" | sed "s/\"//" | sed "s/\"//" | \
 			tr -s '\n' ' '`
-			echo "$tmp1 $tmp2" >> $save/text
+			echo "$tmp1 $tmp2" >> $save/text || exit 1
 		done
 	done
 	sed '1d' $save/text > $save/tmp; cat $save/tmp > $save/text; rm $save/tmp
@@ -73,7 +79,7 @@ else
 
 	for txt in `seq 1 $data_num`; do
 		data_name=`echo $data_list | cut -d' ' -f$txt`
-		snt_list=`ls $data/$data_name | grep TextGrid`
+		snt_list=`ls $data/$data_name | grep .TextGrid`
 		snt_num=`echo $snt_list | wc -w`
 
 		for snt in `seq 1 $snt_num`; do
@@ -81,14 +87,14 @@ else
 			tmp1=`echo $get_snt | sed 's/\.TextGrid//g'`
 			tmp2=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | grep '"' | egrep -v "sil|sp" | sed "s/\"//" | sed "s/\"//" | \
 			tr -s '\n' ' '`
-			echo "$tmp1 $tmp2" >> $save/text
+			echo "$tmp1 $tmp2" >> $save/text || exit 1
 		done
 	done
 fi
 echo "text file was generated."
 
 # textraw
-cat $save/text | awk '{$1=""; print $0}' $save/text > $save/textraw
+cat $save/text | awk '{$1=""; print $0}' $save/text | sed 's/^ *//' > $save/textraw || exit 1
 echo "textraw file was generated."
 
 # utt2spk
@@ -101,13 +107,13 @@ if [ -f $save/utt2spk ] && [ ! -z $save/utt2spk ]; then
 
 	for txt in `seq 1 $data_num`; do
 		data_name=`echo $data_list | cut -d' ' -f$txt`
-		snt_list=`ls $data/$data_name | grep TextGrid`
+		snt_list=`ls $data/$data_name | grep .TextGrid`
 		snt_num=`echo $snt_list | wc -w`
 
 		for snt in `seq 1 $snt_num`; do
 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
 			tmp1=`echo $get_snt | sed 's/\.TextGrid//g'`
-			echo "$tmp1 $data_name" >> $save/utt2spk
+			echo "$tmp1 $data_name" >> $save/utt2spk || exit 1
 		done
 	done
 	sed '1d' $save/utt2spk > $save/tmp; cat $save/tmp > $save/utt2spk; rm $save/tmp
@@ -118,19 +124,20 @@ else
 
 	for txt in `seq 1 $data_num`; do
 		data_name=`echo $data_list | cut -d' ' -f$txt`
-		snt_list=`ls $data/$data_name | grep TextGrid`
+		snt_list=`ls $data/$data_name | grep .TextGrid`
 		snt_num=`echo $snt_list | wc -w`
 
 		for snt in `seq 1 $snt_num`; do
+
 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
 			tmp1=`echo $get_snt | sed 's/\.TextGrid//g'`
-			echo "$tmp1 $data_name" >> $save/utt2spk
+			echo "$tmp1 $data_name" >> $save/utt2spk || exit 1
 		done
 	done
 fi
 
 # Make a spk2utt file.
-utils/utt2spk_to_spk2utt.pl $save/utt2spk > $save/spk2utt
+$curdir/utils/utt2spk_to_spk2utt.pl $save/utt2spk > $save/spk2utt || exit 1
 echo "utt2spk and spk2utt files were generated."
 
 # wav.scp
@@ -143,12 +150,14 @@ if [ -f $save/wav.scp ] && [ ! -z $save/wav.scp ]; then
 
 	for txt in `seq 1 $data_num`; do
 		data_name=`echo $data_list | cut -d' ' -f$txt`
-		snt_list=`ls $data/$data_name | grep .wav`
+		snt_list=`ls $data/$data_name | grep .TextGrid`
 		snt_num=`echo $snt_list | wc -w`
 
 		for snt in `seq 1 $snt_num`; do
 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
-			echo "$get_snt $data/$data_name/$get_snt" >> $save/wav.scp
+			wav_snt=`echo $get_snt | sed 's/.TextGrid//g'`
+			fix_snt=`echo $get_snt` | sed 's/.TextGrid/.wav/g'`
+			echo "$wav_snt $data/$data_name/$fix_snt" >> $save/wav.scp || exit 1
 		done
 	done
 	sed '1d' $save/wav.scp > $save/tmp; cat $save/tmp > $save/wav.scp; rm $save/tmp
@@ -159,12 +168,14 @@ else
 
 	for txt in `seq 1 $data_num`; do
 		data_name=`echo $data_list | cut -d' ' -f$txt`
-		snt_list=`ls $data/$data_name | grep .wav`
+		snt_list=`ls $data/$data_name | grep .TextGrid`
 		snt_num=`echo $snt_list | wc -w`
 
 		for snt in `seq 1 $snt_num`; do
 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
-			echo "$get_snt $data/$data_name/$get_snt" >> $save/wav.scp
+			wav_snt=`echo $get_snt | sed 's/.TextGrid//g'`
+			fix_snt=`echo $get_snt` | sed 's/.TextGrid/.wav/g'`
+			echo "$wav_snt $data/$data_name/$fix_snt" >> $save/wav.scp || exit 1
 		done
 	done
 fi
@@ -187,9 +198,10 @@ if [ -f $save/segments ] && [ ! -z $save/segments ]; then
 
 		for snt in `seq 1 $snt_num`; do
 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
+			wav_snt=`echo $get_snt | sed 's/.TextGrid//g'`
 			time1=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | sed -n '1p'`
 			time2=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | sed -n '2p'`
-			echo "$get_snt $get_snt $time1 $time2" >> $save/segments
+			echo "$wav_snt $wav_snt $time1 $time2" >> $save/segments || exit 1
 		done
 	done
 	sed '1d' $save/segments > $save/tmp; cat $save/tmp > $save/segments; rm $save/tmp
@@ -205,10 +217,12 @@ else
 
 		for snt in `seq 1 $snt_num`; do
 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
+			wav_snt=`echo $get_snt | sed 's/.TextGrid//g'`
 			time1=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | sed -n '1p'`
 			time2=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | sed -n '2p'`
-			echo "$get_snt $get_snt $time1 $time2" >> $save/segments
+			echo "$wav_snt $wav_snt $time1 $time2" >> $save/segments || exit 1
 		done
 	done
 fi
 echo "segments file was generated."
+

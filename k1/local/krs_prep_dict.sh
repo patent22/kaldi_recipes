@@ -1,25 +1,30 @@
 #!/bin/bash
-# EMCS Labs
+# 														EMCS Labs
+# 														Hyungwon Yang
+# 														hyung8758@gmail.com
 
 # This scripts generate dictionray related parts.
 # lexicon, lexiconp, silence, nonsilence, optional_silence, extra_questions
 
 
-if [ $# -ne 2 ]; then
-   echo "Three arguments should be assigned." 
+if [ $# -ne 3 ]; then
+   echo "Two arguments should be assigned." 
    echo "1. Source data."
-   echo "2. text file folder" 
-   echo "3. The folder generated files saved." && exit 1
+   echo "2. Current direcotry."
+   echo "2. The folder generated files saved." && exit 1
 fi
 
 # corpus directory: ./krs_data
 data=$1
+# Current directory.
+curdir=$2
 # savining directory: ./data/local/dict
-save=$2
+save=$3
 
-echo ========================================================================
-echo "                              NOTICE                                  "
+echo ======================================================================
+echo "                              NOTICE                                "
 echo ""
+echo -e "krs_prep_dict: Generate lexicon, lexiconp, silence, nonsilence, \n\toptional_silence, and extra_questions."
 echo "CURRENT SHELL: $0"
 echo -e "INPUT ARGUMENTS:\n$@"
 
@@ -27,7 +32,7 @@ echo -e "INPUT ARGUMENTS:\n$@"
 if [ ! -d $data ]; then
 	echo "Corpus data is not present." && exit 1
 	echo ""
-	echo ========================================================================
+	echo ======================================================================
 fi
 for check in lexicon.txt lexiconp.txt silence.txt nonsilence.txt optional_silence.txt extra_questions.txt; do
 	if [ -f $save/$check ] && [ ! -z $save/$check ]; then
@@ -35,7 +40,7 @@ for check in lexicon.txt lexiconp.txt silence.txt nonsilence.txt optional_silenc
 	fi
 done
 echo ""
-echo ========================================================================
+echo ======================================================================
 
 # lexicon.txt and lexiconp.txt
 # This file will be written from 'text' file generated from krs_prep_data.sh
@@ -45,7 +50,7 @@ if [ ! -d $save ]; then
 fi
 # Just write any name as a saving argument. then it will generate two .txt files.
 # ex) $save/egsname; then it will generate > egsname.txt and egsnamep.txt 
-python ./local/text2lexicon.py $data $save/lexicon
+python $curdir/local/text2lexicon.py $data $save/lexicon
 echo "lexicon.txt and lexiconp.txt files were generated."
 
 # silence.
