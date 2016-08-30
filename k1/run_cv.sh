@@ -26,6 +26,7 @@ logdir=$curdir/log/tmp_cv_log
 prep_data=data4cv
 prep_cv_data=cv_data
 # The number of splited dataset in 5 cv folders.
+# Choose among 3 options: 5, 20, and 115.
 split_num=5
 # Data features.
 data_feat=mfcc
@@ -94,7 +95,7 @@ for turn in 1 2 3 4 5; do
 		# Prepare datasets for training. (including  testing.)
 		echo "Distributing datasets into 5 parts..." | tee -a $logdir/$logfile.log
 		local/krs_prep_cv.sh \
-			$curdir/data4cv \
+			$curdir/$prep_data \
 			$curdir/$prep_cv_data
 
 		end0=`date +%s`; log_e0=`date | awk '{print $4}'`
@@ -174,7 +175,7 @@ for turn in 1 2 3 4 5; do
 			$main_dir/data/local/dict \
 			"<UNK>" \
 			$main_dir/data/local/lang \
-			$main_dir/data/lang
+			$main_dir/data/lang || exit 1
 
 		# Set ngram-count folder.
 		if [[ -z $(find $KALDI_ROOT/tools/srilm/bin -name ngram-count) ]]; then
@@ -216,13 +217,13 @@ for turn in 1 2 3 4 5; do
 			 steps/make_mfcc.sh \
 			 	$main_dir/data/$set \
 			 	$main_dir/exp/make_mfcc/$set \
-			 	$mfccdir
+			 	$mfccdir || exit 1
 		# Compute cmvn. (This steps should be processed right after mfcc features are extracted.)
 			 echo "Computing CMVN on $set data MFCC..." | tee -a $logdir/$logfile.log 
 			 steps/compute_cmvn_stats.sh \
 			 	$main_dir/data/$set \
 			 	$main_dir/exp/make_mfcc/$set \
-			 	$mfccdir
+			 	$mfccdir || exit 1
 		done
 
 		# ### PLP ###

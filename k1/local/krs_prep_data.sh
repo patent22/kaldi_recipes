@@ -60,7 +60,7 @@ if [ -f $save/text ] && [ ! -z $save/text ]; then
 
 	for txt in `seq 1 $data_num`; do
 		data_name=`echo $data_list | cut -d' ' -f$txt`
-		snt_list=`ls $data/$data_name | grep TextGrid`
+		snt_list=`ls $data/$data_name | grep .TextGrid`
 		snt_num=`echo $snt_list | wc -w`
 
 		for snt in `seq 1 $snt_num`; do
@@ -79,7 +79,7 @@ else
 
 	for txt in `seq 1 $data_num`; do
 		data_name=`echo $data_list | cut -d' ' -f$txt`
-		snt_list=`ls $data/$data_name | grep TextGrid`
+		snt_list=`ls $data/$data_name | grep .TextGrid`
 		snt_num=`echo $snt_list | wc -w`
 
 		for snt in `seq 1 $snt_num`; do
@@ -107,7 +107,7 @@ if [ -f $save/utt2spk ] && [ ! -z $save/utt2spk ]; then
 
 	for txt in `seq 1 $data_num`; do
 		data_name=`echo $data_list | cut -d' ' -f$txt`
-		snt_list=`ls $data/$data_name | grep TextGrid`
+		snt_list=`ls $data/$data_name | grep .TextGrid`
 		snt_num=`echo $snt_list | wc -w`
 
 		for snt in `seq 1 $snt_num`; do
@@ -124,7 +124,7 @@ else
 
 	for txt in `seq 1 $data_num`; do
 		data_name=`echo $data_list | cut -d' ' -f$txt`
-		snt_list=`ls $data/$data_name | grep TextGrid`
+		snt_list=`ls $data/$data_name | grep .TextGrid`
 		snt_num=`echo $snt_list | wc -w`
 
 		for snt in `seq 1 $snt_num`; do
@@ -150,13 +150,14 @@ if [ -f $save/wav.scp ] && [ ! -z $save/wav.scp ]; then
 
 	for txt in `seq 1 $data_num`; do
 		data_name=`echo $data_list | cut -d' ' -f$txt`
-		snt_list=`ls $data/$data_name | grep .wav`
+		snt_list=`ls $data/$data_name | grep .TextGrid`
 		snt_num=`echo $snt_list | wc -w`
 
 		for snt in `seq 1 $snt_num`; do
 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
-			wav_snt=`echo $get_snt | sed 's/.wav//g'`
-			echo "$wav_snt $data/$data_name/$get_snt" >> $save/wav.scp || exit 1
+			wav_snt=`echo $get_snt | sed 's/.TextGrid//g'`
+			fix_snt=`echo $get_snt` | sed 's/.TextGrid/.wav/g'`
+			echo "$wav_snt $data/$data_name/$fix_snt" >> $save/wav.scp || exit 1
 		done
 	done
 	sed '1d' $save/wav.scp > $save/tmp; cat $save/tmp > $save/wav.scp; rm $save/tmp
@@ -167,13 +168,14 @@ else
 
 	for txt in `seq 1 $data_num`; do
 		data_name=`echo $data_list | cut -d' ' -f$txt`
-		snt_list=`ls $data/$data_name | grep .wav`
+		snt_list=`ls $data/$data_name | grep .TextGrid`
 		snt_num=`echo $snt_list | wc -w`
 
 		for snt in `seq 1 $snt_num`; do
 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
-			wav_snt=`echo $get_snt | sed 's/.wav//g'`
-			echo "$wav_snt $data/$data_name/$get_snt" >> $save/wav.scp || exit 1
+			wav_snt=`echo $get_snt | sed 's/.TextGrid//g'`
+			fix_snt=`echo $get_snt` | sed 's/.TextGrid/.wav/g'`
+			echo "$wav_snt $data/$data_name/$fix_snt" >> $save/wav.scp || exit 1
 		done
 	done
 fi

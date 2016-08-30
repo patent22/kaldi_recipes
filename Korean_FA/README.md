@@ -6,8 +6,8 @@
 
 ### MacOSX and Linux
 ----------------------------------------------------------------
-Mac OSX (El Capitan 10.11.6) : Tested successfully.
-Linux (Ubuntu 14.04) : Tested successfully.
+Mac OSX (El Capitan 10.11.6): Stable.
+Linux (Ubuntu 14.04): Stable.
 
 Bash
 Python 3.5
@@ -25,7 +25,7 @@ Python 3.5
 2. **Install Sox, xlrd**
  -  On mac
     - $ brew install sox
-    - $ pip3 install xlrd (Make sure to install xlrd into python3 library not in python2. If you use anaconda then you have to install in there. Otherwise, install it into proper directory.)
+    - $ pip3 install xlrd (Make sure to install xlrd into python3 library not in python2. If you use anaconda then you have to install it in there. Otherwise, install it into a proper directory.)
  - On Ubuntu
 
 
@@ -45,22 +45,25 @@ Python 3.5
 ### DIRECTION
 
 1. Nevigate to 'Korean_FA' directory.
-2. Open force_align.sh and reassign a kaldi directory path variable.
+2. Open forced_align.sh and reassign a kaldi directory path variable.
 - Change 'kaldi' name variable. (initial setting: kaldi=/home/kaldi)
 3. Run the code. 
- - ex) $ force_align.sh dnn ./example/readspeech
- -     $ (Main code: force_align.sh) (Model option) (Abosolute path to the data directory)
+ - ex) $ forced_align.sh dnn ./example/readspeech
+ -     $ (Main code: forced_align.sh) (Model option) (Path to the data directory)
  - Choose different models(dnn, gmm, sgmm_mmi) and check the different results.
 5. Textgrid will be saved into data directoy.
 
 ### CONTACTS
 ---
+Please report bugs or provide any recommendation to us through the following email addresses.
 
-Hosung Nam / hnam@korea.ac.kr
 
-Jaekoo Kang / Jaekoo.jk@gmail.com
+(Student) Hyungwon Yang / hyung8758@gmail.com
 
-Hyungwon Yang / hyung8758@gmail.com
+(Student) Jaekoo Kang / Jaekoo.jk@gmail.com
+
+(Advisor) Hosung Nam / hnam@korea.ac.kr
+
 
 
 

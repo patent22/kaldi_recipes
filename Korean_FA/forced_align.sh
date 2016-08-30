@@ -50,7 +50,7 @@ fa_model=$1
 if [ $fa_model == "dnn" ] || [ $fa_model == "gmm" ] || [ $fa_model == "sgmm_mmi" ]; then
 	echo "FA model option: $fa_model"
 else
-	echo "Model option is incorrect. Please choose among 'dnn', 'sgmm', or 'sgmm_mmi'." && exit 1
+	echo "Model option is incorrect. Please choose among 'dnn', 'gmm', or 'sgmm_mmi'." && exit 1
 fi
 # Folder directory that contains wav and text files.
 tmp_data_dir=$2
@@ -101,7 +101,7 @@ paste -d'\n' tmp/prono/new_lexicon model/lexicon.txt | sort | uniq | sed '/^\s*$
 bash main/local/prepare_new_lang.sh $dict_dir $lang_dir main/data/trans_data "<UNK>"
 
 
-# # MFCC default setting.
+# MFCC default setting.
 echo "Extracting the features from the input data..."
 mfccdir=mfcc
 cmd="utils/run.pl"
