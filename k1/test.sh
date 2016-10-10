@@ -2,75 +2,75 @@
 
 
 
-kaldi=/Users/hyungwonyang/kaldi
-# Current directory
-curdir=$PWD
-# Model directory ./tri3
-fa_model=gmm
-# lexicon directory
-lexcion_dir=lang
-# FA data directory
-data_dir=example_new
-# align data directory
-ali_dir=fa_dir
-# log directory
-mkdir -p $curdir/tmp/log
-# Number of jobs(just fix it to one)
-nj=1
+# kaldi=/Users/hyungwonyang/kaldi
+# # Current directory
+# curdir=$PWD
+# # Model directory ./tri3
+# fa_model=gmm
+# # lexicon directory
+# lexcion_dir=lang
+# # FA data directory
+# data_dir=example_new
+# # align data directory
+# ali_dir=fa_dir
+# # log directory
+# mkdir -p $curdir/tmp/log
+# # Number of jobs(just fix it to one)
+# nj=1
 
-. main/local/path.sh
-# Check codes and run path.sh.
-# if [ ! -f path.sh ]; then
-# 	main/local/make_path_fa.sh $kaldi
-# 	source path.sh
+# . main/local/path.sh
+# # Check codes and run path.sh.
+# # if [ ! -f path.sh ]; then
+# # 	main/local/make_path_fa.sh $kaldi
+# # 	source path.sh
+# # fi
+# # bash main/local/check_code.sh $kaldi
+
+# # Directory check.
+# if [ ! -d tmp ]; then
+# 	mkdir -p tmp
 # fi
-# bash main/local/check_code.sh $kaldi
 
-# Directory check.
-if [ ! -d tmp ]; then
-	mkdir -p tmp
-fi
+# # Sound data preprocessing.
+# echo "preprocessing the input data..."  
+# python3 main/local/fa_prep_data.py $curdir/$data_dir $curdir/main/data/trans_data || exit 1
+# utils/utt2spk_to_spk2utt.pl main/data/trans_data/utt2spk > main/data/trans_data/spk2utt 
 
-# Sound data preprocessing.
-echo "preprocessing the input data..."  
-python3 main/local/fa_prep_data.py $curdir/$data_dir $curdir/main/data/trans_data || exit 1
-utils/utt2spk_to_spk2utt.pl main/data/trans_data/utt2spk > main/data/trans_data/spk2utt 
-
-# G2P part.
+# # G2P part.
 
 
-# MFCC default setting.
-echo "Extracting the features from the input data..."
-mfccdir=mfcc
-train_cmd="utils/run.pl"
-decode_cmd="utils/run.pl"
-freq_set=16000
+# # MFCC default setting.
+# echo "Extracting the features from the input data..."
+# mfccdir=mfcc
+# train_cmd="utils/run.pl"
+# decode_cmd="utils/run.pl"
+# freq_set=16000
 
-# wav file sanitiy check.
-wav_list=`ls $data_dir | grep ".wav"`
-for wav in $wav_list; do
-	wav_ch=`sox --i $data_dir/$wav | grep "Channels" | awk '{print $3}'`
-	if [ $wav_ch -ne 1 ]; then
-		echo "$wav chanel changed"
-		sox $data_dir/$wav -c 1 $data_dir/$wav avg -l; fi
-	wav_sr=`sox --i $data_dir/$wav | grep "Sample Rate" | awk '{print $4}'`
-	if [ $wav_sr -ne 16000 ]; then
-		echo "$wav sampling rate changed"
-		sox $data_dir/$wav -r 16000 $data_dir/tmp.wav
-		mv $data_dir/tmp.wav $data_dir/$wav
-		rm $data_dir/tmp.wav ;fi
+# # wav file sanitiy check.
+# wav_list=`ls $data_dir | grep ".wav"`
+# for wav in $wav_list; do
+# 	wav_ch=`sox --i $data_dir/$wav | grep "Channels" | awk '{print $3}'`
+# 	if [ $wav_ch -ne 1 ]; then
+# 		echo "$wav chanel changed"
+# 		sox $data_dir/$wav -c 1 $data_dir/$wav avg -l; fi
+# 	wav_sr=`sox --i $data_dir/$wav | grep "Sample Rate" | awk '{print $4}'`
+# 	if [ $wav_sr -ne 16000 ]; then
+# 		echo "$wav sampling rate changed"
+# 		sox $data_dir/$wav -r 16000 $data_dir/tmp.wav
+# 		mv $data_dir/tmp.wav $data_dir/$wav
+# 		rm $data_dir/tmp.wav ;fi
+# done
+
+
+
+opt_val1=(15 15 20 20 25 25)
+opt_val2=(5 10 5 10 5 10)
+
+num_param=`echo ${opt_val1[@]} | wc -w`
+
+for ting in `seq 0 $((num_param-1))`; do
+	echo ${opt_val1[i]} ${opt_val2[i]}
 done
-
-
-
-
-
-
-
-
-
-
-
 
 
 

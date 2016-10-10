@@ -279,7 +279,7 @@ for turn in 1 2 3 4 5; do
 			$mono_train_opt \
 			$main_dir/data/train \
 			$main_dir/data/lang \
-			$main_dir/exp/mono || exit1
+			$main_dir/exp/mono || exit 1
 		
 		# # Graph structuring.
 		# # make HCLG graph (optional! train과는 무관, 오직 decode만을 위해.)
@@ -355,7 +355,7 @@ for turn in 1 2 3 4 5; do
 			$main_dir/data/train \
 			$main_dir/data/lang \
 			$main_dir/exp/mono_ali \
-			$main_dir/exp/tri1 || exit1
+			$main_dir/exp/tri1 || exit 1
 
 		# Graph drawing.
 		echo "Generating delta+double-delta graph..." | tee -a $logdir/$logfile.log 
@@ -371,7 +371,7 @@ for turn in 1 2 3 4 5; do
 			$main_dir/data/train \
 			$main_dir/data/lang \
 			$main_dir/exp/tri1 \
-			$main_dir/exp/tri1_ali ||  exit1
+			$main_dir/exp/tri1_ali ||  exit 1
 
 		# Data decoding.
 		# echo "Decoding with delta+double-delta model..." | tee -a $logdir/$logfile.log 
@@ -419,7 +419,7 @@ for turn in 1 2 3 4 5; do
 			$main_dir/data/train \
 			$main_dir/data/lang \
 			$main_dir/exp/tri1_ali \
-			$main_dir/exp/tri2 ||  exit1
+			$main_dir/exp/tri2 ||  exit 1
 
 		# Graph drawing.
 		echo "Generating LDA+MLLT graph..." | tee -a $logdir/$logfile.log
@@ -435,7 +435,7 @@ for turn in 1 2 3 4 5; do
 			$main_dir/data/train \
 			$main_dir/data/lang \
 			$main_dir/exp/tri2 \
-			$main_dir/exp/tri2_ali ||  exit1
+			$main_dir/exp/tri2_ali ||  exit 1
 
 		# Data decoding.
 		# echo "Decoding with LDA+MLLT model..." | tee -a $logdir/$logfile.log
@@ -485,7 +485,7 @@ for turn in 1 2 3 4 5; do
 			$main_dir/data/train \
 			$main_dir/data/lang \
 			$main_dir/exp/tri2_ali \
-			$main_dir/exp/tri3 ||  exit1
+			$main_dir/exp/tri3 ||  exit 1
 
 		# Graph drawing.
 		echo "Generating LDA+MLLT+SAT graph..." | tee -a $logdir/$logfile.log
@@ -501,7 +501,7 @@ for turn in 1 2 3 4 5; do
 			$main_dir/data/train \
 			$main_dir/data/lang \
 			$main_dir/exp/tri3 \
-			$main_dir/exp/tri3_ali ||  exit1
+			$main_dir/exp/tri3_ali ||  exit 1
 
 		# Data decoding: train and test datasets.
 		echo "Decoding with Training LDA+MLLT+SAT model..." | tee -a $logdir/$logfile.log
@@ -557,7 +557,7 @@ for turn in 1 2 3 4 5; do
 			$main_dir/data/train \
 			$main_dir/data/lang \
 			$main_dir/exp/tri3_ali \
-			$main_dir/exp/ubm ||  exit1
+			$main_dir/exp/ubm ||  exit 1
 
 		# SGMM2 training.
 		echo "Training SGMM2..." | tee -a $logdir/$logfile.log
@@ -569,7 +569,7 @@ for turn in 1 2 3 4 5; do
 			$main_dir/data/lang \
 			$main_dir/exp/tri3_ali \
 			$main_dir/exp/ubm/final.ubm \
-			$main_dir/exp/sgmm ||  exit1
+			$main_dir/exp/sgmm ||  exit 1
 
 		# Graph drawing.
 		echo "Generating SGMM2 graph..." | tee -a $logdir/$logfile.log
@@ -585,7 +585,7 @@ for turn in 1 2 3 4 5; do
 			$main_dir/data/train \
 			$main_dir/data/lang \
 			$main_dir/exp/sgmm \
-			$main_dir/exp/sgmm_ali ||  exit1
+			$main_dir/exp/sgmm_ali ||  exit 1
 
 		Data decoding: train and test datasets.
 		echo "Decoding with SGMM2 model..." | tee -a $logdir/$logfile.log
@@ -644,7 +644,7 @@ for turn in 1 2 3 4 5; do
 			$main_dir/data/train \
 			$main_dir/data/lang \
 			$main_dir/exp/sgmm_ali \
-			$main_dir/exp/sgmm_denlats ||  exit1
+			$main_dir/exp/sgmm_denlats ||  exit 1
 		echo "Running train_mmi_sgmm2.sh..." | tee -a $logdir/$logfile.log
 		steps/train_mmi_sgmm2.sh \
 			$sgmmi_train_opt \
@@ -652,7 +652,7 @@ for turn in 1 2 3 4 5; do
 			$main_dir/data/lang \
 			$main_dir/exp/sgmm_ali \
 			$main_dir/exp/sgmm_denlats \
-			$main_dir/exp/sgmm_mmi ||  exit1
+			$main_dir/exp/sgmm_mmi ||  exit 1
 
 		# Data decoding: train and test datasets.
 		echo "Decoding with SGMM2+MMI model..." | tee -a $logdir/$logfile.log
@@ -696,7 +696,8 @@ for turn in 1 2 3 4 5; do
 		dnn1_train_opt=""
 		dnn1_train_decode_opt="--nj $train_nj --transform-dir $main_dir/exp/tri3/decode_train"
 		dnn1_test_decode_opt="--nj $test_nj --transform-dir $main_dir/exp/tri3/decode_test"
-		dnn_function="train_tanh_fast.sh"
+		#dnn_function="train_tanh_fast.sh"
+		dnn_function="train_multisplice_accel2.sh"
 
 		echo "DNN($dnn_function) trainig options: $dnn1_train_opt"					| tee -a $logdir/$logfile.log
 		echo "DNN($dnn_function) train-decoding options: $dnn1_train_decode_opt"	| tee -a $logdir/$logfile.log
@@ -710,10 +711,15 @@ for turn in 1 2 3 4 5; do
 			$main_dir/data/train \
 			$main_dir/data/lang \
 			$main_dir/exp/tri3_ali \
-			$main_dir/exp/tri4 ||  exit1
+			$main_dir/exp/tri4 ||  exit 1
 		
 		# train_multisplice_accel2.sh
-
+		# steps/nnet2/train_multisplice_accel2.sh \
+		# 	$dnn1_train_opt \
+		# 	$main_dir/data/train \
+		# 	$main_dir/data/lang \
+		# 	$main_dir/exp/tri3_ali \
+		# 	$main_dir/exp/tri4 ||  exit 1
 		# train_tdnn.sh
 
 		# Data decoding: train dataset.
