@@ -98,9 +98,9 @@ def graph2phone(graphs):
            's0', 'ss', 'oh', 'c0', 'cc', 'ch', 'kh', 'th', 'ph', 'hh']
     NUC = ['aa', 'qq', 'ya', 'yq', 'vv', 'ee', 'yv', 'ye', 'oo', 'wa',
            'wq', 'wo', 'yo', 'uu', 'wv', 'we', 'wi', 'yu', 'xx', 'xi', 'ii']
-    COD = ['', 'kf', 'kk', 'ks', 'nf', 'nc', 'nh', 'tf',
+    COD = ['', 'k0', 'kk', 'ks', 'nn', 'nc', 'nh', 't0',
            'll', 'lk', 'lm', 'lb', 'ls', 'lt', 'lp', 'lh',
-           'mf', 'pf', 'ps', 's0', 'ss', 'oh', 'c0', 'ch',
+           'mm', 'p0', 'ps', 's0', 'ss', 'oh', 'c0', 'ch',
            'kh', 'th', 'ph', 'hh']
 
     # pronunciation

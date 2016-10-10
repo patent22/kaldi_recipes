@@ -1,4 +1,4 @@
-# Korean_FA: Forced-Alginer  
+# Korean_FA: Korean Forced-Alginer  
                                                     Hyungwon Yang
                                                     Jaekoo Kang
                                                     2016.08.14
@@ -48,9 +48,8 @@ Python 3.5
 2. Open forced_align.sh and reassign a kaldi directory path variable.
 - Change 'kaldi' name variable. (initial setting: kaldi=/home/kaldi)
 3. Run the code. 
- - ex) $ forced_align.sh dnn ./example/readspeech
- -     $ (Main code: forced_align.sh) (Model option) (Path to the data directory)
- - Choose different models(dnn, gmm, sgmm_mmi) and check the different results.
+ - ex) $ forced_align.sh ./example/readspeech
+ -     $ (Main code: forced_align.sh) (Path to the data directory)
 5. Textgrid will be saved into data directoy.
 
 ### CONTACTS
@@ -64,7 +63,9 @@ Please report bugs or provide any recommendation to us through the following ema
 
 (Advisor) Hosung Nam / hnam@korea.ac.kr
 
-
-
+### VERSION HISTORY
+- v.1.0(08/27/16): gmm, sgmm_mmi, and dnn based Korean FA is released.
+- v.1.1(09/06/16): g2p updated. monophone model is added.
+- v.1.2(10.10.16): phoneset is simplified. Choosing model such as dnn or gmm for forced alignment is no longer available. 
 
 

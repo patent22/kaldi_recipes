@@ -15,8 +15,8 @@
 kaldi=/Users/hyungwonyang/kaldi
 # Word tier language selection. 0: English graphemes 1: Korean
 word_opt=1
-# Model directory ./tri3
-fa_model=sgmm_mmi
+# Model directory
+fa_model=model4fa
 # lexicon directory
 dict_dir=main/data/local/dict
 # language directory
@@ -39,21 +39,13 @@ if [ ! -d $kaldi ]; then
 fi
 
 
-if [ $# -ne 2 ]; then
-   echo "Two arguments should be assigned." 
-   echo "1. Model option: gmm, dnn(recommend), sgmm_mmi ."
-   echo "2. Sound and text file saved directory." && exit 1
+if [ $# -ne 1 ]; then
+   echo "Wrong option arguments." 
+   echo "Sound and text file saved directory should be provided." && exit 1
 fi
 
-# Model selection. dnn, gmm, sgmm_mmi
-fa_model=$1
-if [ $fa_model == "dnn" ] || [ $fa_model == "gmm" ] || [ $fa_model == "sgmm_mmi" ]; then
-	echo "FA model option: $fa_model"
-else
-	echo "Model option is incorrect. Please choose among 'dnn', 'gmm', or 'sgmm_mmi'." && exit 1
-fi
 # Folder directory that contains wav and text files.
-tmp_data_dir=$2
+tmp_data_dir=$1
 # Check data_dir
 alias realpath="perl -MCwd -e 'print Cwd::realpath(\$ARGV[0]),qq<\n>'"
 data_dir=`realpath $tmp_data_dir`
@@ -72,7 +64,7 @@ source path.sh $kaldi
 # Sound data preprocessing.
 echo "preprocessing the input data..."  
 python3 main/local/check_text.py $data_dir || exit 1
-python3 main/local/fa_prep_data.py $data_dir main/data/trans_data || exit 1
+python3 main/local/fa_prep_data.py $data_dir main/data/trans_data >/dev/null || exit 1
 utils/utt2spk_to_spk2utt.pl main/data/trans_data/utt2spk > main/data/trans_data/spk2utt 
 
 # Romanize the text file.
@@ -98,7 +90,7 @@ done
 
 # Language modeling.
 paste -d'\n' tmp/prono/new_lexicon model/lexicon.txt | sort | uniq | sed '/^\s*$/d' > $dict_dir/lexicon.txt
-bash main/local/prepare_new_lang.sh $dict_dir $lang_dir main/data/trans_data "<UNK>"
+bash main/local/prepare_new_lang.sh $dict_dir $lang_dir main/data/trans_data "<UNK>" >/dev/null
 
 
 # MFCC default setting.
@@ -121,34 +113,18 @@ for wav in $wav_list; do
 done
 
 # Extracting MFCC features and calculate CMVN.
-steps/make_mfcc.sh --nj $mfcc_nj --cmd "$cmd" main/data/trans_data $log_dir tmp/$mfccdir
-utils/fix_data_dir.sh main/data/trans_data
-steps/compute_cmvn_stats.sh main/data/trans_data $log_dir tmp/$mfccdir
-utils/fix_data_dir.sh main/data/trans_data
+steps/make_mfcc.sh --nj $mfcc_nj --cmd "$cmd" main/data/trans_data $log_dir tmp/$mfccdir >/dev/null
+utils/fix_data_dir.sh main/data/trans_data >/dev/null
+steps/compute_cmvn_stats.sh main/data/trans_data $log_dir tmp/$mfccdir >/dev/null
+utils/fix_data_dir.sh main/data/trans_data >/dev/null
 
 # Forced alignment: aligning data.
-if [ $fa_model == "gmm" ]; then
-	echo "$fa_model : Force_aligning the input data..."
-	steps/align_si.sh --nj $align_nj --cmd "$cmd" \
-						main/data/trans_data \
-						$lang_dir \
-						model/$fa_model \
-						tmp/model_ali || exit 1;
-elif [ $fa_model == "dnn" ]; then
-	echo "$fa_model : Force_aligning the input data..."
-	steps/nnet2/align.sh --nj $align_nj --cmd "$cmd" \
-						main/data/trans_data \
-						$lang_dir \
-						model/$fa_model \
-						tmp/model_ali ||  exit 1;
-elif [ $fa_model == "sgmm_mmi" ]; then
-	echo "$fa_model : Force_aligning the input data..."
-	steps/align_sgmm2.sh --nj $align_nj --cmd "$cmd" \
-						main/data/trans_data \
-						$lang_dir \
-						model/$fa_model \
-						tmp/model_ali ||  exit 1;						
-fi
+echo "Force_aligning the input data..."
+steps/align_si.sh --nj $align_nj --cmd "$cmd" \
+					main/data/trans_data \
+					$lang_dir \
+					model/$fa_model \
+					tmp/model_ali >/dev/null ||  exit 1;
 
 # CTM file conversion.
 
@@ -170,14 +146,14 @@ echo "Reconstructing the alinged data..."
 python3 $result_dir/id2phone.py  $result_dir/phones.txt \
 								$result_dir/segments \
 								$result_dir/merged_ali.txt \
-								$result_dir/final_ali.txt || exit 1;
+								$result_dir/final_ali.txt >/dev/null || exit 1;
 
 # Split the whole text files.
 echo "Spliting the whole aligned data..."
-python3 $result_dir/splitAlignments.py $result_dir/final_ali.txt $result_dir || exit 1;
+python3 $result_dir/splitAlignments.py $result_dir/final_ali.txt $result_dir >/dev/null || exit 1;
 
 # Combining prono and rom texts. (It also generate text_num.)
-bash main/local/make_rg_lexicon.sh || exit 1;
+bash main/local/make_rg_lexicon.sh >/dev/null || exit 1;
 
 # Generate Textgrid files and save it to the data directory.
 echo "Organizing the aligned data to textgrid format."
@@ -187,7 +163,7 @@ python3 main/local/generate_textgrid.py \
 						tmp/romanized/rom_graph_lexicon.txt \
 						tmp/romanized/text_num \
 						$data_dir \
-						$word_opt || exit 1;
+						$word_opt >/dev/null || exit 1;
 
 echo "Aligning the input data has been successfully finished."
 echo "===================== FINISHED SUCCESSFULLY ====================="

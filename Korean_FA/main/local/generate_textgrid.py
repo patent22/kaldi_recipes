@@ -18,7 +18,7 @@ import re
 if len(sys.argv) != 6:
     print(len(sys.argv))
     raise ValueError('The number of input arguments is wrong.')
-
+# Import arguments.
 source_dir=sys.argv[1]
 word_file=sys.argv[2]
 text_num=sys.argv[3]
@@ -97,7 +97,7 @@ for piece in range(len(file_name)):
 
         # Phone tier.
         mid=whole_list[piece]
-        tg.write('"Phoneme"\n' + '0\n' + str(end_time) + '\n')
+        tg.write('"phone"\n' + '0\n' + str(end_time) + '\n')
         tg.write(str(len(whole_list[piece])) + '\n')
         counting=0
         for down in mid:
@@ -131,10 +131,31 @@ for piece in range(len(file_name)):
 
         # Word tier.
         tg.write('\n"IntervalTier"\n')
-        tg.write('"Word"\n' + '0\n' + str(end_time) + '\n')
+        tg.write('"word"\n' + '0\n' + str(end_time) + '\n')
         tg.write(tn_hold[piece] + '\n')
         rgc=0
         time=[]
+
+        # Phone begin/end index for each word
+        phone_seq = [mid[ibeg].split('\t')[-5] for ibeg in range(len(mid))]  # total sequence of phones given a sound
+        phones_beg_idx = [i for i, x in enumerate(phone_seq) if
+                          re.search('.\_B', x)]  # begining index of each word (in .ctm)
+        phones_end_idx = [i for i, x in enumerate(phone_seq) if
+                          re.search('.\_E', x)]  # end index of each word (in .ctm)
+
+        mono_syl = [i for i, x in enumerate(phone_seq) if re.search('.\_S', x)]
+        if len(mono_syl) != 0:  # check for mono syllable word
+            phones_beg_idx = phones_beg_idx + mono_syl  # add time mark for mono syllable words (e.g. ii_S, aa_S as they do not have '_B' or '_E' tag)
+            phones_end_idx = phones_end_idx + mono_syl
+            phones_beg_idx.sort()
+            phones_end_idx.sort()
+
+        # print(phone_seq)
+        # print(phones_beg_idx)
+        # print(phones_end_idx)
+
+        word_loc=0
+
         for down in range(len(mid)):
             rgc +=1
             # First line. The reason for separating first line from rest is to mark 0 at the
@@ -167,6 +188,15 @@ for piece in range(len(file_name)):
                 tg.write('"' + mid[down].split('\t')[-5] + '"' + '\n')
             # Mid lines.
             elif re.findall('[<>]', mid[down].split('\t')[-5]) == [] and rgc - 1 == down:
+                prono_in_rom = rg_list[rg_rem][2:]  # e.g. ['c0', 'ii', 'nf', 'hh', 'qq', 'ng']
+                prono_in_ctm = phone_seq[phones_beg_idx[word_loc]:phones_end_idx[word_loc] + 1]
+                prono_in_ctm = [re.sub(r'(..)_.', r'\1', iphone) for iphone in
+                                prono_in_ctm]  # e.g. ['c0', 'ii', 'nf', 'qq', 'ng']
+
+                # if prono_in_rom != prono_in_ctm --> overwrite to prono_in_ctm
+                if prono_in_rom is not prono_in_ctm:
+                    rg_list[rg_rem] = rg_list[rg_rem][:2] + prono_in_ctm
+
                 str_len = len(rg_list[rg_rem]) - 2
                 for i in range(str_len):
                     # Time marking
@@ -179,6 +209,7 @@ for piece in range(len(file_name)):
                 rg_rem += 1
                 rgc -= 1
                 time=[]
+                word_loc +=1
             else:
                 rgc -= 1
 

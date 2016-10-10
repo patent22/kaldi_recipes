@@ -30,7 +30,7 @@ echo -e "<SIL>\n<UNK>" >  $dict_dir/silence_phones.txt
 echo "silence.txt file was generated."
 
 # nonsilence.
-awk '{$1=""; print $0}' $dict_dir/lexicon.txt | tr -s ' ' '\n' | sort -u | sed '/^$/d' >  $dict_dir/nonsilence_phones.txt
+awk '{$1=""; print $0}' $dict_dir/lexicon.txt | tr -s ' ' '\n' | sort -u | sed '/^$/d' > $dict_dir/nonsilence_phones.txt
 echo "nonsilence.txt file was generated."
 
 # optional_silence.
