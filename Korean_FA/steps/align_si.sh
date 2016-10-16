@@ -17,7 +17,7 @@ use_graphs=false
 # Begin configuration.
 scale_opts="--transition-scale=1.0 --acoustic-scale=0.1 --self-loop-scale=0.1"
 beam=10 # 10
-retry_beam=40 # 40
+retry_beam=60 # 40
 careful=false
 boost_silence=1.0 # Factor by which to boost silence during alignment.
 # End configuration options.

@@ -22,10 +22,11 @@ Python 3.5
     - $ git pull 
  - Read INSTALL and follow the direction written there.
 
-2. **Install Sox, xlrd**
+2. **Install Sox, xlrd, coreutils**
  -  On mac
     - $ brew install sox
     - $ pip3 install xlrd (Make sure to install xlrd into python3 library not in python2. If you use anaconda then you have to install it in there. Otherwise, install it into a proper directory.)
+    - $ brew install coreutils
  - On Ubuntu
 
 

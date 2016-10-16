@@ -103,23 +103,24 @@ wav_list=`ls $data_dir | grep ".wav"`
 for wav in $wav_list; do
 	wav_ch=`sox --i $data_dir/$wav | grep "Channels" | awk '{print $3}'`
 	if [ $wav_ch -ne 1 ]; then
-		echo "$wav chanel changed"
-		sox $data_dir/$wav -c 1 $data_dir/$wav avg -l; fi
+		echo "$wav channel changed"
+		sox $data_dir/$wav -c 1 $data_dir/ch_tmp.wav
+		mv $data_dir/ch_tmp.wav $data_dir/$wav; fi
 	wav_sr=`sox --i $data_dir/$wav | grep "Sample Rate" | awk '{print $4}'`
 	if [ $wav_sr -ne 16000 ]; then
 		echo "$wav sampling rate changed"
-		sox $data_dir/$wav -r 16000 $data_dir/tmp.wav
-		mv $data_dir/tmp.wav $data_dir/$wav; fi
+		sox $data_dir/$wav -r 16000 $data_dir/sr_tmp.wav
+		mv $data_dir/sr_tmp.wav $data_dir/$wav; fi
 done
 
 # Extracting MFCC features and calculate CMVN.
 steps/make_mfcc.sh --nj $mfcc_nj --cmd "$cmd" main/data/trans_data $log_dir tmp/$mfccdir >/dev/null
 utils/fix_data_dir.sh main/data/trans_data >/dev/null
 steps/compute_cmvn_stats.sh main/data/trans_data $log_dir tmp/$mfccdir >/dev/null
-utils/fix_data_dir.sh main/data/trans_data >/dev/null
+utils/fix_data_dir.sh main/data/trans_data 
 
 # Forced alignment: aligning data.
-echo "Force_aligning the input data..."
+echo "Force aligning the input data..."
 steps/align_si.sh --nj $align_nj --cmd "$cmd" \
 					main/data/trans_data \
 					$lang_dir \
@@ -127,7 +128,6 @@ steps/align_si.sh --nj $align_nj --cmd "$cmd" \
 					tmp/model_ali >/dev/null ||  exit 1;
 
 # CTM file conversion.
-
 for dir in tmp/model_ali/ali.*gz;
 	do $kaldi/src/bin/ali-to-phones --ctm-output model/$fa_model/final.mdl ark:"gunzip -c $dir|" -> ${dir%.gz}.ctm;
 done;
