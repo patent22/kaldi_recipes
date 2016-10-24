@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created by Yeonjung Hong 2016-04-26
-Edited by Hyungwon Yang 2016-08-10
+Modified by Hyungwon Yang 2016-08-10
 
 
 4 arguments: phones.txt, segments, merged_ali.txt, final_ali.txt
@@ -42,7 +42,7 @@ with open(merged_ali_file) as c:
         ctm.append(line.split())
         
        
-#%%
+#
 ctm_new = []
 for k in phones:
     for i in ctm:
@@ -56,13 +56,14 @@ for n in segments:
         if n[0] == m[0]:
             # utt_id, file_id, phone_id, utt_num, start_ph, dur_ph, phone, start_utt, end_utt, start_real, end_real
             start_real = str(float(n[2]) + float(m[2]))
-            end_real = str(float(start_real) + float(m[3]))
+            tmp=float(start_real) + float(m[3])
+            end_real = str("{0:.3f}".format(float(tmp * 10**3) / 10.0**3))
             new = [n[0],n[1],m[4],m[1],m[2],m[3],m[5],n[2],n[3],start_real,end_real]
             ctm_new2.append(new)
 
-#%% write a text file "final_ali.txt"
+# write a text file "final_ali.txt"
 with open (final_result,"w")as f:
     f.writelines('\t'.join(i) + '\n' for i in ctm_new2)
-#%%
+#
 final_name = final_result.split('/')[-1]
 print(final_result + " is successfully created.")

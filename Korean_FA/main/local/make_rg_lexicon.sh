@@ -1,7 +1,7 @@
 #!/bin/bash
-# 														Jaekoo Kang
-# 														Hyungwon Yang
-# 														EMCS Labs
+#															Hyungwon Yang
+#															hyung8758@gmail.com
+# 															EMCS Labs
 #
 # This script combine romanized and pronunciation texts together.
 # It will be used for second word tier in Textgrid.

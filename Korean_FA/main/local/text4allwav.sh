@@ -1,7 +1,7 @@
 #!/bin/bash
 # 														Hyungwon Yang
+#														hyung8758@gmail.com
 # 														EMCS Labs
-#														10.12.16
 #
 # This script duplicates a givien text file that transcribed wav file 
 # along with the names of all wave files. 

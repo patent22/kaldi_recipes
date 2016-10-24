@@ -1,5 +1,5 @@
-# 														EMCS Labs
 # 														Hyungwon Yang
+# 														EMCS Labs
 # 														hyung8758@gmail.com
 """
 This script reads the text files and checks sentences.
@@ -22,9 +22,18 @@ data_dir = sys.argv[1]
 # Import text files.
 data_list = os.listdir(data_dir)
 text_list=[]
+tg_list=[]
 for one in data_list:
     if re.findall('txt',one) != []:
         text_list.append(one)
+for tg in data_list:
+    if re.findall('TextGrid',tg) != []:
+        tg_list.append(tg)
+# Check whether textgrids are already present or not. If so, remove all of them.
+if len(tg_list) is not 0:
+    print("WARNNING: TextGrids are already present. However, newly generated TextGrids will replace remained TextGrids.")
+    for tg_rm in tg_list:
+        os.remove('/'.join([data_dir,tg_rm]))
 
 # Fix the problem if it exists.
 inform=0

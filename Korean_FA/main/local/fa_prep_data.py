@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# 														EMCS Labs
 # 														Hyungwon Yang
+# 														EMCS Labs
 # 														hyung8758@gmail.com
 """
 This script generates FA requisite files from sound wav and text file.

@@ -1,5 +1,5 @@
-# 														EMCS Labs
 # 														Hyungwon Yang
+# 														EMCS Labs
 # 														hyung8758@gmail.com
 '''
 This script generates lexicon.txt and lexiconp.txt files based on corpus data.
