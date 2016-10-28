@@ -21,7 +21,6 @@ fi
 # Calculation
 newtime=$(($in_end - $in_start))
 
-
 # Conver it to 00:00:00 format.
 myos=`uname`
 if [ $myos == "Linux" ]; then
@@ -30,15 +29,6 @@ if [ $myos == "Linux" ]; then
 else
 	outtime=`date -u -r $newtime +%T`
 	echo osx
-fi
-
-if [ $newtime -gt 86399 ]; then
-	t_check=$(( $newtime/86400 ))
-	t_var=$(( 24*$t_check ))
-
-	time_var=`echo $outtime | sed 's/^\(.\{2\}\).*/\1/'`
-	t_combined=$(( $t_var+$time_var))
-	outtime=`echo $outtime | sed "s/^\(.\{2\}\)/$t_combined/g"`
 fi
 
 # Print the result.

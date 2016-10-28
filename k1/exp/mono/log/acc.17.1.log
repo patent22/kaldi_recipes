@@ -1,0 +1,15 @@
+# gmm-acc-stats-ali /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/17.mdl "ark:copy-feats ark:/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/fft_feature/new_fft.1.ark ark:- |" "ark:gunzip -c /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/ali.1.gz|" /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/17.1.acc 
+# Started at Thu Oct 27 13:17:00 KST 2016
+#
+gmm-acc-stats-ali /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/17.mdl 'ark:copy-feats ark:/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/fft_feature/new_fft.1.ark ark:- |' 'ark:gunzip -c /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/ali.1.gz|' /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/17.1.acc 
+copy-feats ark:/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/fft_feature/new_fft.1.ark ark:- 
+WARNING (gmm-acc-stats-ali:main():gmm-acc-stats-ali.cc:79) No alignment for utterance fv01_t01_s01
+WARNING (gmm-acc-stats-ali:main():gmm-acc-stats-ali.cc:79) No alignment for utterance fv01_t01_s03
+WARNING (gmm-acc-stats-ali:main():gmm-acc-stats-ali.cc:79) No alignment for utterance fv01_t01_s04
+LOG (copy-feats:main():copy-feats.cc:101) Copied 5 feature matrices.
+WARNING (gmm-acc-stats-ali:main():gmm-acc-stats-ali.cc:79) No alignment for utterance fv01_t01_s05
+LOG (gmm-acc-stats-ali:main():gmm-acc-stats-ali.cc:112) Done 1 files, 4 with errors.
+LOG (gmm-acc-stats-ali:main():gmm-acc-stats-ali.cc:115) Overall avg like per frame (Gaussian only) = -1621.63 over 403 frames.
+LOG (gmm-acc-stats-ali:main():gmm-acc-stats-ali.cc:123) Written accs.
+# Accounting: time=2 threads=1
+# Ended (code 0) at Thu Oct 27 13:17:02 KST 2016, elapsed time 2 seconds

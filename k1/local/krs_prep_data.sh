@@ -156,8 +156,8 @@ if [ -f $save/wav.scp ] && [ ! -z $save/wav.scp ]; then
 		for snt in `seq 1 $snt_num`; do
 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
 			wav_snt=`echo $get_snt | sed 's/.TextGrid//g'`
-			fix_snt=`echo $get_snt | sed 's/.TextGrid/.wav/g'`
-			echo "$wav_snt $data/$data_name/$fix_snt" >> $save/wav.scp
+			fix_snt=`echo $get_snt` | sed 's/.TextGrid/.wav/g'`
+			echo "$wav_snt $data/$data_name/$fix_snt" >> $save/wav.scp || exit 1
 		done
 	done
 	sed '1d' $save/wav.scp > $save/tmp; cat $save/tmp > $save/wav.scp; rm $save/tmp
@@ -174,8 +174,8 @@ else
 		for snt in `seq 1 $snt_num`; do
 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
 			wav_snt=`echo $get_snt | sed 's/.TextGrid//g'`
-			fix_snt=`echo $get_snt | sed 's/.TextGrid/.wav/g'`
-			echo "$wav_snt $data/$data_name/$fix_snt" >> $save/wav.scp
+			fix_snt=`echo $get_snt` | sed 's/.TextGrid/.wav/g'`
+			echo "$wav_snt $data/$data_name/$fix_snt" >> $save/wav.scp || exit 1
 		done
 	done
 fi

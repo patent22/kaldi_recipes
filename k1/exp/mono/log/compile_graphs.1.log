@@ -1,0 +1,7 @@
+# compile-train-graphs /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/tree /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/0.mdl /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/data/lang/L.fst "ark:sym2int.pl --map-oov 1 -f 2- /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/data/lang/words.txt < /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/data/train/split1/1/text|" "ark:|gzip -c >/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/fsts.1.gz" 
+# Started at Thu Oct 27 13:15:29 KST 2016
+#
+compile-train-graphs /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/tree /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/0.mdl /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/data/lang/L.fst 'ark:sym2int.pl --map-oov 1 -f 2- /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/data/lang/words.txt < /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/data/train/split1/1/text|' 'ark:|gzip -c >/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/fsts.1.gz' 
+LOG (compile-train-graphs:main():compile-train-graphs.cc:145) compile-train-graphs: succeeded for 5 graphs, failed for 0
+# Accounting: time=1 threads=1
+# Ended (code 0) at Thu Oct 27 13:15:30 KST 2016, elapsed time 1 seconds

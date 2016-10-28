@@ -1,0 +1,124 @@
+
+\data\
+ngram 1=53
+ngram 2=58
+ngram 3=0
+
+\1-grams:
+-1.064458	</s>
+-99	<s>	-7.408824
+-1.763428	aa-ii-t0xxll-k0wa	-99
+-1.763428	aa-ii-t0xxll-xxnf	-99
+-1.763428	aanc-aa	-99
+-1.763428	c0ii-chvvnf-xx-rroo	-99
+-1.763428	c0iinf-t0aall-rrqq-k0aa	-99
+-1.763428	c0vvnf-k0ii-t0oo	-99
+-1.763428	c0xxll-k0vvpf-k0ii-mmaanf	-99
+-1.763428	ccwo-t0vvnf	-99
+-1.462398	hhaamf-kkee	-7.466571
+-1.763428	hhqqss-t0aa	-99
+-1.763428	hhxxlk-p0aa-rraamf-ii	-99
+-1.763428	iikf-nnxxnf	-99
+-1.763428	k0aa-xxll-ii-mmyvnf	-99
+-1.763428	k0aamf-ii	-99
+-1.763428	k0ii-chaa-t0oo	-99
+-1.763428	k0xx-rrqq-t0oo	-99
+-1.763428	mmaa-nnyang	-99
+-1.462398	mmaa-xxll	-7.466571
+-1.763428	mmaa-xxll-ii-vvss-t0aa	-99
+-1.763428	mmaalk-k0oo	-99
+-1.763428	mmooll-rraass-t0aa	-99
+-1.763428	mmooll-rryv	-99
+-1.763428	mmuull	-99
+-1.763428	mmvvnf	-99
+-1.763428	nnaa-k0aa	-99
+-1.763428	nnookf-k0ii	-99
+-1.763428	nnuunf-ii	-99
+-1.763428	oo-mmyvnf	-99
+-1.763428	p0aa-rraamf	-99
+-1.763428	p0oomf-ii-mmyvnf	-99
+-1.763428	p0uull-nnooll-ii-rrxxll	-99
+-1.763428	p0uull-vv	-99
+-1.763428	p0yvth-xxll	-99
+-1.763428	phii-k0oo	-99
+-1.763428	phuung-s0vvng-hhaa-k0ee	-99
+-1.763428	ppvv-kkuu-k0ii	-99
+-1.763428	rraa-t0ii-oo-t0oo	-99
+-1.763428	s0aanf-k0aanf	-99
+-1.763428	s0aanf-k0ooll-ccaa-k0ii-ee	-99
+-1.763428	s0ii-c0aakf-hhaa-k0oo	-99
+-1.763428	s0ii-c0aakf-hhqqss-t0aa	-99
+-1.763428	s0ii-wvnf-hhaanf	-99
+-1.763428	s0oo-nnyvnf-xxnf	-99
+-1.763428	t0aanf-phuung-k0wa	-99
+-1.763428	t0xxll-rroo	-99
+-1.763428	ttwi-chyv	-99
+-1.763428	uull-xxmf-k0wa	-99
+-1.763428	vvll-rruukf-vvll-rruukf	-99
+-1.763428	vvps-vvss-t0aa	-99
+-1.763428	yang-c0ii-ccookf-ee	-99
+-1.763428	yvng-hhwa-t0oo	-99
+
+\2-grams:
+-0.69897	<s> k0ii-chaa-t0oo
+-0.69897	<s> k0xx-rrqq-t0oo
+-0.69897	<s> mmvvnf
+-0.69897	<s> p0oomf-ii-mmyvnf
+-0.69897	<s> rraa-t0ii-oo-t0oo
+0	aa-ii-t0xxll-k0wa hhaamf-kkee
+0	aa-ii-t0xxll-xxnf t0xxll-rroo
+0	aanc-aa p0yvth-xxll
+0	c0ii-chvvnf-xx-rroo phii-k0oo
+0	c0iinf-t0aall-rrqq-k0aa c0ii-chvvnf-xx-rroo
+0	c0vvnf-k0ii-t0oo vvps-vvss-t0aa
+0	c0xxll-k0vvpf-k0ii-mmaanf hhqqss-t0aa
+0	ccwo-t0vvnf mmaa-xxll
+-0.30103	hhaamf-kkee c0iinf-t0aall-rrqq-k0aa
+-0.30103	hhaamf-kkee mmaa-nnyang
+0	hhqqss-t0aa </s>
+0	hhxxlk-p0aa-rraamf-ii p0uull-vv
+0	iikf-nnxxnf mmuull
+0	k0aa-xxll-ii-mmyvnf t0aanf-phuung-k0wa
+0	k0aamf-ii phuung-s0vvng-hhaa-k0ee
+0	k0ii-chaa-t0oo c0vvnf-k0ii-t0oo
+0	k0xx-rrqq-t0oo s0oo-nnyvnf-xxnf
+0	mmaa-nnyang c0xxll-k0vvpf-k0ii-mmaanf
+-0.30103	mmaa-xxll aa-ii-t0xxll-k0wa
+-0.30103	mmaa-xxll aa-ii-t0xxll-xxnf
+0	mmaa-xxll-ii-vvss-t0aa </s>
+0	mmaalk-k0oo p0aa-rraamf
+0	mmooll-rraass-t0aa </s>
+0	mmooll-rryv aanc-aa
+0	mmuull mmaalk-k0oo
+0	mmvvnf s0aanf-k0ooll-ccaa-k0ii-ee
+0	nnaa-k0aa p0uull-nnooll-ii-rrxxll
+0	nnookf-k0ii s0ii-c0aakf-hhaa-k0oo
+0	nnuunf-ii nnookf-k0ii
+0	oo-mmyvnf yang-c0ii-ccookf-ee
+0	p0aa-rraamf s0ii-wvnf-hhaanf
+0	p0oomf-ii-mmyvnf ppvv-kkuu-k0ii
+0	p0uull-nnooll-ii-rrxxll s0ii-c0aakf-hhqqss-t0aa
+0	p0uull-vv oo-mmyvnf
+0	p0yvth-xxll ccwo-t0vvnf
+0	phii-k0oo k0aa-xxll-ii-mmyvnf
+0	phuung-s0vvng-hhaa-k0ee iikf-nnxxnf
+0	ppvv-kkuu-k0ii uull-xxmf-k0wa
+0	rraa-t0ii-oo-t0oo yvng-hhwa-t0oo
+0	s0aanf-k0aanf mmaa-xxll-ii-vvss-t0aa
+0	s0aanf-k0ooll-ccaa-k0ii-ee vvll-rruukf-vvll-rruukf
+0	s0ii-c0aakf-hhaa-k0oo hhxxlk-p0aa-rraamf-ii
+0	s0ii-c0aakf-hhqqss-t0aa </s>
+0	s0ii-wvnf-hhaanf s0aanf-k0aanf
+0	s0oo-nnyvnf-xxnf mmaa-xxll
+0	t0aanf-phuung-k0wa k0aamf-ii
+0	t0xxll-rroo ttwi-chyv
+0	ttwi-chyv nnaa-k0aa
+0	uull-xxmf-k0wa hhaamf-kkee
+0	vvll-rruukf-vvll-rruukf nnuunf-ii
+0	vvps-vvss-t0aa </s>
+0	yang-c0ii-ccookf-ee mmooll-rryv
+0	yvng-hhwa-t0oo mmooll-rraass-t0aa
+
+\3-grams:
+
+\end\

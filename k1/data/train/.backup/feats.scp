@@ -1,0 +1,5 @@
+fv01_t01_s01 /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/mfcc/raw_mfcc_train.1.ark:13
+fv01_t01_s02 /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/mfcc/raw_mfcc_train.1.ark:20007
+fv01_t01_s03 /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/mfcc/raw_mfcc_train.2.ark:13
+fv01_t01_s04 /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/mfcc/raw_mfcc_train.3.ark:13
+fv01_t01_s05 /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/mfcc/raw_mfcc_train.4.ark:13

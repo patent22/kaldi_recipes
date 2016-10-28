@@ -1,0 +1,9 @@
+# gmm-init-mono --shared-phones=/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/data/lang/phones/sets.int "--train-feats=ark:copy-feats ark:/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/fft_feature/new_fft.1.ark ark:- | subset-feats --n=10 ark:- ark:-|" /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/data/lang/topo 513 /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/0.mdl /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/tree 
+# Started at Thu Oct 27 13:15:27 KST 2016
+#
+gmm-init-mono --shared-phones=/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/data/lang/phones/sets.int '--train-feats=ark:copy-feats ark:/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/fft_feature/new_fft.1.ark ark:- | subset-feats --n=10 ark:- ark:-|' /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/data/lang/topo 513 /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/0.mdl /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/tree 
+copy-feats ark:/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/fft_feature/new_fft.1.ark ark:- 
+subset-feats --n=10 ark:- ark:- 
+LOG (copy-feats:main():copy-feats.cc:101) Copied 5 feature matrices.
+# Accounting: time=2 threads=1
+# Ended (code 0) at Thu Oct 27 13:15:29 KST 2016, elapsed time 2 seconds

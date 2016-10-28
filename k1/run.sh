@@ -30,7 +30,7 @@ logdir=$curdir/log
 resultfile=result.txt
 # Number of jobs.
 train_nj=2
-test_nj=1
+test_nj=2
 
 # Start logging.
 mkdir -p $logdir
@@ -205,7 +205,7 @@ steps/train_mono.sh \
 	$mono_train_opt \
 	$curdir/data/train \
 	$curdir/data/lang \
-	$curdir/exp/mono || exit 1
+	$curdir/exp/mono || exit1
 
 # # Graph structuring.
 # # make HCLG graph (optional! train과는 무관, 오직 decode만을 위해.)
@@ -238,11 +238,11 @@ steps/align_si.sh \
 # 	$curdir/data/train \
 # 	$curdir/exp/mono/decode_train
 # echo "Decoding test data..." | tee -a $logdir/$logfile.log
-# steps/decode.sh \
-# 	$mono_decode_opt \
-# 	$curdir/exp/mono/graph \
-# 	$curdir/data/test \
-# 	$curdir/exp/mono/decode_test
+steps/decode.sh \
+	$mono_decode_opt \
+	$curdir/exp/mono/graph \
+	$curdir/data/test \
+	$curdir/exp/mono/decode_test
 
 ### Optional ###
 # tree structuring.
@@ -281,7 +281,7 @@ steps/train_deltas.sh \
 	$curdir/data/train \
 	$curdir/data/lang \
 	$curdir/exp/mono_ali \
-	$curdir/exp/tri1 || exit 1
+	$curdir/exp/tri1 || exit1
 
 # Graph drawing.
 echo "Generating delta+double-delta graph..." | tee -a $logdir/$logfile.log 
@@ -297,9 +297,9 @@ steps/align_si.sh \
 	$curdir/data/train \
 	$curdir/data/lang \
 	$curdir/exp/tri1 \
-	$curdir/exp/tri1_ali ||  exit 1
+	$curdir/exp/tri1_ali ||  exit1
 
-# # Data decoding.
+# Data decoding.
 # echo "Decoding with delta+double-delta model..." | tee -a $logdir/$logfile.log 
 # echo "Decoding train data..." | tee -a $logdir/$logfile.log
 # steps/decode.sh \
@@ -345,7 +345,7 @@ steps/train_lda_mllt.sh \
 	$curdir/data/train \
 	$curdir/data/lang \
 	$curdir/exp/tri1_ali \
-	$curdir/exp/tri2 ||  exit 1
+	$curdir/exp/tri2 ||  exit1
 
 # Graph drawing.
 echo "Generating LDA+MLLT graph..." | tee -a $logdir/$logfile.log
@@ -361,7 +361,7 @@ steps/align_si.sh \
 	$curdir/data/train \
 	$curdir/data/lang \
 	$curdir/exp/tri2 \
-	$curdir/exp/tri2_ali ||  exit 1
+	$curdir/exp/tri2_ali ||  exit1
 
 # Data decoding.
 # echo "Decoding with LDA+MLLT model..." | tee -a $logdir/$logfile.log
@@ -411,12 +411,12 @@ steps/train_sat.sh \
 	$curdir/data/train \
 	$curdir/data/lang \
 	$curdir/exp/tri2_ali \
-	$curdir/exp/tri3 ||  exit 1
+	$curdir/exp/tri3 ||  exit1
 
 # Graph drawing.
 echo "Generating LDA+MLLT+SAT graph..." | tee -a $logdir/$logfile.log
 utils/mkgraph.sh \
-	$curdir/data/lang \
+	$curdir/data/lang \ 
 	$curdir/exp/tri3 \
 	$curdir/exp/tri3/graph
 
@@ -427,22 +427,22 @@ steps/align_fmllr.sh \
 	$curdir/data/train \
 	$curdir/data/lang \
 	$curdir/exp/tri3 \
-	$curdir/exp/tri3_ali ||  exit 1
+	$curdir/exp/tri3_ali ||  exit1
 
 # Data decoding: train and test datasets.
-# echo "Decoding with Training LDA+MLLT+SAT model..." | tee -a $logdir/$logfile.log
-# echo "Decoding train data..." | tee -a $logdir/$logfile.log
-# steps/decode_fmllr.sh \
-# 	$tri3_train_decode_opt \
-# 	$curdir/exp/tri3/graph \
-# 	$curdir/data/train \
-# 	$curdir/exp/tri3/decode_train
-# echo "Decoding test data..." | tee -a $logdir/$logfile.log
-# steps/decode_fmllr.sh \
-# 	$tri3_test_decode_opt \
-# 	$curdir/exp/tri3/graph \
-# 	$curdir/data/test \
-# 	$curdir/exp/tri3/decode_test
+echo "Decoding with Training LDA+MLLT+SAT model..." | tee -a $logdir/$logfile.log
+echo "Decoding train data..." | tee -a $logdir/$logfile.log
+steps/decode_fmllr.sh \
+	$tri3_train_decode_opt \
+	$curdir/exp/tri3/graph \
+	$curdir/data/train \
+	$curdir/exp/tri3/decode_train
+echo "Decoding test data..." | tee -a $logdir/$logfile.log
+steps/decode_fmllr.sh \
+	$tri3_test_decode_opt \
+	$curdir/exp/tri3/graph \
+	$curdir/data/test \
+	$curdir/exp/tri3/decode_test
 
 
 end7=`date +%s`; log_e7=`date | awk '{print $4}'`
@@ -451,157 +451,157 @@ echo END TIME: $log_e7  | tee -a $logdir/$logfile.log
 echo PROCESS TIME: $taken7 sec  | tee -a $logdir/$logfile.log
 
 
-# echo ====================================================================== | tee -a $logdir/$logfile.log 
-# echo "                       Train & Decode: SGMM2 	               	      " | tee -a $logdir/$logfile.log 
-# echo ====================================================================== | tee -a $logdir/$logfile.log 
-# start8=`date +%s`; log_s8=`date | awk '{print $4}'`
-# echo $log_s8 >> $logdir/$logfile.log 
-# echo START TIME: $log_s8 | tee -a $logdir/$logfile.log 
+echo ====================================================================== | tee -a $logdir/$logfile.log 
+echo "                       Train & Decode: SGMM2 	               	      " | tee -a $logdir/$logfile.log 
+echo ====================================================================== | tee -a $logdir/$logfile.log 
+start8=`date +%s`; log_s8=`date | awk '{print $4}'`
+echo $log_s8 >> $logdir/$logfile.log 
+echo START TIME: $log_s8 | tee -a $logdir/$logfile.log 
 
-# # SGMM training, with speaker vectors.  This script would normally be called on
-# # top of fMLLR features obtained from a conventional system, but it also works
-# # on top of any type of speaker-independent features (based on
-# # deltas+delta-deltas or LDA+MLLT).  For more info on SGMMs, see the paper "The
-# # subspace Gaussian mixture model--A structured model for speech recognition".
-# # (Computer Speech and Language, 2011).
+# SGMM training, with speaker vectors.  This script would normally be called on
+# top of fMLLR features obtained from a conventional system, but it also works
+# on top of any type of speaker-independent features (based on
+# deltas+delta-deltas or LDA+MLLT).  For more info on SGMMs, see the paper "The
+# subspace Gaussian mixture model--A structured model for speech recognition".
+# (Computer Speech and Language, 2011).
 
-# # SGMM2 option setting.
-# sgmm2_train_opt="--cmd $train_cmd"
-# sgmm2_align_opt="--nj $train_nj --cmd $decode_cmd --transform-dir $curdir/exp/tri3_ali"
-# sgmm2_train_decode_opt="--nj $train_nj --cmd $decode_cmd --transform-dir $curdir/exp/tri3_ali"
-# sgmm2_test_decode_opt="--nj $test_nj --cmd $decode_cmd --transform-dir $curdir/exp/tri3/decode_test"
+# SGMM2 option setting.
+sgmm2_train_opt="--cmd $train_cmd"
+sgmm2_align_opt="--nj $train_nj --cmd $decode_cmd --transform-dir $curdir/exp/tri3_ali"
+sgmm2_train_decode_opt="--nj $train_nj --cmd $decode_cmd --transform-dir $curdir/exp/tri3_ali"
+sgmm2_test_decode_opt="--nj $test_nj --cmd $decode_cmd --transform-dir $curdir/exp/tri3/decode_test"
 
-# echo "SGMM2 trainig options: $sgmm2_train_opt"					| tee -a $logdir/$logfile.log
-# echo "SGMM2 aligning options: $sggm2_align_opt"					| tee -a $logdir/$logfile.log
-# echo "SGMM2 train-decoding options: $sgmm2_train_decode_opt"	| tee -a $logdir/$logfile.log
-# echo "SGMM2 test-decoding options: $sgmm2_test_decode_opt"		| tee -a $logdir/$logfile.log
+echo "SGMM2 trainig options: $sgmm2_train_opt"					| tee -a $logdir/$logfile.log
+echo "SGMM2 aligning options: $sggm2_align_opt"					| tee -a $logdir/$logfile.log
+echo "SGMM2 train-decoding options: $sgmm2_train_decode_opt"	| tee -a $logdir/$logfile.log
+echo "SGMM2 test-decoding options: $sgmm2_test_decode_opt"		| tee -a $logdir/$logfile.log
 
-# # UBM training.
-# echo "Training UBM..." | tee -a $logdir/$logfile.log
-# steps/train_ubm.sh \
-# 	400 \
+# UBM training.
+echo "Training UBM..." | tee -a $logdir/$logfile.log
+steps/train_ubm.sh \
+	400 \
+	$curdir/data/train \
+	$curdir/data/lang \
+	$curdir/exp/tri3_ali \
+	$curdir/exp/ubm ||  exit1
+
+# SGMM2 training.
+echo "Training SGMM2..." | tee -a $logdir/$logfile.log
+steps/train_sgmm2.sh \
+	$sgmm2_train_opt \
+	5000 \
+	8000 \
+	$curdir/data/train \
+	$curdir/data/lang \
+	$curdir/exp/tri3_ali \
+	$curdir/exp/ubm/final.ubm \
+	$curdir/exp/sgmm ||  exit1
+
+# Graph drawing.
+echo "Generating SGMM2 graph..." | tee -a $logdir/$logfile.log
+utils/mkgraph.sh \
+	$curdir/data/lang \
+	$curdir/exp/sgmm \
+	$curdir/exp/sgmm/graph
+
+# SGMM2 aglining.
+echo "Aligning..." | tee -a $logdir/$logfile.log
+steps/align_sgmm2.sh \
+	$sgmm2_align_opt \
+	$curdir/data/train \
+	$curdir/data/lang \
+	$curdir/exp/sgmm \
+	$curdir/exp/sgmm_ali ||  exit1
+
+Data decoding: train and test datasets.
+echo "Decoding with SGMM2 model..." | tee -a $logdir/$logfile.log
+# echo "Decoding train data..." | tee -a $logdir/$logfile.log
+# steps/decode_sgmm2.sh \
+# 	$sgmm2_train_decode_opt \
+# 	$curdir/exp/sgmm/graph \
 # 	$curdir/data/train \
-# 	$curdir/data/lang \
-# 	$curdir/exp/tri3_ali \
-# 	$curdir/exp/ubm ||  exit 1
+# 	$curdir/exp/sgmm/decode_train
+echo "Decoding test data..." | tee -a $logdir/$logfile.log
+steps/decode_sgmm2.sh \
+	$sgmm2_test_decode_opt \
+	$curdir/exp/sgmm/graph \
+	$curdir/data/test \
+	$curdir/exp/sgmm/decode_test
 
-# # SGMM2 training.
-# echo "Training SGMM2..." | tee -a $logdir/$logfile.log
-# steps/train_sgmm2.sh \
-# 	$sgmm2_train_opt \
-# 	5000 \
-# 	8000 \
-# 	$curdir/data/train \
-# 	$curdir/data/lang \
-# 	$curdir/exp/tri3_ali \
-# 	$curdir/exp/ubm/final.ubm \
-# 	$curdir/exp/sgmm ||  exit 1
 
-# # Graph drawing.
-# echo "Generating SGMM2 graph..." | tee -a $logdir/$logfile.log
-# utils/mkgraph.sh \
-# 	$curdir/data/lang \
-# 	$curdir/exp/sgmm \
-# 	$curdir/exp/sgmm/graph
+end8=`date +%s`; log_e8=`date | awk '{print $4}'`
+taken8=`local/track_time.sh $start8 $end8`
+echo END TIME: $log_e8  | tee -a $logdir/$logfile.log 
+echo PROCESS TIME: $taken8 sec  | tee -a $logdir/$logfile.log
 
-# # SGMM2 aglining.
-# echo "Aligning..." | tee -a $logdir/$logfile.log
-# steps/align_sgmm2.sh \
-# 	$sgmm2_align_opt \
-# 	$curdir/data/train \
-# 	$curdir/data/lang \
-# 	$curdir/exp/sgmm \
-# 	$curdir/exp/sgmm_ali ||  exit 1
+
+echo ====================================================================== | tee -a $logdir/$logfile.log 
+echo "                     Train & Decode: SGMM2+MMI 	           	      " | tee -a $logdir/$logfile.log 
+echo ====================================================================== | tee -a $logdir/$logfile.log 
+start9=`date +%s`; log_s9=`date | awk '{print $4}'`
+echo $log_s9 >> $logdir/$logfile.log 
+echo START TIME: $log_s9 | tee -a $logdir/$logfile.log 
+
+# SGMM training, with speaker vectors.  This script would normally be called on
+# top of fMLLR features obtained from a conventional system, but it also works
+# on top of any type of speaker-independent features (based on
+# deltas+delta-deltas or LDA+MLLT).  For more info on SGMMs, see the paper "The
+# subspace Gaussian mixture model--A structured model for speech recognition".
+# (Computer Speech and Language, 2011).
+
+# SGMM2 option setting.
+sgmm_denlats_opt="--nj $train_nj --sub-split 40 --transform-dir $curdir/exp/tri3_ali"
+sgmmi_train_opt="--cmd $train_cmd --transform-dir $curdir/exp/tri3_ali"
+sgmmi_train_decode_opt="--transform-dir $curdir/exp/tri3/decode_train"
+sgmmi_test_decode_opt="--transform-dir $curdir/exp/tri3/decode_test"
+
+echo "SGMM2_denlats options: $sgmm_denlats_opt"						| tee -a $logdir/$logfile.log
+echo "SGMM2+MMI trainig options: $sgmmi_train_opt"					| tee -a $logdir/$logfile.log
+echo "SGMM2+MMI train-decoding options: $sgmmi_train_decode_opt"	| tee -a $logdir/$logfile.log
+echo "SGMM2+MMI test-decoding options: $sgmmi_test_decode_opt"		| tee -a $logdir/$logfile.log
+
+# SGMM2+MMI training.
+echo "Training SGMM2+MMI..." | tee -a $logdir/$logfile.log
+# In mac, copy issue occurred, so the lang directory needs to be copied.
+mkdir -p $curdir/exp/sgmm_denlats; cp -r $curdir/data/lang $curdir/exp/sgmm_denlats
+echo "Running make_denlats_sgmm2.sh..." | tee -a $logdir/$logfile.log
+steps/make_denlats_sgmm2.sh \
+	$sgmm_denlats_opt \
+	$curdir/data/train \
+	$curdir/data/lang \
+	$curdir/exp/sgmm_ali \
+	$curdir/exp/sgmm_denlats ||  exit1
+echo "Running train_mmi_sgmm2.sh..." | tee -a $logdir/$logfile.log
+steps/train_mmi_sgmm2.sh \
+	$sgmmi_train_opt \
+	$curdir/data/train \
+	$curdir/data/lang \
+	$curdir/exp/sgmm_ali \
+	$curdir/exp/sgmm_denlats \
+	$curdir/exp/sgmm_mmi ||  exit1
 
 # Data decoding: train and test datasets.
-# echo "Decoding with SGMM2 model..." | tee -a $logdir/$logfile.log
-# # echo "Decoding train data..." | tee -a $logdir/$logfile.log
-# # steps/decode_sgmm2.sh \
-# # 	$sgmm2_train_decode_opt \
-# # 	$curdir/exp/sgmm/graph \
-# # 	$curdir/data/train \
-# # 	$curdir/exp/sgmm/decode_train
-# echo "Decoding test data..." | tee -a $logdir/$logfile.log
-# steps/decode_sgmm2.sh \
-# 	$sgmm2_test_decode_opt \
-# 	$curdir/exp/sgmm/graph \
-# 	$curdir/data/test \
-# 	$curdir/exp/sgmm/decode_test
+echo "Decoding with SGMM2+MMI model..." | tee -a $logdir/$logfile.log
+echo "Decoding train data..." | tee -a $logdir/$logfile.log
+steps/decode_sgmm2_rescore.sh \
+	$sgmmi_train_decode_opt \
+	$curdir/data/lang \
+	$curdir/data/train \
+	$curdir/exp/sgmm/decode_train \
+	$curdir/exp/sgmm_mmi/decode_train
+echo "Decoding test data..." | tee -a $logdir/$logfile.log
+steps/decode_sgmm2_rescore.sh \
+	$sgmmi_test_decode_opt \
+	$curdir/data/lang \
+	$curdir/data/test \
+	$curdir/exp/sgmm/decode_test \
+	$curdir/exp/sgmm_mmi/decode_test
 
 
-# end8=`date +%s`; log_e8=`date | awk '{print $4}'`
-# taken8=`local/track_time.sh $start8 $end8`
-# echo END TIME: $log_e8  | tee -a $logdir/$logfile.log 
-# echo PROCESS TIME: $taken8 sec  | tee -a $logdir/$logfile.log
-
-
-# echo ====================================================================== | tee -a $logdir/$logfile.log 
-# echo "                     Train & Decode: SGMM2+MMI 	           	      " | tee -a $logdir/$logfile.log 
-# echo ====================================================================== | tee -a $logdir/$logfile.log 
-# start9=`date +%s`; log_s9=`date | awk '{print $4}'`
-# echo $log_s9 >> $logdir/$logfile.log 
-# echo START TIME: $log_s9 | tee -a $logdir/$logfile.log 
-
-# # SGMM training, with speaker vectors.  This script would normally be called on
-# # top of fMLLR features obtained from a conventional system, but it also works
-# # on top of any type of speaker-independent features (based on
-# # deltas+delta-deltas or LDA+MLLT).  For more info on SGMMs, see the paper "The
-# # subspace Gaussian mixture model--A structured model for speech recognition".
-# # (Computer Speech and Language, 2011).
-
-# # SGMM2 option setting.
-# sgmm_denlats_opt="--nj $train_nj --sub-split 40 --transform-dir $curdir/exp/tri3_ali"
-# sgmmi_train_opt="--cmd $train_cmd --transform-dir $curdir/exp/tri3_ali"
-# sgmmi_train_decode_opt="--transform-dir $curdir/exp/tri3/decode_train"
-# sgmmi_test_decode_opt="--transform-dir $curdir/exp/tri3/decode_test"
-
-# echo "SGMM2_denlats options: $sgmm_denlats_opt"						| tee -a $logdir/$logfile.log
-# echo "SGMM2+MMI trainig options: $sgmmi_train_opt"					| tee -a $logdir/$logfile.log
-# echo "SGMM2+MMI train-decoding options: $sgmmi_train_decode_opt"	| tee -a $logdir/$logfile.log
-# echo "SGMM2+MMI test-decoding options: $sgmmi_test_decode_opt"		| tee -a $logdir/$logfile.log
-
-# # SGMM2+MMI training.
-# echo "Training SGMM2+MMI..." | tee -a $logdir/$logfile.log
-# # In mac, copy issue occurred, so the lang directory needs to be copied.
-# mkdir -p $curdir/exp/sgmm_denlats; cp -r $curdir/data/lang $curdir/exp/sgmm_denlats
-# echo "Running make_denlats_sgmm2.sh..." | tee -a $logdir/$logfile.log
-# steps/make_denlats_sgmm2.sh \
-# 	$sgmm_denlats_opt \
-# 	$curdir/data/train \
-# 	$curdir/data/lang \
-# 	$curdir/exp/sgmm_ali \
-# 	$curdir/exp/sgmm_denlats ||  exit 1
-# echo "Running train_mmi_sgmm2.sh..." | tee -a $logdir/$logfile.log
-# steps/train_mmi_sgmm2.sh \
-# 	$sgmmi_train_opt \
-# 	$curdir/data/train \
-# 	$curdir/data/lang \
-# 	$curdir/exp/sgmm_ali \
-# 	$curdir/exp/sgmm_denlats \
-# 	$curdir/exp/sgmm_mmi ||  exit 1
-
-# # Data decoding: train and test datasets.
-# echo "Decoding with SGMM2+MMI model..." | tee -a $logdir/$logfile.log
-# echo "Decoding train data..." | tee -a $logdir/$logfile.log
-# steps/decode_sgmm2_rescore.sh \
-# 	$sgmmi_train_decode_opt \
-# 	$curdir/data/lang \
-# 	$curdir/data/train \
-# 	$curdir/exp/sgmm/decode_train \
-# 	$curdir/exp/sgmm_mmi/decode_train
-# echo "Decoding test data..." | tee -a $logdir/$logfile.log
-# steps/decode_sgmm2_rescore.sh \
-# 	$sgmmi_test_decode_opt \
-# 	$curdir/data/lang \
-# 	$curdir/data/test \
-# 	$curdir/exp/sgmm/decode_test \
-# 	$curdir/exp/sgmm_mmi/decode_test
-
-
-# end9=`date +%s`; log_e9=`date | awk '{print $4}'`
-# taken9=`local/track_time.sh $start9 $end9`
-# echo END TIME: $log_e9  | tee -a $logdir/$logfile.log 
-# echo PROCESS TIME: $taken9 sec  | tee -a $logdir/$logfile.log
+end9=`date +%s`; log_e9=`date | awk '{print $4}'`
+taken9=`local/track_time.sh $start9 $end9`
+echo END TIME: $log_e9  | tee -a $logdir/$logfile.log 
+echo PROCESS TIME: $taken9 sec  | tee -a $logdir/$logfile.log
 
 
 echo ====================================================================== | tee -a $logdir/$logfile.log 
@@ -622,22 +622,25 @@ echo START TIME: $log_s10 | tee -a $logdir/$logfile.log
 dnn1_train_opt=""
 dnn1_train_decode_opt="--nj $train_nj --transform-dir $curdir/exp/tri3/decode_train"
 dnn1_test_decode_opt="--nj $test_nj --transform-dir $curdir/exp/tri3/decode_test"
-# dnn_function="train_tanh_fast.sh"
-dnn_function="train_multisplice_accel2.sh"
+dnn_function="train_tanh_fast.sh"
 
 echo "DNN($dnn_function) trainig options: $dnn1_train_opt"					| tee -a $logdir/$logfile.log
 echo "DNN($dnn_function) train-decoding options: $dnn1_train_decode_opt"	| tee -a $logdir/$logfile.log
 echo "DNN($dnn_function) test-decoding options: $dnn1_test_decode_opt"		| tee -a $logdir/$logfile.log
 
 # DNN training.
+# train_tanh_fast.sh
 echo "Training DNN..." | tee -a $logdir/$logfile.log
 steps/nnet2/$dnn_function \
 	$dnn1_train_opt \
 	$curdir/data/train \
 	$curdir/data/lang \
 	$curdir/exp/tri3_ali \
-	$curdir/exp/tri4 ||  exit 1
+	$curdir/exp/tri4 ||  exit1
 
+# train_multisplice_accel2.sh
+
+# train_tdnn.sh
 
 # Data decoding: train dataset.
 echo "Decoding with DNN model..." | tee -a $logdir/$logfile.log

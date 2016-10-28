@@ -1,0 +1,17 @@
+# nnet-latgen-faster --minimize=false --max-active=7000 --min-active=200 --beam=30.0 --lattice-beam=16.0 --acoustic-scale=0.1 --allow-partial=true --word-symbol-table=models/mz/words.txt models/mz/final.mdl models/mz/HCLG.fst "ark,s,cs:apply-cmvn  --utt2spk=ark:tmp/trans_data/split1/1/utt2spk scp:tmp/trans_data/split1/1/cmvn.scp scp:tmp/trans_data/split1/1/feats.scp ark:- | splice-feats  ark:- ark:- | transform-feats models/mz/final.mat ark:- ark:- |" "ark:|gzip -c > tmp/lat.1.gz" 
+# Started at Tue Oct 25 10:26:52 KST 2016
+#
+nnet-latgen-faster --minimize=false --max-active=7000 --min-active=200 --beam=30.0 --lattice-beam=16.0 --acoustic-scale=0.1 --allow-partial=true --word-symbol-table=models/mz/words.txt models/mz/final.mdl models/mz/HCLG.fst 'ark,s,cs:apply-cmvn  --utt2spk=ark:tmp/trans_data/split1/1/utt2spk scp:tmp/trans_data/split1/1/cmvn.scp scp:tmp/trans_data/split1/1/feats.scp ark:- | splice-feats  ark:- ark:- | transform-feats models/mz/final.mat ark:- ark:- |' 'ark:|gzip -c > tmp/lat.1.gz' 
+transform-feats models/mz/final.mat ark:- ark:- 
+splice-feats ark:- ark:- 
+apply-cmvn --utt2spk=ark:tmp/trans_data/split1/1/utt2spk scp:tmp/trans_data/split1/1/cmvn.scp scp:tmp/trans_data/split1/1/feats.scp ark:- 
+LOG (apply-cmvn:main():apply-cmvn.cc:146) Applied cepstral mean normalization to 1 utterances, errors on 0
+LOG (transform-feats:main():transform-feats.cc:158) Overall average [pseudo-]logdet is -94.5686 over 379 frames.
+LOG (transform-feats:main():transform-feats.cc:161) Applied transform to 1 utterances; 0 had errors.
+test01 고려대역 주변에 세차장이 어디 있어 
+LOG (nnet-latgen-faster:DecodeUtteranceLatticeFaster():decoder-wrappers.cc:285) Log-like per frame for utterance test01 is 0.194228 over 379 frames.
+LOG (nnet-latgen-faster:main():nnet-latgen-faster.cc:180) Time taken 8.18431s: real-time factor assuming 100 frames/sec is 2.15945
+LOG (nnet-latgen-faster:main():nnet-latgen-faster.cc:183) Done 1 utterances, failed for 0
+LOG (nnet-latgen-faster:main():nnet-latgen-faster.cc:185) Overall log-likelihood per frame is 0.194228 over 379 frames.
+# Accounting: time=8 threads=1
+# Ended (code 0) at Tue Oct 25 10:27:00 KST 2016, elapsed time 8 seconds

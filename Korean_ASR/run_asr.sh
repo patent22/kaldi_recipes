@@ -6,11 +6,6 @@
 # This is DNN based ASR.
 # The final model was trained with 117 Korean-readspeech datasets.
 # For dnn training, "train_multisplice_accel2.sh" was used.
-# 1. feedback feedrowrad
-# 2. digital signal proceessing 어떻게 제너레이트 되는가
-# 3. dsp에서 formant 어케 계산
-# 4. fundamental frequenct 계산 어떻게?
-# 5. 스펙트럼 어떻게 게산?
 
 
 # Kaldi directory ./kaldi

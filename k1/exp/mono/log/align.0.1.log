@@ -1,0 +1,15 @@
+# align-equal-compiled "ark:gunzip -c /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/fsts.1.gz|" "ark:copy-feats ark:/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/fft_feature/new_fft.1.ark ark:- |" ark,t:- | gmm-acc-stats-ali --binary=true /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/0.mdl "ark:copy-feats ark:/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/fft_feature/new_fft.1.ark ark:- |" ark:- /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/0.1.acc 
+# Started at Thu Oct 27 13:15:30 KST 2016
+#
+gmm-acc-stats-ali --binary=true /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/0.mdl 'ark:copy-feats ark:/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/fft_feature/new_fft.1.ark ark:- |' ark:- /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/0.1.acc 
+align-equal-compiled 'ark:gunzip -c /Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/exp/mono/fsts.1.gz|' 'ark:copy-feats ark:/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/fft_feature/new_fft.1.ark ark:- |' ark,t:- 
+copy-feats ark:/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/fft_feature/new_fft.1.ark ark:- 
+copy-feats ark:/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/fft_feature/new_fft.1.ark ark:- 
+LOG (copy-feats:main():copy-feats.cc:101) Copied 5 feature matrices.
+LOG (align-equal-compiled:main():align-equal-compiled.cc:107) Success: done 5 utterances.
+LOG (copy-feats:main():copy-feats.cc:101) Copied 5 feature matrices.
+LOG (gmm-acc-stats-ali:main():gmm-acc-stats-ali.cc:112) Done 5 files, 0 with errors.
+LOG (gmm-acc-stats-ali:main():gmm-acc-stats-ali.cc:115) Overall avg like per frame (Gaussian only) = -2161.66 over 4150 frames.
+LOG (gmm-acc-stats-ali:main():gmm-acc-stats-ali.cc:123) Written accs.
+# Accounting: time=4 threads=1
+# Ended (code 0) at Thu Oct 27 13:15:34 KST 2016, elapsed time 4 seconds
