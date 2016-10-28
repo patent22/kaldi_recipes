@@ -17,6 +17,7 @@ Python 3.5
 
 
 ### PRE-REQUISITE
+
 1. **Install Kaldi**
  - Type below in command line.
     - $ git clone https://github.com/kaldi-asr/kaldi.git kaldi --origin upstream
@@ -33,6 +34,7 @@ Python 3.5
 
 
 ### MATERIALS (Data Preparation)
+
 1. **Audio files (.wav)** (of sampling rate at 16,000Hz)
  - Please provide audio file(s) in WAV format ('.wav') at 16,000Hz sampling rate.
  - Korean_FA is applied assuming that the sampling rate of input audio file(s) is 16,000Hz.
@@ -57,7 +59,7 @@ Python 3.5
 2. Open forced_align.sh with any text editor to specify user path of kaldi directory.
  - Change 'kaldi' name variable. (initial setting: kaldi=/home/kaldi)
 3. Run the code with the path of data to forced-align.
- - ex) $ sh forced_align.sh [options] [data directory]
+ - ex) $ sh forced_align.sh (options) (data directory)
  -     $ sh forced_align.sh -nw ./example/readspeech
  - Options:
 	 1) -h  | --help    : Showing instruction.
@@ -66,11 +68,13 @@ Python 3.5
 
 4. Textgrid(s) will be saved into data directoy.
 
+### NOTICE
+
+1. Do not copy or use audio files in the example directory for other purposes. However deleting them is allowed.
+2. Report bugs or provide any recommendation to us through the following email addresses.
 
 ### CONTACTS
 ---
-Report bugs or provide any recommendation to us through the following email addresses.
-
 
 Hyungwon Yang / hyung8758@gmail.com
 Jaekoo Kang / jaekoo.jk@gmail.com
@@ -80,6 +84,7 @@ Hosung Nam / hnam@korea.ac.kr
 
 
 ### VERSION HISTORY
+
 - v.1.0(08/27/16): gmm, sgmm_mmi, and dnn based Korean FA is released.
 - v.1.1(09/06/16): g2p updated. monophone model is added.
 - v.1.2(10/10/16): phoneset is simplified. Choosing model such as dnn or gmm for forced alignment is no longer available. 

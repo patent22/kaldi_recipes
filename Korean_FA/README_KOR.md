@@ -72,13 +72,11 @@ Python 3.5
 본 프로그램에 문제가 발견되거나 제안할 내용이 있으면 다음 주소로 연락 주시기 바랍니다.
 
 
-(Student) Hyungwon Yang / hyung8758@gmail.com
+Hyungwon Yang / hyung8758@gmail.com
+Jaekoo Kang / jaekoo.jk@gmail.com
+Yejin Cho / scarletcho@korea.ac.kr
 
-(Student) Jaekoo Kang / jaekoo.jk@gmail.com
-
-(Student) Yejin Cho / scarletcho@korea.ac.kr
-
-(Advisor) Hosung Nam / hnam@korea.ac.kr
+Hosung Nam / hnam@korea.ac.kr
 
 
 ### VERSION HISTORY

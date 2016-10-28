@@ -86,6 +86,9 @@ for check in dir_list:
         # Read all files
         with open('/'.join([source_dir,check]),'r') as txt:
             txt_box.append(txt.read().split('\n')[1::])
+# Remove last line if it is added.
+if txt_box[0][-1] == '':
+    txt_box[0] = txt_box[0][0:-1]
 
 # Data for second tier.
 rg_list=[]

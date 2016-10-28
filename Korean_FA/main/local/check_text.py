@@ -26,7 +26,6 @@ if len(sys.argv) != 2:
 
 # text directory
 data_dir = sys.argv[1]
-data_dir = "/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/Korean_FA/example/my_record"
 
 # Import text files.
 data_list = os.listdir(data_dir)

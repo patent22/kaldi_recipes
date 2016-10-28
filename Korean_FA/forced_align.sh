@@ -227,13 +227,13 @@ for turn in `seq 1 $wav_num`; do
 							$retry_beam \
 							$turn >> $log_dir/process.$turn.log 2>/dev/null
 
-		decode_check=`cat tmp/log/align.$turn.log | grep "Did not successfully decode file" | wc -w`
-		if [ $decode_check == 0 ]; then
+		align_check=`cat tmp/log/align.$turn.log | grep "Did not successfully decode file" | wc -w`
+		if [ $align_check == 0 ]; then
 			break
-		elif [ $decode_check == 0 ] && [ $pass == 4 ]; then
+		elif [ $align_check == 0 ] && [ $pass == 4 ]; then
 			echo "WARNNING: $sel_wav was difficult to align, the result might be unsatisfactory."
 			break
-		elif [ $decode_check != 0 ] && [ $pass == 4 ]; then
+		elif [ $align_check != 0 ] && [ $pass == 4 ]; then
 			echo -e "Fail Alignment: $sel_wav might be corrupted.\n" | tee -a $log_dir/process.$turn.log
 			fail_num=$((fail_num+1))
 			passing=1
@@ -262,8 +262,10 @@ for turn in `seq 1 $wav_num`; do
 		cat $result_dir/final_ali.txt >> $log_dir/process.$turn.log
 
 		# Split the whole text files.
-		echo "Spliting the whole aligned data." >> $log_dir/process.$turn.log
-		python3 main/local/splitAlignments.py $result_dir/final_ali.txt $result_dir >> $log_dir/process.$turn.log || exit 1;
+		echo "Inserting labels for each column in the aligned data." >> $log_dir/process.$turn.log
+		mkdir -p $result_dir/tmp_fa
+		int_line="utt_id\tfile_id\tphone_id\tutt_num\tstart_ph\tdur_ph\tphone\tstart_utt\tend_utt\tstart_real\tend_real"
+		cat $result_dir/final_ali.txt | sed '1i '"${int_line}" > $result_dir/tmp_fa/test01.txt
 
 		# Combining prono and rom texts. (It also generate text_num.)
 		bash main/local/make_rg_lexicon.sh >/dev/null || exit 1;
@@ -282,8 +284,8 @@ for turn in `seq 1 $wav_num`; do
 	fi
 
 	passing=0
-	rm -rf tmp/{mfcc,model_ali,prono,result,romanized}/*
-	rm -rf $source_dir
+	#rm -rf tmp/{mfcc,model_ali,prono,result,romanized}/*
+	#rm -rf $source_dir
 done
 
 echo "===================== FORCED ALIGNMENT FINISHED  =====================" | tee -a $log_dir/process.$turn.log
@@ -293,6 +295,8 @@ echo "Success     :" $((wav_num-fail_num))									  | tee -a $log_dir/process.$
 echo "Fail        :" $fail_num												  | tee -a $log_dir/process.$turn.log
 echo "----------------------------------------------------------------------" | tee -a $log_dir/process.$turn.log
 echo "Result      :" $((wav_num-fail_num)) /$wav_num "(Success / Total)"	  | tee -a $log_dir/process.$turn.log
+if [ $fail_num -gt 0 ]; then 
+echo "To check the failed results, refer to the ./log directory."; fi
 echo
 
 mv tmp/log .
