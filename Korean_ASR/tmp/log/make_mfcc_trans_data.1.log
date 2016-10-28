@@ -1,0 +1,10 @@
+# compute-mfcc-feats --verbose=2 --config=models/conf/mfcc.conf scp,p:tmp/log/wav_trans_data.1.scp ark:- | copy-feats --compress=true ark:- ark,scp:/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/Korean_ASR/tmp/mfcc/raw_mfcc_trans_data.1.ark,/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/Korean_ASR/tmp/mfcc/raw_mfcc_trans_data.1.scp 
+# Started at Tue Oct 25 10:26:51 KST 2016
+#
+copy-feats --compress=true ark:- ark,scp:/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/Korean_ASR/tmp/mfcc/raw_mfcc_trans_data.1.ark,/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/Korean_ASR/tmp/mfcc/raw_mfcc_trans_data.1.scp 
+compute-mfcc-feats --verbose=2 --config=models/conf/mfcc.conf scp,p:tmp/log/wav_trans_data.1.scp ark:- 
+VLOG[2] (compute-mfcc-feats:main():compute-mfcc-feats.cc:178) Processed features for key test01
+LOG (compute-mfcc-feats:main():compute-mfcc-feats.cc:181)  Done 1 out of 1 utterances.
+LOG (copy-feats:main():copy-feats.cc:101) Copied 1 feature matrices.
+# Accounting: time=0 threads=1
+# Ended (code 0) at Tue Oct 25 10:26:51 KST 2016, elapsed time 0 seconds

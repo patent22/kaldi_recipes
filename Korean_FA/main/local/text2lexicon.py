@@ -1,10 +1,13 @@
-# 														EMCS Labs
-# 														Hyungwon Yang
-# 														hyung8758@gmail.com
-'''
+"""
+Copyright 2016  Korea University & EMCS Labs  (Author: Hyungwon Yang)
+Apache 2.0
+
+*** Introduction ***
 This script generates lexicon.txt and lexiconp.txt files based on corpus data.
-Running on python3.
-'''
+
+*** USAGE ***
+Ex. python3 text2lexicon.py $text_directory $save_directory
+"""
 
 import sys
 import os
@@ -14,7 +17,12 @@ import re
 # Arguments check.
 if len(sys.argv) != 3:
     print(len(sys.argv))
-    raise ValueError('The number of input arguments is wrong.')
+    print("Input arguments are incorrectly provided. Two argument should be assigned.")
+    print("1. Text directory.")
+    print("2. Save directory.")
+    print("*** USAGE ***")
+    print("Ex. python3 text2lexicon.py $text_directory $save_directory")
+    raise ValueError('RETURN')
 
 # corpus data directory
 text_dir=sys.argv[1]
@@ -93,47 +101,3 @@ with open(outputfile+'p.txt','w') as otxt:
     for num in range(len(final_context)):
         prob_in = re.sub('\t','\t1.0\t',final_context[num])
         otxt.write(prob_in)
-
-
-
-############# Previous version (deprecated) #############
-
-'''
-# Prepare word set.
-text_box = []
-list_box = []
-with open(textfile,'r')as txt:
-    for line in txt:
-        text_box = line.split()[1:]
-        # Listing words.
-        for num in text_box:
-            list_box.append(num)
-# Ready for word set.
-sort_list=list(set(list_box))
-sort_list.sort()
-
-
-# Prepare phoneme set.
-new_box=sort_list
-tag = []
-tag_list=[]
-for word in new_box:
-    proc_word=re.sub('[-]','',word)
-
-    for turn in range(int(len(proc_word)/2)):
-        tag.append(proc_word[turn*2:(turn*2)+2])
-    # Ready for phoneme set.
-    tag_list.append(tag)
-    tag=[]
-
-
-# Combine word and phoneme sets to make a lexicon.txt file.
-with open(outputfile+'.txt','w') as lex:
-    for word,phoneme in zip(sort_list, tag_list):
-        lex.write(word+'\t'+' '.join(phoneme[0:])+'\n')
-
-# Combine word, probability, and phoneme sets to make a lexiconp.txt file.
-with open(outputfile+'p.txt','w') as lex:
-    for word,phoneme in zip(sort_list, tag_list):
-        lex.write(word+'\t'+'1.0 '+' '.join(phoneme[0:])+'\n')
-'''

@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-# 														EMCS Labs
-# 														Hyungwon Yang
-# 														hyung8758@gmail.com
 """
+Copyright 2016  Korea University & EMCS Labs  (Author: Hyungwon Yang)
+Apache 2.0
+
+*** Introduction ***
 This script generates FA requisite files from sound wav and text file.
 
-2 input arguments: sound wav and text file.
-
+*** USAGE ***
+Ex. python3 fa_prep_data.py $audio_files $text_files
 """
 
 import sys
@@ -17,7 +18,12 @@ import wave
 # Arguments check.
 if len(sys.argv) != 3:
     print(len(sys.argv))
-    raise ValueError('The number of input arguments is wrong.')
+    print("Input arguments are incorrectly provided. Two argument should be assigned.")
+    print("1. Data directory.")
+    print("2. Save directory.")
+    print("*** USAGE ***")
+    print("Ex. python3 fa_prep_data.py $data_directory $save_directory")
+    raise ValueError('RETURN')
 
 # sound and text directory
 data_dir = sys.argv[1]

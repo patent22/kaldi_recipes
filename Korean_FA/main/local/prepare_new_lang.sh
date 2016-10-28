@@ -1,25 +1,22 @@
 #!/bin/bash
-#                             EMCS Labs
-#                             Hyungwon Yang
-#                             hyung8758@gmail.com
+# Copyright 2016  Korea University & EMCS Labs  (Author: Hyungwon Yang)
+# Apache 2.0
 
-
-if [ $# -ne 4 ]; then
-   echo "Three arguments should be assigned." 
+if [ $# -ne 3 ]; then
+   echo "Input arguments are incorrectly provided. Three arguments should be assigned." 
    echo "1. dictionary directory."
    echo "2. language directory."
-   echo "3. data directory."
-   echo "4. oov_word" && exit 1
+   echo "3. oov_word" 
+   echo "*** USAGE ***"
+   echo "Ex. sh prepare_new_lang.sh $dir $lang $oov_word " && exit 1
 fi
 
 # dictionary directory.
 dict_dir=$1
 # language directory.
 lang_dir=$2
-# Data directory.
-data_dir=$3
 # oov word.
-oov_word=$4
+oov_word=$3
 
 ### dict directory ###
 # lexcionp.
@@ -30,7 +27,7 @@ echo -e "<SIL>\n<UNK>" >  $dict_dir/silence_phones.txt
 echo "silence.txt file was generated."
 
 # nonsilence.
-awk '{$1=""; print $0}' $dict_dir/lexicon.txt | tr -s ' ' '\n' | sort -u | sed '/^$/d' >  $dict_dir/nonsilence_phones.txt
+awk '{$1=""; print $0}' $dict_dir/lexicon.txt | tr -s ' ' '\n' | sort -u | sed '/^$/d' > $dict_dir/nonsilence_phones.txt
 echo "nonsilence.txt file was generated."
 
 # optional_silence.
@@ -47,6 +44,6 @@ sed -i '1 i\<UNK> <UNK>' $dict_dir/lexicon.txt
 sed -i '1 i\<UNK> 1.0 <UNK>' $dict_dir/lexiconp.txt
 
 ### lang directory ###
-utils/prepare_lang.sh $dict_dir $oov_word main/data/local/lang $lang_dir 1>/dev/null
+main/local/core/prepare_lang.sh $dict_dir $oov_word main/data/local/lang $lang_dir >/dev/null
 
 

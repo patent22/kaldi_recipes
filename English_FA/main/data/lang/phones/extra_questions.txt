@@ -1,0 +1,17 @@
+pau sil
+pau_B sil_B 
+pau_E sil_E 
+pau_I sil_I 
+pau_S sil_S 
+ax-h_B b_B bcl_B ch_B d_B dcl_B dx_B g_B gcl_B jh_B k_B kcl_B l_B m_B n_B ng_B nx_B p_B pcl_B r_B t_B tcl_B 
+ax-h_E b_E bcl_E ch_E d_E dcl_E dx_E g_E gcl_E jh_E k_E kcl_E l_E m_E n_E ng_E nx_E p_E pcl_E r_E t_E tcl_E 
+ax-h_I b_I bcl_I ch_I d_I dcl_I dx_I g_I gcl_I jh_I k_I kcl_I l_I m_I n_I ng_I nx_I p_I pcl_I r_I t_I tcl_I 
+ax-h_S b_S bcl_S ch_S d_S dcl_S dx_S g_S gcl_S jh_S k_S kcl_S l_S m_S n_S ng_S nx_S p_S pcl_S r_S t_S tcl_S 
+aa_B ae_B ah_B ao_B ax_B axr_B dh_B eh_B er_B ey_B f_B hh_B hv_B ih_B ix_B iy_B ow_B s_B sh_B th_B uh_B uw_B ux_B v_B w_B y_B z_B zh_B 
+aa_E ae_E ah_E ao_E ax_E axr_E dh_E eh_E er_E ey_E f_E hh_E hv_E ih_E ix_E iy_E ow_E s_E sh_E th_E uh_E uw_E ux_E v_E w_E y_E z_E zh_E 
+aa_I ae_I ah_I ao_I ax_I axr_I dh_I eh_I er_I ey_I f_I hh_I hv_I ih_I ix_I iy_I ow_I s_I sh_I th_I uh_I uw_I ux_I v_I w_I y_I z_I zh_I 
+aa_S ae_S ah_S ao_S ax_S axr_S dh_S eh_S er_S ey_S f_S hh_S hv_S ih_S ix_S iy_S ow_S s_S sh_S th_S uh_S uw_S ux_S v_S w_S y_S z_S zh_S 
+aw_B ay_B oy_B 
+aw_E ay_E oy_E 
+aw_I ay_I oy_I 
+aw_S ay_S oy_S 

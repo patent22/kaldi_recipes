@@ -1,9 +1,8 @@
 #!/bin/bash
-# 														Jaekoo Kang
-# 														Hyungwon Yang
-# 														EMCS Labs
+# Copyright 2016  Korea University & EMCS Labs  (Author: Hyungwon Yang)
+# Apache 2.0
 #
-# This script combine romanized and pronunciation texts together.
+# This script combines romanized and pronunciation texts together.
 # It will be used for second word tier in Textgrid.
 
 # Remove previous files.

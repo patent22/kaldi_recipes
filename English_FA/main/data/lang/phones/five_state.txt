@@ -1,0 +1,12 @@
+aw_B
+aw_E
+aw_I
+aw_S
+ay_B
+ay_E
+ay_I
+ay_S
+oy_B
+oy_E
+oy_I
+oy_S

@@ -1,0 +1,2 @@
+compute-cmvn-stats --spk2utt=ark:main/data/trans_data/spk2utt scp:main/data/trans_data/feats.scp ark,scp:/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/English_FA/tmp//cmvn_trans_data.ark,/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/English_FA/tmp//cmvn_trans_data.scp 
+LOG (compute-cmvn-stats:main():compute-cmvn-stats.cc:171) Done accumulating CMVN stats for 1 utterances; 0 had errors.

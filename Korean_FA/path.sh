@@ -3,10 +3,6 @@
 # modified by JK
 # modified by HW
 
-#---------------------------------------------#
-# change your directory in line 9 and line 37 #
-#---------------------------------------------#
-
 root=$1
 #valgrind=yes
 valgrind=no
