@@ -1,7 +1,6 @@
 #!/bin/bash
-# 														Hyungwon Yang
-#														hyung8758@gmail.com
-# 														EMCS Labs
+# Copyright 2016  Korea University & EMCS Labs  (Author: Hyungwon Yang)
+# Apache 2.0
 #
 # This script duplicates a givien text file that transcribed wav file 
 # along with the names of all wave files. 
@@ -12,10 +11,11 @@
 
 # Argument setting.
 if [ $# -ne 2 ]; then
-   echo "Input arguements are incorrectly provided. Please follow the direction belows."
-   echo "Input Argument:"
+   echo "Input arguements are incorrectly provided. Two arguments should be assigned."
    echo "1. Text file."
-   echo "2. Wave file directory." && exit 1
+   echo "2. Wave file directory." 
+   echo "*** USAGE ***"
+   echo "Ex. sh text4allwav $textfile_name $wave_file_directory " && exit 1
 fi
 
 # Text file

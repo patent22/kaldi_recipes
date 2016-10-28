@@ -1,13 +1,18 @@
-# 														Hyungwon Yang
-# 														EMCS Labs
-# 														hyung8758@gmail.com
 """
+Copyright 2016  Korea University & EMCS Labs  (Author: Hyungwon Yang)
+Apache 2.0
+
+*** Introduction ***
 This script generates textgrid files.
+Basically, it generate 2 tiers in the TextGrids: phone and word labels.
+Deleting one of those tiers is available by providing an option.
 
-2 input arguments:
-    1. source data:
-    2. result file.
-
+*** USAGE ***
+Ex. python3 generate_textgrid.py [options] $data_directory
+options:
+-h  | --help    : Showing instruction.
+-nw | --no-word : Deleting word tier.
+-np | --no-phone: Deleting phone tier.
 """
 
 import os
@@ -28,8 +33,19 @@ word_option = options.no_word
 phone_option = options.no_phone
 
 if len(args) != 4:
-    raise ValueError('4 input arguments should be provided.\nProvided:\nThe number of Input Arguments: '
-                     + str(len(args)) + '\nThe contents of Input Arguments: ' + ' '.join(args))
+    print(len(args))
+    print("Input arguments are incorrectly provided. Four argument should be assigned.")
+    print("1. Result file directory.")
+    print("2. Word files.")
+    print("3. The number of texts.")
+    print("4. Save directory.")
+    print("*** USAGE ***")
+    print("Ex. python3 generate_textgrid.py [options] $result_file_directory $word_files $text_number $save_directory")
+    print("*** OPTIONS ***")
+    print("-h  | --help    : Showing instruction.")
+    print("-nw | --no-word : Deleting word tier.")
+    print("-np | --no-phone: Deleting phone tier.")
+    raise ValueError('RETURN')
 
 # Import arguments.
 source_dir=args[0]

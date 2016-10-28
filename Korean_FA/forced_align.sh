@@ -1,9 +1,21 @@
 #!/bin/bash
-# 														Hyungwon Yang
-# 														Jaekoo Kang
-# 														Yejin Cho
-# 														EMCS Labs
 #
+# Copyright 2016 Media Zen & 
+#				 Korea University & EMCS Labs (author: Hyungwon Yang)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# *** INTRODUCTION ***
 # This is the forced alignment toolkit developed by EMCS labs.
 # Run this script in the folder in which force_align.sh presented.
 # It means that the user needs to nevigate to this folder in linux or
@@ -13,7 +25,7 @@
 # from outside of this folder. 
 
 # Kaldi directory ./kaldi
-kaldi=/home/kaldi
+kaldi=/Users/hyungwonyang/kaldi
 # Model directory
 fa_model=model4fa
 # lexicon directory
@@ -96,6 +108,7 @@ if [ ! -d $data_dir ]; then
 fi
 # This is just test line remove when the script is completed.
 rm -rf log main/data
+[ -d tmp ] && rm -rf tmp
 
 # Directory check.
 source path.sh $kaldi
@@ -191,15 +204,18 @@ for turn in `seq 1 $wav_num`; do
 	
 	# Forced alignment: aligning data.
 	echo "Force aligning the input data." >> $log_dir/process.$turn.log
-	for pass in 1 2 3; do
+	for pass in 1 2 3 4; do
 		if [ $pass == 1 ]; then
 			beam=10
 			retry_beam=40
-		elif [ $pass == 2]; then
+		elif [ $pass == 2 ]; then
 			beam=50
 			retry_beam=60
-		elif [ $pass == 3]; then
+		elif [ $pass == 3 ]; then
 			beam=70
+			retry_beam=80;
+		elif [ $pass == 4 ]; then
+			beam=90
 			retry_beam=100; 
 		fi
 		$code_dir/align_si.sh --nj $align_nj --cmd "$cmd" \
@@ -209,18 +225,21 @@ for turn in `seq 1 $wav_num`; do
 							tmp/model_ali \
 							$beam \
 							$retry_beam \
-							$turn >> $log_dir/process.$turn.log ||  exit 1;
+							$turn >> $log_dir/process.$turn.log 2>/dev/null
 
 		decode_check=`cat tmp/log/align.$turn.log | grep "Did not successfully decode file" | wc -w`
 		if [ $decode_check == 0 ]; then
 			break
-		elif [ $decode_check != 0 ] && [ $pass == 3 ]; then
-			"Fail Alignment: $sel_wav might be corrupted." | tee -a $log_dir/process.$turn.log
+		elif [ $decode_check == 0 ] && [ $pass == 4 ]; then
+			echo "WARNNING: $sel_wav was difficult to align, the result might be unsatisfactory."
+			break
+		elif [ $decode_check != 0 ] && [ $pass == 4 ]; then
+			echo -e "Fail Alignment: $sel_wav might be corrupted.\n" | tee -a $log_dir/process.$turn.log
 			fail_num=$((fail_num+1))
 			passing=1
 		fi
 	done
-	if [ passing != 1 ]; then
+	if [ $passing -ne 1 ]; then
 		# CTM file conversion.
 		$kaldi/src/bin/ali-to-phones --ctm-output model/$fa_model/final.mdl ark:"gunzip -c tmp/model_ali/ali.1.gz|" - > tmp/model_ali/ali.1.ctm 
 		echo "ctm result: " >> $log_dir/process.$turn.log
@@ -259,11 +278,11 @@ for turn in `seq 1 $wav_num`; do
 								tmp/romanized/text_num \
 								$source_dir >/dev/null || exit 1;
 		echo -e "$sel_wav was successfully aligned.\n" | tee -a $log_dir/process.$turn.log
+		mv $source_dir/*.TextGrid $data_dir
 	fi
 
 	passing=0
 	rm -rf tmp/{mfcc,model_ali,prono,result,romanized}/*
-	mv $source_dir/*.TextGrid $data_dir
 	rm -rf $source_dir
 done
 

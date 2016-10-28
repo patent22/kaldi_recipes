@@ -1,11 +1,15 @@
-# 														Hyungwon Yang
-# 														EMCS Labs
-# 														hyung8758@gmail.com
 """
+Copyright 2016  Korea University & EMCS Labs  (Author: Hyungwon Yang)
+Apache 2.0
+
+*** Introduction ***
 This script reads the text files and checks sentences.
 Multiple spaces, tabs, and nuw lines will be removed.
 
+*** USAGE ***
+Ex. python3 check_text.py $data_directory
 """
+
 import sys
 import os
 import re
@@ -14,10 +18,15 @@ import time
 # Arguments check.
 if len(sys.argv) != 2:
     print(len(sys.argv))
-    raise ValueError('The number of input arguments is wrong.')
+    print("Input arguments are incorrectly provided. One argument should be assigned.")
+    print("1. data directory.")
+    print("*** USAGE ***")
+    print("Ex. python3 check_text.py $data_directory")
+    raise ValueError('RETURN')
 
 # text directory
 data_dir = sys.argv[1]
+data_dir = "/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/Korean_FA/example/my_record"
 
 # Import text files.
 data_list = os.listdir(data_dir)
@@ -57,8 +66,9 @@ for rd in text_list:
             raise ValueError("Shut down the process.")
 
         # Fix.
-        txt_tmp=re.sub('\s{2,}|[\t\n]',' ',text_try)
-        txt_fixed=re.sub('\s$','',txt_tmp)
+        txt_tmp1=re.sub('\s{2,}|[\t\n]',' ',text_try)
+        txt_tmp2=re.sub('[.,?/;:!@#$%^&*-_=+(){}\'\"]','',txt_tmp1)
+        txt_fixed=re.sub('\s$','',txt_tmp2)
 
     with open('/'.join([data_dir,rd]),'w') as wr:
         wr.write(txt_fixed)

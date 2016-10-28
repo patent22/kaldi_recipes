@@ -57,23 +57,26 @@ Python 3.5
 2. Open forced_align.sh with any text editor to specify user path of kaldi directory.
  - Change 'kaldi' name variable. (initial setting: kaldi=/home/kaldi)
 3. Run the code with the path of data to forced-align.
- - ex) $ forced_align.sh ./example/readspeech
- -     $ (Main code: forced_align.sh) (relative path of the input data directory)
+ - ex) $ sh forced_align.sh [options] [data directory]
+ -     $ sh forced_align.sh -nw ./example/readspeech
+ - Options:
+	 1) -h  | --help    : Showing instruction.
+	 2) -nw | --no-word : Deleting word tier.
+	 3) -np | --no-phone: Deleting phone tier.
+
 4. Textgrid(s) will be saved into data directoy.
 
 
 ### CONTACTS
 ---
-Please report bugs or provide any recommendation to us through the following email addresses.
+Report bugs or provide any recommendation to us through the following email addresses.
 
 
-(Student) Hyungwon Yang / hyung8758@gmail.com
+Hyungwon Yang / hyung8758@gmail.com
+Jaekoo Kang / jaekoo.jk@gmail.com
+Yejin Cho / scarletcho@korea.ac.kr
 
-(Student) Jaekoo Kang / jaekoo.jk@gmail.com
-
-(Student) Yejin Cho / scarletcho@korea.ac.kr
-
-(Advisor) Hosung Nam / hnam@korea.ac.kr
+Hosung Nam / hnam@korea.ac.kr
 
 
 ### VERSION HISTORY

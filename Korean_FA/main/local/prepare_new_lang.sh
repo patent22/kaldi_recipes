@@ -1,14 +1,14 @@
 #!/bin/bash
-#                             			Hyungwon Yang
-#                             			hyung8758@gmail.com
-#										EMCS Labs
-
+# Copyright 2016  Korea University & EMCS Labs  (Author: Hyungwon Yang)
+# Apache 2.0
 
 if [ $# -ne 3 ]; then
-   echo "Three arguments should be assigned." 
+   echo "Input arguments are incorrectly provided. Three arguments should be assigned." 
    echo "1. dictionary directory."
    echo "2. language directory."
-   echo "3. oov_word" && exit 1
+   echo "3. oov_word" 
+   echo "*** USAGE ***"
+   echo "Ex. sh prepare_new_lang.sh $dir $lang $oov_word " && exit 1
 fi
 
 # dictionary directory.
