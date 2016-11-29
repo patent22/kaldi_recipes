@@ -45,8 +45,9 @@ model_dir=models/$model_name
 if [ ! -f path.sh ]; then
 bash local/make_path.sh $kaldi; fi
 source path.sh
+[ ! -d data ] && mkdir data
 [ -d tmp ] && rm -rf tmp
-rm data/*
+[ -d data ] && rm data/*
 
 # Folders.
 mkdir -p tmp/trans_data

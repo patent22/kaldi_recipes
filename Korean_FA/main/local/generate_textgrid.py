@@ -60,17 +60,14 @@ if word_option is 'False':
     tier_num+=1
 elif word_option is 'True':
     print("Word label is excluded from TextGrid.")
-print(tier_num)
 if phone_option is 'False':
     tier_num+=1
 elif phone_option is 'True':
     print("Phone label is excluded from TextGrid.")
-print(tier_num)
 if tier_num == 0:
     print("WARNNING: Both word and phone labels cannot be excluded. --no-word option is set to 'False'.")
     word_option = 'False'
     tier_num=1
-print(tier_num)
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
 

@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Copyright 2016 Media Zen & 
-#				 Korea University & EMCS Labs (author: Hyungwon Yang)
+#				 Korea University (author: Hyungwon Yang)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#   http://www.apache.org/licenses/LICENSE-2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -107,8 +107,9 @@ if [ ! -d $data_dir ]; then
 	echo "ERROR: $data_dir is not present. Please check the data directory."  && exit 1
 fi
 # This is just test line remove when the script is completed.
-rm -rf log main/data
+[ -d log ] && rm -rf log
 [ -d tmp ] && rm -rf tmp
+[ -d main/data ] && rm -rf main/data
 
 # Directory check.
 source path.sh $kaldi
@@ -231,7 +232,7 @@ for turn in `seq 1 $wav_num`; do
 		if [ $align_check == 0 ]; then
 			break
 		elif [ $align_check == 0 ] && [ $pass == 4 ]; then
-			echo "WARNNING: $sel_wav was difficult to align, the result might be unsatisfactory."
+			echo "WARNNING: $sel_wav was difficult to align, the result might be unsatisfactory." | tee -a $log_dir/process.$turn.log
 			break
 		elif [ $align_check != 0 ] && [ $pass == 4 ]; then
 			echo -e "Fail Alignment: $sel_wav might be corrupted.\n" | tee -a $log_dir/process.$turn.log
@@ -241,14 +242,13 @@ for turn in `seq 1 $wav_num`; do
 	done
 	if [ $passing -ne 1 ]; then
 		# CTM file conversion.
-		$kaldi/src/bin/ali-to-phones --ctm-output model/$fa_model/final.mdl ark:"gunzip -c tmp/model_ali/ali.1.gz|" - > tmp/model_ali/ali.1.ctm 
-		echo "ctm result: " >> $log_dir/process.$turn.log
-		cat tmp/model_ali/ali.1.ctm >> $log_dir/process.$turn.log
-
 		[ ! -d $result_dir ] && mkdir -p $result_dir
-		cat tmp/model_ali/*.ctm > $result_dir/merged_ali.txt
+		$kaldi/src/bin/ali-to-phones --ctm-output model/$fa_model/final.mdl ark:"gunzip -c tmp/model_ali/ali.1.gz|" - > tmp/model_ali/raw_ali.ctm
+		echo "ctm result: " >> $log_dir/process.$turn.log
+		cat tmp/model_ali/raw_ali.ctm >> $log_dir/process.$turn.log
 
 		# Move requisite files.
+		cp tmp/model_ali/raw_ali.ctm $result_dir/raw_ali.txt
 		cp main/data/lang/phones.txt $result_dir
 		cp $trans_dir/trans$turn/segments $result_dir
 
@@ -256,7 +256,7 @@ for turn in `seq 1 $wav_num`; do
 		echo "Reconstructing the alinged data." >> $log_dir/process.$turn.log
 		python3 main/local/id2phone.py  $result_dir/phones.txt \
 										$result_dir/segments \
-										$result_dir/merged_ali.txt \
+										$result_dir/raw_ali.txt \
 										$result_dir/final_ali.txt >> $log_dir/process.$turn.log || exit 1;
 		echo "final_ali result: " >> $log_dir/process.$turn.log
 		cat $result_dir/final_ali.txt >> $log_dir/process.$turn.log
@@ -265,27 +265,27 @@ for turn in `seq 1 $wav_num`; do
 		echo "Inserting labels for each column in the aligned data." >> $log_dir/process.$turn.log
 		mkdir -p $result_dir/tmp_fa
 		int_line="utt_id\tfile_id\tphone_id\tutt_num\tstart_ph\tdur_ph\tphone\tstart_utt\tend_utt\tstart_real\tend_real"
-		cat $result_dir/final_ali.txt | sed '1i '"${int_line}" > $result_dir/tmp_fa/test01.txt
+		cat $result_dir/final_ali.txt | sed '1i '"${int_line}" > $result_dir/tmp_fa/tagged_final_ali.txt
 
-		# Combining prono and rom texts. (It also generate text_num.)
+		# Combining prono and rom texts. (It also generates text_num.)
 		bash main/local/make_rg_lexicon.sh >/dev/null || exit 1;
 
 		# Generate Textgrid files and save it to the data directory.
 		echo "Organizing the aligned data to textgrid format." >> $log_dir/process.$turn.log
-		# Word tier language selection. 0: English graphemes 1: Korean
-		echo $tg_word_opt $tg_phone_opt
+		# Generate textgrid.
 		python3 main/local/generate_textgrid.py $tg_word_opt $tg_phone_opt \
 								$result_dir/tmp_fa \
 								tmp/romanized/rom_graph_lexicon.txt \
 								tmp/romanized/text_num \
 								$source_dir >/dev/null || exit 1;
 		echo -e "$sel_wav was successfully aligned.\n" | tee -a $log_dir/process.$turn.log
-		mv $source_dir/*.TextGrid $data_dir
+		tg_name=`echo $sel_txt | sed 's/.txt//g'`
+		mv $source_dir/tagged_final_ali.TextGrid $data_dir/$tg_name.TextGrid
 	fi
 
 	passing=0
-	#rm -rf tmp/{mfcc,model_ali,prono,result,romanized}/*
-	#rm -rf $source_dir
+	rm -rf tmp/{mfcc,model_ali,prono,result,romanized}/*
+	rm -rf $source_dir
 done
 
 echo "===================== FORCED ALIGNMENT FINISHED  =====================" | tee -a $log_dir/process.$turn.log

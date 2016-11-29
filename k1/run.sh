@@ -30,7 +30,7 @@ logdir=$curdir/log
 resultfile=result.txt
 # Number of jobs.
 train_nj=2
-test_nj=2
+test_nj=1
 
 # Start logging.
 mkdir -p $logdir
@@ -43,8 +43,8 @@ echo DATA_ROOT: $source | tee -a $logdir/$logfile.log
 START=`date +%s`
 
 # This step will generate path.sh based on written path above.
-. local/make_path.sh $kaldi $curdir
-  source path.sh
+[ ! -f path.sh ] && bash local/make_path.sh $kaldi $curdir
+source path.sh
 . cmd.sh
 . local/check_code.sh $kaldi
 
@@ -205,7 +205,7 @@ steps/train_mono.sh \
 	$mono_train_opt \
 	$curdir/data/train \
 	$curdir/data/lang \
-	$curdir/exp/mono || exit1
+	$curdir/exp/mono || exit 1
 
 # # Graph structuring.
 # # make HCLG graph (optional! train과는 무관, 오직 decode만을 위해.)
@@ -281,7 +281,7 @@ steps/train_deltas.sh \
 	$curdir/data/train \
 	$curdir/data/lang \
 	$curdir/exp/mono_ali \
-	$curdir/exp/tri1 || exit1
+	$curdir/exp/tri1 || exit 1
 
 # Graph drawing.
 echo "Generating delta+double-delta graph..." | tee -a $logdir/$logfile.log 
@@ -297,7 +297,7 @@ steps/align_si.sh \
 	$curdir/data/train \
 	$curdir/data/lang \
 	$curdir/exp/tri1 \
-	$curdir/exp/tri1_ali ||  exit1
+	$curdir/exp/tri1_ali ||  exit 1
 
 # Data decoding.
 # echo "Decoding with delta+double-delta model..." | tee -a $logdir/$logfile.log 
@@ -345,7 +345,7 @@ steps/train_lda_mllt.sh \
 	$curdir/data/train \
 	$curdir/data/lang \
 	$curdir/exp/tri1_ali \
-	$curdir/exp/tri2 ||  exit1
+	$curdir/exp/tri2 ||  exit 1
 
 # Graph drawing.
 echo "Generating LDA+MLLT graph..." | tee -a $logdir/$logfile.log
@@ -361,7 +361,7 @@ steps/align_si.sh \
 	$curdir/data/train \
 	$curdir/data/lang \
 	$curdir/exp/tri2 \
-	$curdir/exp/tri2_ali ||  exit1
+	$curdir/exp/tri2_ali ||  exit 1
 
 # Data decoding.
 # echo "Decoding with LDA+MLLT model..." | tee -a $logdir/$logfile.log
@@ -411,7 +411,7 @@ steps/train_sat.sh \
 	$curdir/data/train \
 	$curdir/data/lang \
 	$curdir/exp/tri2_ali \
-	$curdir/exp/tri3 ||  exit1
+	$curdir/exp/tri3 ||  exit 1
 
 # Graph drawing.
 echo "Generating LDA+MLLT+SAT graph..." | tee -a $logdir/$logfile.log
@@ -427,7 +427,7 @@ steps/align_fmllr.sh \
 	$curdir/data/train \
 	$curdir/data/lang \
 	$curdir/exp/tri3 \
-	$curdir/exp/tri3_ali ||  exit1
+	$curdir/exp/tri3_ali ||  exit 1
 
 # Data decoding: train and test datasets.
 echo "Decoding with Training LDA+MLLT+SAT model..." | tee -a $logdir/$logfile.log
@@ -483,7 +483,7 @@ steps/train_ubm.sh \
 	$curdir/data/train \
 	$curdir/data/lang \
 	$curdir/exp/tri3_ali \
-	$curdir/exp/ubm ||  exit1
+	$curdir/exp/ubm ||  exit 1
 
 # SGMM2 training.
 echo "Training SGMM2..." | tee -a $logdir/$logfile.log
@@ -495,7 +495,7 @@ steps/train_sgmm2.sh \
 	$curdir/data/lang \
 	$curdir/exp/tri3_ali \
 	$curdir/exp/ubm/final.ubm \
-	$curdir/exp/sgmm ||  exit1
+	$curdir/exp/sgmm ||  exit 1
 
 # Graph drawing.
 echo "Generating SGMM2 graph..." | tee -a $logdir/$logfile.log
@@ -511,7 +511,7 @@ steps/align_sgmm2.sh \
 	$curdir/data/train \
 	$curdir/data/lang \
 	$curdir/exp/sgmm \
-	$curdir/exp/sgmm_ali ||  exit1
+	$curdir/exp/sgmm_ali ||  exit 1
 
 Data decoding: train and test datasets.
 echo "Decoding with SGMM2 model..." | tee -a $logdir/$logfile.log
@@ -570,7 +570,7 @@ steps/make_denlats_sgmm2.sh \
 	$curdir/data/train \
 	$curdir/data/lang \
 	$curdir/exp/sgmm_ali \
-	$curdir/exp/sgmm_denlats ||  exit1
+	$curdir/exp/sgmm_denlats ||  exit 1
 echo "Running train_mmi_sgmm2.sh..." | tee -a $logdir/$logfile.log
 steps/train_mmi_sgmm2.sh \
 	$sgmmi_train_opt \
@@ -578,7 +578,7 @@ steps/train_mmi_sgmm2.sh \
 	$curdir/data/lang \
 	$curdir/exp/sgmm_ali \
 	$curdir/exp/sgmm_denlats \
-	$curdir/exp/sgmm_mmi ||  exit1
+	$curdir/exp/sgmm_mmi ||  exit 1
 
 # Data decoding: train and test datasets.
 echo "Decoding with SGMM2+MMI model..." | tee -a $logdir/$logfile.log
@@ -636,7 +636,7 @@ steps/nnet2/$dnn_function \
 	$curdir/data/train \
 	$curdir/data/lang \
 	$curdir/exp/tri3_ali \
-	$curdir/exp/tri4 ||  exit1
+	$curdir/exp/tri4 ||  exit 1
 
 # train_multisplice_accel2.sh
 

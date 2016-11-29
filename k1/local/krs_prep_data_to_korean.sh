@@ -1,9 +1,9 @@
 #!/bin/bash
 # 														EMCS Labs
 # 														Hyungwon Yang
-# 														hyung8758@gmail.com
+# 														09.27.16
 
-# This scripts generate prerequsite datasets.
+# This scripts generate prerequsite datasets in Korean.
 # text, utt2spk, wav.scp, segments.
 
 # ./data/local/data => text, utt2spk, wav.scp, segments, glm, stm
@@ -58,16 +58,15 @@ if [ -f $save/text ] && [ ! -z $save/text ]; then
 	data_num=`ls $data | wc -w`
 	data_list=`ls $data`
 
-	for txt in `seq 1 $data_num`; do
-		data_name=`echo $data_list | cut -d' ' -f$txt`
-		snt_list=`ls $data/$data_name | grep .TextGrid`
+	for mark in `seq 1 $data_num`; do
+		data_name=`echo $data_list | cut -d' ' -f$mark`
+		snt_list=`ls $data/$data_name | grep .txt`
 		snt_num=`echo $snt_list | wc -w`
 
 		for snt in `seq 1 $snt_num`; do
 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
-			tmp1=`echo $get_snt | sed 's/\.TextGrid//g'`
-			tmp2=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | grep '"' | egrep -v "sil|sp" | sed "s/\"//" | sed "s/\"//" | \
-			tr -s '\n' ' '`
+			tmp1=`echo $get_snt | sed 's/\.txt//g'`
+			tmp2=`cat $data/$data_name/$get_snt`
 			echo "$tmp1 $tmp2" >> $save/text || exit 1
 		done
 	done
@@ -77,16 +76,15 @@ else
 	data_num=`ls $data | wc -w`
 	data_list=`ls $data`
 
-	for txt in `seq 1 $data_num`; do
-		data_name=`echo $data_list | cut -d' ' -f$txt`
-		snt_list=`ls $data/$data_name | grep .TextGrid`
+	for mark in `seq 1 $data_num`; do
+		data_name=`echo $data_list | cut -d' ' -f$mark`
+		snt_list=`ls $data/$data_name | grep .txt`
 		snt_num=`echo $snt_list | wc -w`
 
 		for snt in `seq 1 $snt_num`; do
 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
-			tmp1=`echo $get_snt | sed 's/\.TextGrid//g'`
-			tmp2=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | grep '"' | egrep -v "sil|sp" | sed "s/\"//" | sed "s/\"//" | \
-			tr -s '\n' ' '`
+			tmp1=`echo $get_snt | sed 's/\.txt//g'`
+			tmp2=`cat $data/$data_name/$get_snt`
 			echo "$tmp1 $tmp2" >> $save/text || exit 1
 		done
 	done
@@ -105,8 +103,8 @@ if [ -f $save/utt2spk ] && [ ! -z $save/utt2spk ]; then
 	data_num=`ls $data | wc -w`
 	data_list=`ls $data`
 
-	for txt in `seq 1 $data_num`; do
-		data_name=`echo $data_list | cut -d' ' -f$txt`
+	for mark in `seq 1 $data_num`; do
+		data_name=`echo $data_list | cut -d' ' -f$mark`
 		snt_list=`ls $data/$data_name | grep .TextGrid`
 		snt_num=`echo $snt_list | wc -w`
 
@@ -122,8 +120,8 @@ else
 	data_num=`ls $data | wc -w`
 	data_list=`ls $data`
 
-	for txt in `seq 1 $data_num`; do
-		data_name=`echo $data_list | cut -d' ' -f$txt`
+	for mark in `seq 1 $data_num`; do
+		data_name=`echo $data_list | cut -d' ' -f$mark`
 		snt_list=`ls $data/$data_name | grep .TextGrid`
 		snt_num=`echo $snt_list | wc -w`
 
@@ -148,8 +146,8 @@ if [ -f $save/wav.scp ] && [ ! -z $save/wav.scp ]; then
 	data_num=`ls $data | wc -w`
 	data_list=`ls $data`
 
-	for txt in `seq 1 $data_num`; do
-		data_name=`echo $data_list | cut -d' ' -f$txt`
+	for mark in `seq 1 $data_num`; do
+		data_name=`echo $data_list | cut -d' ' -f$mark`
 		snt_list=`ls $data/$data_name | grep .TextGrid`
 		snt_num=`echo $snt_list | wc -w`
 
@@ -157,7 +155,7 @@ if [ -f $save/wav.scp ] && [ ! -z $save/wav.scp ]; then
 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
 			wav_snt=`echo $get_snt | sed 's/.TextGrid//g'`
 			fix_snt=`echo $get_snt | sed 's/.TextGrid/.wav/g'`
-			echo "$wav_snt $data/$data_name/$fix_snt" >> $save/wav.scp || exit 1
+			echo "$wav_snt $data/$data_name/$fix_snt" >> $save/wav.scp
 		done
 	done
 	sed '1d' $save/wav.scp > $save/tmp; cat $save/tmp > $save/wav.scp; rm $save/tmp
@@ -166,8 +164,8 @@ else
 	data_num=`ls $data | wc -w`
 	data_list=`ls $data`
 
-	for txt in `seq 1 $data_num`; do
-		data_name=`echo $data_list | cut -d' ' -f$txt`
+	for mark in `seq 1 $data_num`; do
+		data_name=`echo $data_list | cut -d' ' -f$mark`
 		snt_list=`ls $data/$data_name | grep .TextGrid`
 		snt_num=`echo $snt_list | wc -w`
 
@@ -175,7 +173,7 @@ else
 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
 			wav_snt=`echo $get_snt | sed 's/.TextGrid//g'`
 			fix_snt=`echo $get_snt | sed 's/.TextGrid/.wav/g'`
-			echo "$wav_snt $data/$data_name/$fix_snt" >> $save/wav.scp || exit 1
+			echo "$wav_snt $data/$data_name/$fix_snt" >> $save/wav.scp
 		done
 	done
 fi
@@ -191,8 +189,8 @@ if [ -f $save/segments ] && [ ! -z $save/segments ]; then
 	data_num=`ls $data | wc -w`
 	data_list=`ls $data`
 
-	for txt in `seq 1 $data_num`; do
-		data_name=`echo $data_list | cut -d' ' -f$txt`
+	for mark in `seq 1 $data_num`; do
+		data_name=`echo $data_list | cut -d' ' -f$mark`
 		snt_list=`ls $data/$data_name | grep .TextGrid`
 		snt_num=`echo $snt_list | wc -w`
 
@@ -210,8 +208,8 @@ else
 	data_num=`ls $data | wc -w`
 	data_list=`ls $data`
 
-	for txt in `seq 1 $data_num`; do
-		data_name=`echo $data_list | cut -d' ' -f$txt`
+	for mark in `seq 1 $data_num`; do
+		data_name=`echo $data_list | cut -d' ' -f$mark`
 		snt_list=`ls $data/$data_name | grep .TextGrid`
 		snt_num=`echo $snt_list | wc -w`
 

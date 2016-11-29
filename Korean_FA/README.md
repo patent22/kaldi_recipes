@@ -1,10 +1,12 @@
 # Korean_FA: Korean Forced-Aligner  
-                                                    Hyungwon Yang
-                                                    Jaekoo Kang
-                                                    Yejin Cho
+---
+
+2016
+Media Zen & Korea University (Author: Hyungwon Yang)
+
                                                     
-                                                    2016.10.20
-                                                    EMCS Labs
+
+
 
 ### MacOSX and Linux
 ----------------------------------------------------------------
@@ -16,7 +18,7 @@ Python 3.5
 (This script was not tested on the other versions.)
 
 
-### PRE-REQUISITE
+### PREREQUISITE
 
 1. **Install Kaldi**
  - Type below in command line.
@@ -25,7 +27,7 @@ Python 3.5
     - $ git pull 
  - Read INSTALL and follow the direction written there.
 
-2. **Install Prerequisites**
+2. **Install Packages**
  - Install list: Sox, xlrd, coreutils.
  -  On mac
     - $ brew install sox
@@ -73,12 +75,16 @@ Python 3.5
 1. Do not copy or use audio files in the example directory for other purposes. However deleting them is allowed.
 2. Report bugs or provide any recommendation to us through the following email addresses.
 
-### CONTACTS
+### CONTRIBUTORS
 ---
+# In order to improve forced alignment performance, all linguistics named below participate in this project.
 
 Hyungwon Yang / hyung8758@gmail.com
 Jaekoo Kang / jaekoo.jk@gmail.com
 Yejin Cho / scarletcho@korea.ac.kr
+Yeonjung Hong / yvonne.yj.hong@gmail.com
+Youngsun Cho / youngsunhere@gmail.com
+Sung Hah Hwang / hshsun@gmail.com
 
 Hosung Nam / hnam@korea.ac.kr
 
