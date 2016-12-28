@@ -29,14 +29,15 @@ if [ $# -ne 1 ]; then
    echo "Model for decoding should be provided." && exit 1
 fi
 model_name=$1
-if [ $model_name == "krs" ] || [ $model_name == "mz" ]; then
+if [ $model_name == "krs" ] || [ $model_name == "mz" ] || [ $model_name == "sj" ]; then
 	echo "ASR model: $model_name"
 else
 	echo "Model name: $model_name is not present in the model directory."
 	echo "Place the model directory into ./models folder and reactivate this code." 
 	echo "Provided models are as follows: " 
 	echo "1. krs : Language model based on Korean Readspeech corpus."
-	echo "2. mz  : Language model based on MediaZen corpus." && exit 1
+	echo "2. mz  : Language model based on MediaZen corpus."
+	echo "3. sj  : Language model based on Sejong corpus." && exit 1
 fi
 # model directory
 model_dir=models/$model_name
@@ -57,7 +58,6 @@ mkdir -p tmp/mfcc
 # Recording sound.
 echo "Start recording..."
 rec -c 1 -r 16000 ./data/test01.wav # silence 1 0.1 1% 1 1.5 1% 
-
 
 # Preprocessing
 # Generate wav.scp, utt2spk, spk2utt
@@ -112,6 +112,24 @@ elif [ $model_name == "mz" ]; then
 	sdata=tmp/trans_data/split$nj
 	[[ -d $sdata && tmp/trans_data/feats.scp -ot $sdata ]] || split_data.sh tmp/trans_data $nj
 	feats="ark,s,cs:apply-cmvn $cmvn_opts --utt2spk=ark:$sdata/JOB/utt2spk scp:$sdata/JOB/cmvn.scp scp:$sdata/JOB/feats.scp ark:- | splice-feats $splice_opts ark:- ark:- | transform-feats $model_dir/final.mat ark:- ark:- |"
+
+elif [ $model_name == "sj" ]; then
+
+	num_threads=1
+	thread_string=
+	minimize=false
+	max_active=7000
+	min_active=200
+	beam=30.0 # 15.0
+	lattice_beam=25.0 # 8.0
+	acwt=0.1
+	model=$model_dir/final.mdl
+	cmvn_opts=
+	splice_opts=
+	sdata=tmp/trans_data/split$nj
+	[[ -d $sdata && tmp/trans_data/feats.scp -ot $sdata ]] || split_data.sh tmp/trans_data $nj
+	feats="ark,s,cs:apply-cmvn $cmvn_opts --utt2spk=ark:$sdata/JOB/utt2spk scp:$sdata/JOB/cmvn.scp scp:$sdata/JOB/feats.scp ark:- | splice-feats $splice_opts ark:- ark:- | transform-feats $model_dir/final.mat ark:- ark:- |"
+
 fi
 
 # Decoding
@@ -122,7 +140,6 @@ nnet-latgen-faster$thread_string \
      --lattice-beam=$lattice_beam --acoustic-scale=$acwt --allow-partial=true \
      --word-symbol-table=$model_dir/words.txt "$model" \
      $model_dir/HCLG.fst "$feats" "ark:|gzip -c > tmp/lat.JOB.gz"
-
 
 # Echo the result.
 error_msg=`cat tmp/log/decode.1.log | grep ERROR`

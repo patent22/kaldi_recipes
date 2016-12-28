@@ -187,7 +187,7 @@ for piece in range(len(file_name)):
             # Phone begin/end index for each word
             phone_seq = [mid[ibeg].split('\t')[-5] for ibeg in range(len(mid))]  # total sequence of phones given a sound
             phones_beg_idx = [i for i, x in enumerate(phone_seq) if
-                              re.search('.\_B', x)]  # begining index of each word (in .ctm)
+                              re.search('.\_B', x)]  # beginning index of each word (in .ctm)
             phones_end_idx = [i for i, x in enumerate(phone_seq) if
                               re.search('.\_E', x)]  # end index of each word (in .ctm)
 
@@ -222,7 +222,7 @@ for piece in range(len(file_name)):
                                 time.append(mid[rgc - 1].split('\t')[-1])
                                 rgc += 1
                         tg.write('0' + '\n' + "{0:.3f}".format(float(time[-1])) + '\n')
-                        tg.write('"' + rg_list[rg_rem][int(word_opt)] + '"' + '\n')
+                        tg.write('"' + rg_list[rg_rem] + '"' + '\n')
                         rg_rem += 1
                         rgc -= 1
                         time = []

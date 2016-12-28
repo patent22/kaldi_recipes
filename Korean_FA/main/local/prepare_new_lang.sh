@@ -40,10 +40,11 @@ cat $dict_dir/nonsilence_phones.txt | perl -e 'while(<>){ foreach $p (split(" ",
 echo "extra_questions.txt file was generated."
 
 # Insert <UNK> in the lexicon.txt and lexiconp.txt.
-sed -i '1 i\<UNK> <UNK>' $dict_dir/lexicon.txt
+sed -i '1 i\<UNK> <UNK>' $dict_dir/lexicon.txt 
 sed -i '1 i\<UNK> 1.0 <UNK>' $dict_dir/lexiconp.txt
 
 ### lang directory ###
 main/local/core/prepare_lang.sh $dict_dir $oov_word main/data/local/lang $lang_dir >/dev/null
 
+	
 

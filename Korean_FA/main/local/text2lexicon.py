@@ -10,94 +10,166 @@ Ex. python3 text2lexicon.py $text_directory $save_directory
 """
 
 import sys
-import os
 import re
-
+import math
 
 # Arguments check.
-if len(sys.argv) != 3:
+if len(sys.argv) != 4:
     print(len(sys.argv))
     print("Input arguments are incorrectly provided. Two argument should be assigned.")
-    print("1. Text directory.")
-    print("2. Save directory.")
+    print("1. Text file name.")
+    print("2. g2p file name.")
+    print("3. Save file name.")
     print("*** USAGE ***")
-    print("Ex. python3 text2lexicon.py $text_directory $save_directory")
+    print("Ex. python3 text2lexicon.py $text_file $g2p_rulebook $save_file")
     raise ValueError('RETURN')
 
 # corpus data directory
-text_dir=sys.argv[1]
-outputfile = sys.argv[2]
+text_file=sys.argv[1]
+g2p_file=sys.argv[2]
+save_file = sys.argv[3]
 
-# Search directories.
-dir_list = os.listdir(text_dir)
-sub_dir = []
-for check in dir_list:
-    if len(re.findall('[0-9]',check)) != 0:
-        sub_dir.append(check)
+text_file='/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/test.txt'
+g2p_file='/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/local/rules_g2p.xls'
+save_file='/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/saved.txt'
 
-# Get TextGrid list.
-sub_list=[]
-for sub in sub_dir:
-    tmp = os.listdir('/'.join([text_dir,sub]))
-    tg_reg= re.compile(".*.TextGrid")
-    sub_list.append([k.group(0) for i in tmp for k in [tg_reg.search(i)] if k])
+###### G2p ######
 
-# Search all TextGrid files and make word and phoneme lists.
-word_con=[]
-phone_con=[]
-for d in range(len(sub_dir)):
+# check xlrd module
+# xlrd enables reading .xls files
+try:
+    import xlrd
+except ImportError:
+    print('\nxlrd is not installed\nPlease install it first')
 
-    for s in sub_list[d]:
+# check rules_g2p.xls
+try:
+    rule_book = xlrd.open_workbook(g2p_file)
+except IOError:
+    print('\nrules_g2p.xls does not exist or is corrupted')
+    print('\nLocate rules_g2p.xls in the same folder as in g2p.py')
 
-        with open('/'.join([text_dir,sub_dir[d],s]),'r') as tg:
-            lines = tg.read().splitlines()
-            phone_idx = lines.index('"phoneme"')
-            word_idx = lines.index('"word"')
-            phone_list = lines[phone_idx+7:word_idx-4]
-            word_list = lines[word_idx+7:-3]
+# read rules_g2p.xls
+rule_sheet = rule_book.sheet_by_name(u'ruleset')
+var = rule_sheet.cell(0, 0).value
 
-            for beg_wt in range(0,len(word_list),3):
-                word_box = beg_wt
-                phone_box = 0
-                box = 0
-                con_idx = []
-
-                while box < 2:
-                    if word_list[word_box] == phone_list[phone_box]:
-                        con_idx.append(phone_box)
-                        word_box+=1
-                        phone_box+=1
-                        box += 1
-                    else:
-                        phone_box += 1
-
-                # Final word list.
-                word_con.append(word_list[beg_wt+2])
-                # Final phoneme list.
-                phone_time=phone_list[con_idx[0]+2:con_idx[1]+2]
-                phone_group=[k.group(0) for i in phone_time for k in [re.search('"[a-z0-9]*"', i)] if k]
-                phone_con.append(phone_group)
-
-# Rearrange the data for writing text files.
-context=[]
-for idx in range(len(word_con)):
-    # Remove 'sp', '"'
-    if re.findall('"sp"',word_con[idx]) == []:
-        word_text = re.sub('"', '', word_con[idx])
-        phone_join = ' '.join(phone_con[idx])
-        phone_text = re.sub('"', '', phone_join)
-        context.append(word_text + '\t' + phone_text + ' \n')
-final_context=list(set(context))
-final_context.sort()
+rule_in = []
+rule_out = []
+for idx in range(0, rule_sheet.nrows):
+    rule_in.append(rule_sheet.cell(idx, 0).value)
+    rule_out.append(rule_sheet.cell(idx, 1).value)
 
 
-# Write a lexicon.txt file.
-with open(outputfile+'.txt','w') as otxt:
-    for num in range(len(final_context)):
-        otxt.write(final_context[num])
+def checkSpaceElement(var_list):
+    '''
+    This function checks if an element in a list is 32 or not
+    32 is a representation of 16-bit unsigned integer
+    of space character ' '
 
-# Write a lexiconp.txt file.
-with open(outputfile+'p.txt','w') as otxt:
-    for num in range(len(final_context)):
-        prob_in = re.sub('\t','\t1.0\t',final_context[num])
-        otxt.write(prob_in)
+    If 32, it returns 1
+    If not empty, it returns 0
+    '''
+    checked = []
+    for i in range(len(var_list)):
+        if var_list[i] == 32:
+            checked.append(1)
+        else:
+            checked.append(0)
+    return checked
+
+
+def graph2phone(graphs):
+    '''
+    This function converts Korean graphemes to romanized phones
+    '''
+    # encode graphemes as utf8
+    try:
+        graphs = graphs.decode('utf-8')
+    except:
+        pass
+    integers = []
+    for i in range(len(graphs)):
+        integers.append(ord(graphs[i]))
+
+    # romanization
+    phones = ''
+    ONS = ['k0', 'kk', 'nn', 't0', 'tt', 'rr', 'mm', 'p0', 'pp',
+           's0', 'ss', 'oh', 'c0', 'cc', 'ch', 'kh', 'th', 'ph', 'hh']
+    NUC = ['aa', 'qq', 'ya', 'yq', 'vv', 'ee', 'yv', 'ye', 'oo', 'wa',
+           'wq', 'wo', 'yo', 'uu', 'wv', 'we', 'wi', 'yu', 'xx', 'xi', 'ii']
+    COD = ['', 'k0', 'kk', 'ks', 'nn', 'nc', 'nh', 't0',
+           'll', 'lk', 'lm', 'lb', 'ls', 'lt', 'lp', 'lh',
+           'mm', 'p0', 'ps', 's0', 'ss', 'oh', 'c0', 'ch',
+           'kh', 'th', 'ph', 'hh']
+
+    # pronunciation
+    idx = checkSpaceElement(integers)
+    iElement = 0
+    while iElement < len(integers):
+        if idx[iElement] == 0:  # not space characters
+            base = 44032
+            df = int(integers[iElement]) - base
+            iONS = int(math.floor(df / 588)) + 1
+            iNUC = int(math.floor((df % 588) / 28)) + 1
+            iCOD = int((df % 588) % 28) + 1
+
+            s1 = '-' + ONS[iONS - 1]  # onset
+            s2 = NUC[iNUC - 1]        # nucleus
+
+            if COD[iCOD - 1]:         # coda
+                s3 = COD[iCOD - 1]
+            else:
+                s3 = ''
+            tmp = s1 + s2 + s3
+            phones = phones + tmp
+        elif idx[iElement] == 1:  # space character
+            tmp = ' '
+            phones = phones + tmp
+        phones = re.sub('-(oh)', '-', phones)
+        iElement += 1
+        tmp = ''
+
+    # final velar nasal
+    phones = re.sub('^oh', '', phones)
+    phones = re.sub('-(oh)', '', phones)
+    phones = re.sub('oh-', 'ng-', phones)
+    phones = re.sub('oh$', 'ng', phones)
+    phones = re.sub('oh ', 'ng ', phones)
+
+    phones = re.sub('(\W+)\-', '\\1', phones)
+    phones = re.sub('\W+$', '', phones)
+    phones = re.sub('^\-', '', phones)
+    return phones
+
+
+def phone2prono(phones):
+    '''
+    This function converts romanized phones to pronunciation
+    '''
+    # apply g2p rules
+    for pattern, replacement in zip(rule_in, rule_out):
+        phones = re.sub(pattern, replacement, phones)
+        prono = phones
+    return prono
+
+#####################################
+
+# Read the text file.
+with open(text_file,'r',encoding="utf8") as txt:
+    txt_list = txt.read().split()
+    txt_list.sort()
+    uniq_list = list(set(txt_list))
+    uniq_list.sort()
+
+# Apply g2p to each sentence.
+with open(save_file,'w') as saved:
+    for txt in uniq_list:
+        # remove '\n' at the end of the line.
+        c_txt = re.sub("\n","",txt)
+        try:
+            rom = graph2phone(c_txt)
+            pron = phone2prono(rom)
+            pron_txt = " ".join(pron[str:str + 2] for str in range(0, len(pron), 2))
+            saved.write(c_txt + "\t" + pron_txt + '\n')
+        except:
+            pass
