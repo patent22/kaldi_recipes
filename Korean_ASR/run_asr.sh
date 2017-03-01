@@ -48,7 +48,7 @@ bash local/make_path.sh $kaldi; fi
 source path.sh
 [ ! -d data ] && mkdir data
 [ -d tmp ] && rm -rf tmp
-[ -d data ] && rm data/*
+[ -f data/* ] && rm data/*
 
 # Folders.
 mkdir -p tmp/trans_data
