@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Copyright 2016 Media Zen & 
-#				 Korea University (author: Hyungwon Yang)
+#				 Korea University (author: Hyungwon Yang) v1.5
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
 # from outside of this folder. 
 
 # Kaldi directory ./kaldi
-kaldi=/home/kaldi
+kaldi=/Users/hyungwonyang/kaldi
 # Model directory
 fa_model=model4fa
 # lexicon directory
@@ -47,6 +47,7 @@ log_dir=tmp/log
 mfcc_nj=1
 align_nj=1
 passing=0
+align_error=0
 fail_num=0
 
 # Check kaldi directory.
@@ -58,11 +59,13 @@ fi
 # Option default.
 tg_word_opt=
 tg_phone_opt=
+tg_skip_opt=
 usage="=======================================================\n\
 \t         The Usage of Korean Foreced Aligner.         \n\
 =======================================================\n\
 \t*** OPTION ARGUMENT ***\n\
 -h  | --help    : Print the direction.\n\
+-s  | --skip    : This option excludes wave data from alignment which already have TextGrid files.\n\
 -nw | --no-word : This opiton excludes word label from TextGrid.\n\
 -np | --no-phone: This option excludes phone label from TextGrid.\n\
 \t*** INPUT ARGUMENT ***\n\
@@ -71,23 +74,24 @@ File directory. ex) example/my_record\n\n\
 bash forced_align.sh [option] [data directory]\n\
 bash forced_align.sh -np example/my_record\n"
 
-if [ $# -gt 3 ]; then
-   echo "Wrong option arguments." 
-   echo "Sound and text file saved directory should be provided."  && exit 1
+if [ $# -gt 3 ] || [ $# -lt 1 ]; then
+   echo -e $usage  && return
 fi
 
 arg_num=$#
-while [ $arg_num -gt 1 ] ; do 
+while [ $arg_num -gt 0 ] ; do 
   case "$1" in
-    -h) echo -e $usage; return; break ;;
+    -h) echo -e $usage && return; break ;;
+	-s) tg_skip_opt="--skip"; shift; arg_num=$((arg_num-1)) ;;
     -nw) tg_word_opt="--no-word"; shift; arg_num=$((arg_num-1)) ;;
     -np) tg_phone_opt="--no-phone"; shift; arg_num=$((arg_num-1)) ;;
 
-    --help) echo -e $usage; return; break ;;
+    --help) echo -e $usage && return; break ;;
+	--skip) tg_skip_opt="--skip"; shift; arg_num=$((arg_num-1)) ;;
     --no-word) tg_word_opt="--no-word"; shift; arg_num=$((arg_num-1)) ;; 
     --no-phone) tg_phone_opt="--no-phone"; shift; arg_num=$((arg_num-1)) ;;
-    -*) echo "unknown option: $1" ; return ;;
-    --*) echo "unknown option: $1" ; return ;;
+    -*) echo -e "*** UNKNOWN OPTION: $1 ***\n"$usage ; return ;;
+    --*) echo -e "*** UNKNOWN OPTION: $1 ***\n"$usage ; return ;;
   esac
   if [ $arg_num -eq 1 ]; then
   	arg_num=0
@@ -97,16 +101,18 @@ done
 # Folder directory that contains wav and text files.
 tmp_data_dir=$1
 if [ "$tmp_data_dir" == "" ]; then
-	echo "ERROR: data directory is not provided." && exit 1
+	echo "ERROR: data directory is not provided." && return
 fi
+
 # Check data_dir
 alias realpath="perl -MCwd -e 'print Cwd::realpath(\$ARGV[0]),qq<\n>'"
 data_dir=`realpath $tmp_data_dir`
-echo "data directory= $data_dir"
+echo "data directory=$data_dir"
 if [ ! -d $data_dir ]; then
-	echo "ERROR: $data_dir is not present. Please check the data directory."  && exit 1
+	echo "ERROR: $data_dir is not present. Please check the data directory."  && return
 fi
-# This is just test line remove when the script is completed.
+
+# Remove previous log, tmp, and data directories.
 [ -d log ] && rm -rf log
 [ -d tmp ] && rm -rf tmp
 [ -d main/data ] && rm -rf main/data
@@ -122,15 +128,44 @@ source path.sh $kaldi
 [ ! -d tmp/log ] && mkdir -p tmp/log
 
 # Check the text files. 
-python3 main/local/check_text.py $data_dir || exit 1
-wav_list=`ls $data_dir | grep .wav `
-wav_num=`echo $wav_list | tr ' ' '\n' | wc -l`
-txt_list=`ls $data_dir | grep .txt `
-txt_num=`echo $txt_list | tr ' ' '\n' | wc -l`
+wav_list=
+txt_list=
+wav_num=
+txt_num=
+python main/local/check_text.py $tg_skip_opt $data_dir || exit 1
+if [ "$tg_skip_opt" == "--skip" ]; then
+	echo -e "Skipping option is activated.\nWave data which already have TextGrid files will be excluded from alignment list."
+	# Wave file which has a textgrid will not be aligned.
+	# Check wave file list and select files that have not textgrids.
+	tmp_wav_list=`ls $data_dir | grep .wav`
+	tmp_txt_list=`ls $data_dir | grep .txt`
+	for wav in $tmp_wav_list; do
+		tmp_wav=`echo $wav | sed "s/.wav//g"`
+		if [ ! -f $data_dir/$tmp_wav.TextGrid ] && [ -f $data_dir/$tmp_wav.txt ]; then
+			wav_list+="$tmp_wav.wav "
+			txt_list+="$tmp_wav.txt "
+		fi
+	done
+	wav_num=`echo $wav_list | wc -w`
+	txt_num=`echo $txt_list | wc -w`
+	if [ $wav_num -eq 0 ]; then 
+		echo -e "No file is remained to be aligned.\nExit alignment." && return
+	fi
+else
+	wav_list=`ls $data_dir | grep .wav `
+	wav_num=`echo $wav_list | tr ' ' '\n' | wc -l`
+	txt_list=`ls $data_dir | grep .txt `
+	txt_num=`echo $txt_list | tr ' ' '\n' | wc -l`
+	if [ $wav_num -eq 0 ]; then 
+		echo -e "No file is remained to be aligned.\nExit alignment." && return
+	fi
+fi
+
+# Check if each audio file has a matching text file.
 if [ $wav_num != $txt_num ]; then
 	echo "ERROR: The number of audio and text files are not matched. Please check the input data." 
 	echo "Audio list: "$wav_list
-	echo "Text  list: "$txt_list && exit 1
+	echo "Text  list: "$txt_list && return
 fi
 
 echo ===================================================================
@@ -145,66 +180,76 @@ for turn in `seq 1 $wav_num`; do
 	mkdir -p $trans_dir/trans$turn
 	sel_wav=`echo $wav_list | tr ' ' '\n' | sed -n ${turn}p`
 	sel_txt=`echo $txt_list | tr ' ' '\n' | sed -n ${turn}p`
+	log_name=`echo $sel_wav | sed -e "s/.wav//g"`
+
 	source_dir=$PWD/main/data/source_wav/source$turn
 	echo Alinging: $sel_wav '('$turn /$wav_num')'
 	cp $data_dir/$sel_wav $source_dir
 	cp $data_dir/$sel_txt $source_dir
-	echo "Procedure: $turn " > $log_dir/process.$turn.log
-	echo "Audio: $data_dir/$sel_wav, Text: $data_dir/$sel_txt." >> $log_dir/process.$turn.log
+	echo "Procedure: $turn " > $log_dir/process.$log_name.log
+	echo "Audio: $data_dir/$sel_wav, Text: $data_dir/$sel_txt." >> $log_dir/process.$log_name.log
 
-	python3 main/local/fa_prep_data.py $source_dir $trans_dir/trans$turn >> $log_dir/process.$turn.log || exit 1
+	python main/local/fa_prep_data.py $source_dir $trans_dir/trans$turn >> $log_dir/process.$log_name.log || exit 1
 	$code_dir/utt2spk_to_spk2utt.pl $trans_dir/trans$turn/utt2spk > $trans_dir/trans$turn/spk2utt 
-	echo "spk2utt file was generated." >> $log_dir/process.$turn.log
+	echo "spk2utt file was generated." >> $log_dir/process.$log_name.log
 
-	# Romanize the text file.
-	[ ! -d tmp/romanized ] && mkdir -p tmp/romanized
+	# Generate raw sentence text file.
+	[ ! -d tmp/raw_sent ] && mkdir -p tmp/raw_sent
 	words=`cat $source_dir/$sel_txt`
-	txt_rename=`echo $sel_txt | sed -e "s/txt/rom/g"`
-	python3 main/local/romanize.py "$words" > tmp/romanized/$txt_rename
-	echo "Romanized: " >> $log_dir/process.$turn.log
-	cat tmp/romanized/$txt_rename >> $log_dir/process.$turn.log
+	txt_rename=`echo $sel_txt | sed -e "s/txt/raw/g"`
+	echo "$words" | tr ' ' '\n' > tmp/raw_sent/$txt_rename
+	echo "raw_sentence: " >> $log_dir/process.$log_name.log
+	cat tmp/raw_sent/$txt_rename >> $log_dir/process.$log_name.log
 
-	# g2p text file.
+	## For Generating new_lexicon file.
+	# Set prono directories.
 	[ ! -d tmp/prono ] && mkdir -p tmp/prono
-	[ -f tmp/prono/new_lexicon ] && rm tmp/prono/new_lexicon
-	# For first column in lexcion.txt: word.
-	words=`cat $source_dir/$sel_txt`
-	echo $words | tr ' ' '\n' > tmp/prono/words_list
-	# For second column in lexcion.txt: pronunciation.
-	python3 main/local/g2p.py "$words" | tr ' ' '\n' | sed 's/\(..\)/\1 /g' > tmp/prono/prono_list
-	paste -d' ' tmp/prono/{words_list,prono_list} >> tmp/prono/new_lexicon
-	echo "Lexicon: " >> $log_dir/process.$turn.log
-	cat tmp/prono/new_lexicon >> $log_dir/process.$turn.log
+	[ -f tmp/prono/new_lexicon.txt ] && rm tmp/prono/new_lexicon.txt
 
-	# Language modeling.
-	paste -d'\n' tmp/prono/new_lexicon model/lexicon.txt | sort | uniq | sed '/^\s*$/d' > $dict_dir/lexicon.txt
+	# g2p conversion.
+	for div in $words; do
+		python main/local/g2p.py $div >> tmp/prono/prono_list
+	done
+	paste -d' ' tmp/raw_sent/$txt_rename tmp/prono/prono_list >> tmp/prono/new_lexicon.txt
+	echo "Lexicon: " >> $log_dir/process.$log_name.log
+	cat tmp/prono/new_lexicon.txt >> $log_dir/process.$log_name.log
+
+	## Language modeling.
+	# Combine new_lexicon to lexicon file in order to make an appropriate language model.
+	paste -d'\n' tmp/prono/new_lexicon.txt model/lexicon.txt | sort | uniq | sed '/^\s*$/d' > $dict_dir/lexicon.txt
 	bash main/local/prepare_new_lang.sh $dict_dir $lang_dir "<UNK>" >/dev/null
 
+	## Feature extraction.
 	# MFCC default setting.
-	echo "Extracting the features from the input data." >> $log_dir/process.$turn.log
+	echo "Extracting the features from the input data." >> $log_dir/process.$log_name.log
 	mfccdir=mfcc
 	cmd="$code_dir/run.pl"
 
-	# wav file sanitiy check.
+	# Wav file sanitiy check.
+	# Audio file should have only 1 channel.
 	wav_ch=`sox --i $source_dir/$sel_wav | grep "Channels" | awk '{print $3}'`
 	if [ $wav_ch -ne 1 ]; then
 		sox $source_dir/$sel_wav -c 1 $source_dir/ch_tmp.wav
 		mv $source_dir/ch_tmp.wav $source_dir/$sel_wav; fi
-		echo "$sel_wav channel changed." >> $log_dir/process.$turn.log
+		echo "$sel_wav channel changed." >> $log_dir/process.$log_name.log
+	# Sampling rate should be set to 16000.
 	wav_sr=`sox --i $source_dir/$sel_wav | grep "Sample Rate" | awk '{print $4}'`
 	if [ $wav_sr -ne 16000 ]; then
 		sox $source_dir/$sel_wav -r 16000 $source_dir/sr_tmp.wav
-		echo "$sel_wav sampling rate changed." >> $log_dir/process.$turn.log
+		echo "$sel_wav sampling rate changed." >> $log_dir/process.$log_name.log
 		mv $source_dir/sr_tmp.wav $source_dir/$sel_wav; fi
 
 	# Extracting MFCC features and calculate CMVN.
-	$code_dir/make_mfcc.sh --nj $mfcc_nj --cmd "$cmd" $trans_dir/trans$turn $log_dir tmp/$mfccdir >> $log_dir/process.$turn.log
-	$code_dir/fix_data_dir.sh $trans_dir/trans$turn >> $log_dir/process.$turn.log
-	$code_dir/compute_cmvn_stats.sh $trans_dir/trans$turn $log_dir tmp/$mfccdir >> $log_dir/process.$turn.log
-	$code_dir/fix_data_dir.sh $trans_dir/trans$turn >> $log_dir/process.$turn.log
+	$code_dir/make_mfcc.sh --nj $mfcc_nj --cmd "$cmd" $trans_dir/trans$turn $log_dir tmp/$mfccdir >> $log_dir/process.$log_name.log
+	$code_dir/fix_data_dir.sh $trans_dir/trans$turn >> $log_dir/process.$log_name.log
+	$code_dir/compute_cmvn_stats.sh $trans_dir/trans$turn $log_dir tmp/$mfccdir >> $log_dir/process.$log_name.log
+	$code_dir/fix_data_dir.sh $trans_dir/trans$turn >> $log_dir/process.$log_name.log
 	
-	# Forced alignment: aligning data.
-	echo "Force aligning the input data." >> $log_dir/process.$turn.log
+	## Forced alignment.
+	# Aligning data. Total 4 trials will be executed to align every audio file. Smaller parameter setting will give the best result 
+	# but some audio file cannot be aligned with the smaller setting. After 4 trials the audio file will be rejected to be aligned 
+	# because larger than the 4th parameter setting would not give a adequate result which means that the result cannot be credible.
+	echo "Force aligning the input data." >> $log_dir/process.$log_name.log
 	for pass in 1 2 3 4; do
 		if [ $pass == 1 ]; then
 			beam=10
@@ -219,6 +264,8 @@ for turn in `seq 1 $wav_num`; do
 			beam=90
 			retry_beam=100; 
 		fi
+
+		# Alignement.
 		$code_dir/align_si.sh --nj $align_nj --cmd "$cmd" \
 							$trans_dir/trans$turn \
 							$lang_dir \
@@ -226,26 +273,42 @@ for turn in `seq 1 $wav_num`; do
 							tmp/model_ali \
 							$beam \
 							$retry_beam \
-							$turn >> $log_dir/process.$turn.log 2>/dev/null
+							$log_name >> $log_dir/process.$log_name.log 2>/dev/null
 
-		align_check=`cat tmp/log/align.$turn.log | grep "Did not successfully decode file" | wc -w`
+		# Sanity check.
+		# If error occurred, stop alignment right away.
+		if [ $pass == 1 ]; then
+			error_check=`cat tmp/log/align.$log_name.log | grep "ERROR" | wc -l`
+			if [ $error_check != 0 ]; then
+				echo -e "Fail Alignment: ERROR has been detected during alignment.\n" | tee -a $log_dir/process.$log_name.log
+				fail_num=$((fail_num+1))
+				passing=1
+				break
+			fi
+		fi
+
+		# Check the alignemnt result.
+		align_check=`cat tmp/log/align.$log_name.log | grep "Did not successfully decode file" | wc -l`
 		if [ $align_check == 0 ]; then
 			break
 		elif [ $align_check == 0 ] && [ $pass == 4 ]; then
-			echo "WARNNING: $sel_wav was difficult to align, the result might be unsatisfactory." | tee -a $log_dir/process.$turn.log
-			break
+			echo "WARNNING: $sel_wav was difficult to align, the result might be unsatisfactory." | tee -a $log_dir/process.$log_name.log
 		elif [ $align_check != 0 ] && [ $pass == 4 ]; then
-			echo -e "Fail Alignment: $sel_wav might be corrupted.\n" | tee -a $log_dir/process.$turn.log
+			echo -e "Fail Alignment: $sel_wav might be corrupted.\n" | tee -a $log_dir/process.$log_name.log
 			fail_num=$((fail_num+1))
 			passing=1
 		fi
 	done
+
+	## Generating textgrid file.
+	# If the error has not been occurred during alginment, textgrid with respect to audio file will be generated. Otherwise this step will be skipped.
 	if [ $passing -ne 1 ]; then
+		
 		# CTM file conversion.
 		[ ! -d $result_dir ] && mkdir -p $result_dir
 		$kaldi/src/bin/ali-to-phones --ctm-output model/$fa_model/final.mdl ark:"gunzip -c tmp/model_ali/ali.1.gz|" - > tmp/model_ali/raw_ali.ctm
-		echo "ctm result: " >> $log_dir/process.$turn.log
-		cat tmp/model_ali/raw_ali.ctm >> $log_dir/process.$turn.log
+		echo "ctm result: " >> $log_dir/process.$log_name.log
+		cat tmp/model_ali/raw_ali.ctm >> $log_dir/process.$log_name.log
 
 		# Move requisite files.
 		cp tmp/model_ali/raw_ali.ctm $result_dir/raw_ali.txt
@@ -253,51 +316,67 @@ for turn in `seq 1 $wav_num`; do
 		cp $trans_dir/trans$turn/segments $result_dir
 
 		# id to phone conversion.
-		echo "Reconstructing the alinged data." >> $log_dir/process.$turn.log
-		python3 main/local/id2phone.py  $result_dir/phones.txt \
-										$result_dir/segments \
-										$result_dir/raw_ali.txt \
-										$result_dir/final_ali.txt >> $log_dir/process.$turn.log || exit 1;
-		echo "final_ali result: " >> $log_dir/process.$turn.log
-		cat $result_dir/final_ali.txt >> $log_dir/process.$turn.log
+		echo "Reconstructing the alinged data." >> $log_dir/process.$log_name.log
+		python main/local/id2phone.py $result_dir/phones.txt \
+									   $result_dir/segments \
+									   $result_dir/raw_ali.txt \
+									   $result_dir/final_ali.txt >> $log_dir/process.$log_name.log || exit 1;
+		echo "final_ali result: " >> $log_dir/process.$log_name.log
+		cat $result_dir/final_ali.txt >> $log_dir/process.$log_name.log
 
 		# Split the whole text files.
-		echo "Inserting labels for each column in the aligned data." >> $log_dir/process.$turn.log
+		echo "Inserting labels for each column in the aligned data." >> $log_dir/process.$log_name.log
 		mkdir -p $result_dir/tmp_fa
 		int_line="utt_id\tfile_id\tphone_id\tutt_num\tstart_ph\tdur_ph\tphone\tstart_utt\tend_utt\tstart_real\tend_real"
 		cat $result_dir/final_ali.txt | sed '1i '"${int_line}" > $result_dir/tmp_fa/tagged_final_ali.txt
 
-		# Combining prono and rom texts. (It also generates text_num.)
-		bash main/local/make_rg_lexicon.sh >/dev/null || exit 1;
+		# Generate text_num file.
+		cat tmp/raw_sent/$txt_rename | wc -l >> tmp/raw_sent/text_num.raw || exit 1;
 
 		# Generate Textgrid files and save it to the data directory.
-		echo "Organizing the aligned data to textgrid format." >> $log_dir/process.$turn.log
+		echo "Organizing the aligned data to textgrid format." >> $log_dir/process.$log_name.log
 		# Generate textgrid.
-		python3 main/local/generate_textgrid.py $tg_word_opt $tg_phone_opt \
+		python main/local/generate_textgrid.py $tg_word_opt $tg_phone_opt \
 								$result_dir/tmp_fa \
-								tmp/romanized/rom_graph_lexicon.txt \
-								tmp/romanized/text_num \
-								$source_dir >/dev/null || exit 1;
-		echo -e "$sel_wav was successfully aligned.\n" | tee -a $log_dir/process.$turn.log
-		tg_name=`echo $sel_txt | sed 's/.txt//g'`
-		mv $source_dir/tagged_final_ali.TextGrid $data_dir/$tg_name.TextGrid
+								tmp/prono/new_lexicon.txt \
+								tmp/raw_sent/text_num.raw \
+								$source_dir 2>/dev/null || align_error=1;
+		if [ $align_error -eq 1 ]; then
+			echo -e "Fail Result Composition: $sel_wav might be corrupted.\n" | tee -a $log_dir/process.$log_name.log
+			fail_num=$((fail_num+1))
+			align_error=0
+		else
+			echo -e "$sel_wav was successfully aligned.\n" | tee -a $log_dir/process.$log_name.log
+			tg_name=`echo $sel_txt | sed 's/.txt//g'`
+			mv $source_dir/tagged_final_ali.TextGrid $data_dir/$tg_name.TextGrid
+		fi
 	fi
 
 	passing=0
-	rm -rf tmp/{mfcc,model_ali,prono,result,romanized}/*
+	rm -rf tmp/{mfcc,model_ali,prono,result,raw_sent}/*
 	rm -rf $source_dir
 done
 
-echo "===================== FORCED ALIGNMENT FINISHED  =====================" | tee -a $log_dir/process.$turn.log
-echo "** Result Information on $(date) **									" | tee -a $log_dir/process.$turn.log
-echo "Total Trials:" $wav_num									        	  | tee -a $log_dir/process.$turn.log
-echo "Success     :" $((wav_num-fail_num))									  | tee -a $log_dir/process.$turn.log
-echo "Fail        :" $fail_num												  | tee -a $log_dir/process.$turn.log
-echo "----------------------------------------------------------------------" | tee -a $log_dir/process.$turn.log
-echo "Result      :" $((wav_num-fail_num)) /$wav_num "(Success / Total)"	  | tee -a $log_dir/process.$turn.log
+
+# Print result information.
+echo "===================== FORCED ALIGNMENT FINISHED  =====================" | tee -a $log_dir/process.$log_name.log
+echo "** Result Information on $(date) **									" | tee -a $log_dir/process.$log_name.log
+echo "Total Trials:" $wav_num									        	  | tee -a $log_dir/process.$log_name.log
+echo "Success     :" $((wav_num-fail_num))									  | tee -a $log_dir/process.$log_name.log
+echo "Fail        :" $fail_num												  | tee -a $log_dir/process.$log_name.log
+echo "----------------------------------------------------------------------" | tee -a $log_dir/process.$log_name.log
+echo "Result      :" $((wav_num-fail_num)) /$wav_num "(Success / Total)"	  | tee -a $log_dir/process.$log_name.log
 if [ $fail_num -gt 0 ]; then 
 echo "To check the failed results, refer to the ./log directory."; fi
 echo
 
+
+# Collect log files.
+mkdir tmp/log/align_log tmp/log/feature_log tmp/log/process_log
+mv tmp/log/align.* tmp/log/align_log
+mv tmp/log/{cmvn,make_mfcc}_* tmp/log/feature_log
+mv tmp/log/process.* tmp/log/process_log
+
+# Redirect log directory and remove a tmp directory.
 mv tmp/log .
-rm -rf tmp
+rm -rf tmp main/data

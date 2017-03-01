@@ -7,7 +7,7 @@ Apache 2.0
 This script generates FA requisite files from sound wav and text file.
 
 *** USAGE ***
-Ex. python3 fa_prep_data.py $audio_files $text_files
+Ex. python fa_prep_data.py $audio_files $text_files
 """
 
 import sys
@@ -22,7 +22,7 @@ if len(sys.argv) != 3:
     print("1. Data directory.")
     print("2. Save directory.")
     print("*** USAGE ***")
-    print("Ex. python3 fa_prep_data.py $data_directory $save_directory")
+    print("Ex. python fa_prep_data.py $data_directory $save_directory")
     raise ValueError('RETURN')
 
 # sound and text directory
@@ -83,7 +83,7 @@ print("In this script, segments assumes each file contains one utterance.")
 with open('/'.join([save_dir,'segments']),'w') as seg:
     for sd in sound_list:
         sig = wave.open('/'.join([data_dir, sd]), 'rb')
-        sig_dur = sig.getnframes() / sig.getframerate()
+        sig_dur = sig.getnframes() / (sig.getframerate() * 1.0)
         dur = "{0:.2f}".format(sig_dur)
         if float(dur) > sig_dur:
             tmp_dur = float(dur)

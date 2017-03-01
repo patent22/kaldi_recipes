@@ -7,25 +7,34 @@ This script reads the text files and checks sentences.
 Multiple spaces, tabs, and nuw lines will be removed.
 
 *** USAGE ***
-Ex. python3 check_text.py $data_directory
+Ex. python check_text.py $data_directory
 """
 
-import sys
 import os
 import re
 import time
+import optparse
+
+# Option check.
+parser = optparse.OptionParser()
+parser.add_option("--skip", action="store_true", dest="textgrid_skip", default=False,
+                  help="This option keeps textgrid files from deletion.")
+(options,args) = parser.parse_args()
+tg_option = options.textgrid_skip
 
 # Arguments check.
-if len(sys.argv) != 2:
-    print(len(sys.argv))
+if len(args) is 0 or len(args) > 1:
+    print(len(args))
     print("Input arguments are incorrectly provided. One argument should be assigned.")
     print("1. data directory.")
     print("*** USAGE ***")
-    print("Ex. python3 check_text.py $data_directory")
+    print("Ex. python check_text.py [options] $data_directory")
+    print("*** OPTIONS ***")
+    print("--skip : Stop deleting textgrid files.")
     raise ValueError('RETURN')
 
 # text directory
-data_dir = sys.argv[1]
+data_dir = args[0]
 
 # Import text files.
 data_list = os.listdir(data_dir)
@@ -37,11 +46,14 @@ for one in data_list:
 for tg in data_list:
     if re.findall('TextGrid',tg) != []:
         tg_list.append(tg)
+
+# Execute the following lines based on the option setting.
 # Check whether textgrids are already present or not. If so, remove all of them.
-if len(tg_list) is not 0:
-    print("WARNNING: TextGrids are already present. However, newly generated TextGrids will replace remained TextGrids.")
-    for tg_rm in tg_list:
-        os.remove('/'.join([data_dir,tg_rm]))
+if tg_option is False:
+    if len(tg_list) is not 0:
+        print("WARNNING: TextGrids are already present. However, newly generated TextGrids will replace remained TextGrids.")
+        for tg_rm in tg_list:
+            os.remove('/'.join([data_dir,tg_rm]))
 
 # Fix the problem if it exists.
 inform=0

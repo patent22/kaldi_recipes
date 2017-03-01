@@ -6,7 +6,7 @@ Apache 2.0
 This script generates lexicon.txt and lexiconp.txt files based on corpus data.
 
 *** USAGE ***
-Ex. python3 text2lexicon.py $text_directory $save_directory
+Ex. python text2lexicon.py $text_directory $save_directory
 """
 
 import sys
@@ -21,17 +21,13 @@ if len(sys.argv) != 4:
     print("2. g2p file name.")
     print("3. Save file name.")
     print("*** USAGE ***")
-    print("Ex. python3 text2lexicon.py $text_file $g2p_rulebook $save_file")
+    print("Ex. python text2lexicon.py $text_file $g2p_rulebook $save_file")
     raise ValueError('RETURN')
 
 # corpus data directory
 text_file=sys.argv[1]
 g2p_file=sys.argv[2]
 save_file = sys.argv[3]
-
-text_file='/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/test.txt'
-g2p_file='/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/local/rules_g2p.xls'
-save_file='/Users/hyungwonyang/Documents/ASR_project/kaldi_project/exp/kaldi_recipes/k1/saved.txt'
 
 ###### G2p ######
 

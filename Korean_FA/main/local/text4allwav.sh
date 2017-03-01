@@ -15,7 +15,7 @@ if [ $# -ne 2 ]; then
    echo "1. Text file."
    echo "2. Wave file directory." 
    echo "*** USAGE ***"
-   echo "Ex. sh text4allwav $textfile_name $wave_file_directory " && exit 1
+   echo 'Ex. sh text4allwav $textfile_name $wave_file_directory ' && return
 fi
 
 # Text file
