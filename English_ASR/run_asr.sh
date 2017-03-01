@@ -9,7 +9,7 @@
 
 
 # Kaldi directory ./kaldi
-kaldi=/home/kaldi
+kaldi=/Users/hyungwonyang/kaldi
 # FA data directory
 data_dir=data
 # result direcotry
@@ -29,14 +29,15 @@ if [ $# -ne 1 ]; then
    echo "Model for decoding should be provided." && exit 1
 fi
 model_name=$1
-if [ $model_name == "timit" ] || [ $model_name == "librispeech" ] ; then
+if [ $model_name == "timit" ] || [ $model_name == "librispeech" ] || [ $model_name == "wsj" ]; then
 	echo "ASR model: $model_name"
 else
 	echo "Model name: $model_name is not present in the model directory."
 	echo "Place the model directory into ./models folder and reactivate this code." 
 	echo "Provided models are as follows: " 
-	echo "1. timit : Language model based on Korean Readspeech corpus." 
-	echo "2. librispeech : Language model based on Korean Readspeech corpus."&& exit 1
+	echo "1. timit : Language model based on English timit corpus." 
+	echo "2. librispeech : Language model based on English librispeech corpus." 
+	echo "3. wsj : Language model based on English Wall Street Journal corpus." && exit 1
 fi
 # model directory
 model_dir=models/$model_name
@@ -70,11 +71,9 @@ spk_id=test01
 # MFCC default setting.
 echo "Extracting the features from the input data..."
 mfccdir=mfcc
-
-
 # Extracting MFCC features and calculate CMVN.
 steps/make_mfcc.sh --nj 1 --cmd "$cmd" $curdir/tmp/trans_data $log_dir $curdir/tmp/$mfccdir >/dev/null
-utils/fix_data_dir.sh tmp/trans_data >/dev/null
+utils/fix_data_dir.sh $curdir/tmp/trans_data >/dev/null
 steps/compute_cmvn_stats.sh $curdir/tmp/trans_data $log_dir $curdir/tmp/$mfccdir >/dev/null
 utils/fix_data_dir.sh $curdir/tmp/trans_data >/dev/null
 
@@ -103,8 +102,8 @@ elif [ $model_name == "librispeech" ]; then
 	minimize=false
 	max_active=7000
 	min_active=200
-	beam=15.0 # 15.0
-	lattice_beam=8.0 # 8.0
+	beam=25.0 # 15.0
+	lattice_beam=16.0 # 8.0
 	acwt=0.1
 	model=$model_dir/final.mdl
 	cmvn_opts=
@@ -113,6 +112,25 @@ elif [ $model_name == "librispeech" ]; then
 	[[ -d $sdata && tmp/trans_data/feats.scp -ot $sdata ]] || split_data.sh tmp/trans_data $nj
 	feats="ark,s,cs:apply-cmvn $cmvn_opts --utt2spk=ark:$sdata/JOB/utt2spk scp:$sdata/JOB/cmvn.scp scp:$sdata/JOB/feats.scp ark:- | splice-feats $splice_opts ark:- ark:- | transform-feats $model_dir/final.mat ark:- ark:- |"
 	
+elif [ $model_name == "wsj" ]; then
+
+	num_threads=1
+	thread_string=
+	minimize=false
+	max_active=7000
+	min_active=200
+	beam=15.0 # 15.0
+	lattice_beam=8.0 # 8.0
+	acwt=0.1
+	model=$model_dir/final.mdl
+	cmvn_opts=
+	splice_opts="--left-context=3 --right-context=3"
+	sdata=tmp/trans_data/split$nj
+	transform_dir=$model_dir/transform_dir
+	[[ -d $sdata && tmp/trans_data/feats.scp -ot $sdata ]] || split_data.sh tmp/trans_data $nj
+	feats="ark,s,cs:apply-cmvn $cmvn_opts --utt2spk=ark:$sdata/JOB/utt2spk scp:$sdata/JOB/cmvn.scp scp:$sdata/JOB/feats.scp ark:- | splice-feats $splice_opts ark:- ark:- | transform-feats $model_dir/final.mat ark:- ark:- |"
+	# feats="$feats transform-feats --utt2spk=ark:$sdata/JOB/utt2spk scp:models/wsj/$trans.scp ark:- ark:- |"
+
 fi
 
 # Decoding

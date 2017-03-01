@@ -1,4 +1,4 @@
-# English_ASR: Korean Automatic Speech Recognition  
+# English_ASR: English Automatic Speech Recognition  
                                                     Hyungwon Yang
                                                     2016.11.12
                                                     EMCS lab    
@@ -21,8 +21,10 @@ To run this program, kaldi should be installed on your computer.
   - $ brew install sox
   - $ brew install coreutils
 
-3. **Unzip language model files.**
-  - Due to the size of librispeech model files, "HCLG.fst" and "final.mdl" have been zipped. Please unzip them before run the asr code.
+### ASR MODELS
+- librispeech and wsj language based ASR models are not availabel due to their 
+huge size. Therefore, only timit language based ASR is runnable in this program.
+Please contact us if you would like to get two models above.
 
 ### DIRECTION
 
@@ -32,7 +34,7 @@ To run this program, kaldi should be installed on your computer.
 3. Run the code by selecting one of the language models. 
   - Two language models are provided: timit and librispeech. 
   - ex) $ sh run_asr.sh (language model)
-  -     $ sh run_asr.sh librispeech
+  -     $ sh run_asr.sh timit
 4. You may see the recording status on the screen. Speak any sentence and stop recording by pressing Control + C.
 4. Speech recognition process will be automatically initiated and a text result will be printed on the screen.
 
@@ -43,4 +45,5 @@ Please report bugs or provide any recommendation to us through the following ema
 Hyungwon Yang / hyung8758@gmail.com
 ### VERSION HISTORY
 - v.1.0(11/12/16): Two language models are available: timit and librispeech.
+- v.1.1(02/28/17): wsj language model is added. However two models 'wsj' and 'librispeech' is removed from this program due to their huge size. ASR with timit is not available.
 
