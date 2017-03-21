@@ -10,7 +10,8 @@ Media Zen & Korea University (Author: Hyungwon Yang)
 
 ### MacOSX and Linux
 ----------------------------------------------------------------
-Mac OS X (El Capitan 10.11.6): Stable.
+Mac OS X (El Capitan,Sierra 03.21.17): Stable.
+
 Linux (Ubuntu 14.04): Stable.
 
 Bash
@@ -77,7 +78,7 @@ Python 3.5
 
 ### CONTRIBUTORS
 ---
-# In order to improve forced alignment performance, all linguistics named below participate in this project.
+# In order to improve forced alignment performance, all contributors named below participate in this project.
 
 # Students
 Hyungwon Yang / hyung8758@gmail.com
