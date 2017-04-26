@@ -21,6 +21,7 @@ To run this program, kaldi should be installed on your computer.
   - $ brew install sox
   - $ brew install coreutils
 
+
 ### ASR MODELS
 - librispeech and wsj language based ASR models are not availabel due to their 
 huge size. Therefore, only timit language based ASR is runnable in this program.
