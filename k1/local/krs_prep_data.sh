@@ -6,19 +6,16 @@ f#!/bin/bash
 # This scripts generate prerequsite datasets.
 # text, textraw, utt2spk, spk2utt, wav.scp.
 
-if [ $# -ne 3 ]; then
+if [ $# -ne 2 ]; then
    echo "Three arguments should be assigned." 
    echo "1. Source data."
-   echo "2. Current directory."
-   echo "3. The folder generated files saved." && exit 1
+   echo "2. The folder generated files saved." && exit 1
 fi
 
 # Corpus directory: ./krs_data
 data=$1
-# Current directory.
-curdir=$2
 # Result directory: ./data/local/data
-save=$3
+save=$2
 
 echo ======================================================================
 echo "                              NOTICE                                "
@@ -130,7 +127,7 @@ else
 fi
 
 # Make a spk2utt file.
-$curdir/utils/utt2spk_to_spk2utt.pl $save/utt2spk > $save/spk2utt || exit 1
+utils/utt2spk_to_spk2utt.pl $save/utt2spk > $save/spk2utt || exit 1
 echo "utt2spk and spk2utt files were generated."
 
 # wav.scp
