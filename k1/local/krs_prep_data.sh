@@ -1,4 +1,4 @@
-f#!/bin/bash
+#!/bin/bash
 # 														EMCS Labs
 # 														Hyungwon Yang
 # 														hyung8758@gmail.com
