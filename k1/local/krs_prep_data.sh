@@ -1,10 +1,10 @@
 #!/bin/bash
-# 														EMCS Labs
-# 														Hyungwon Yang
-# 														hyung8758@gmail.com
-
 # This scripts generate prerequsite datasets.
 # text, textraw, utt2spk, spk2utt, wav.scp.
+# 														Hyungwon Yang
+# 														hyung8758@gmail.com
+# 														NAMZ & EMCS Labs
+
 
 if [ $# -ne 2 ]; then
    echo "Three arguments should be assigned." 
@@ -172,48 +172,48 @@ fi
 echo "wav.scp file was generated."
 
 # We are not going to make segment files.
-# # segments
-# # Each sound dataset contains only one sentence. Therefore, segement information is not needed. 
-# # However, this script will generate segements file.
-# if [ -f $save/segments ] && [ ! -z $save/segments ]; then
-# 	echo '' > $save/segments
-# 	echo '* Previous segments file was removed.'
+# segments
+# Each sound dataset contains only one sentence. Therefore, segement information is not needed. 
+# However, this script will generate segements file.
+if [ -f $save/segments ] && [ ! -z $save/segments ]; then
+	echo '' > $save/segments
+	echo '* Previous segments file was removed.'
 
-# 	data_num=`ls $data | wc -w`
-# 	data_list=`ls $data`
+	data_num=`ls $data | wc -w`
+	data_list=`ls $data`
 
-# 	for txt in `seq 1 $data_num`; do
-# 		data_name=`echo $data_list | cut -d' ' -f$txt`
-# 		snt_list=`ls $data/$data_name | grep .txt`
-# 		snt_num=`echo $snt_list | wc -w`
+	for txt in `seq 1 $data_num`; do
+		data_name=`echo $data_list | cut -d' ' -f$txt`
+		snt_list=`ls $data/$data_name | grep .txt`
+		snt_num=`echo $snt_list | wc -w`
 
-# 		for snt in `seq 1 $snt_num`; do
-# 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
-# 			wav_snt=`echo $get_snt | sed 's/.txt//g'`
-# 			time1=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | sed -n '1p'`
-# 			time2=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | sed -n '2p'`
-# 			echo "$wav_snt $wav_snt $time1 $time2" >> $save/segments || exit 1
-# 		done
-# 	done
-# 	sed '1d' $save/segments > $save/tmp; cat $save/tmp > $save/segments; rm $save/tmp
+		for snt in `seq 1 $snt_num`; do
+			get_snt=`echo $snt_list | cut -d' ' -f$snt`
+			wav_snt=`echo $get_snt | sed 's/.txt//g'`
+			time1=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | sed -n '1p'`
+			time2=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | sed -n '2p'`
+			echo "$wav_snt $wav_snt $time1 $time2" >> $save/segments || exit 1
+		done
+	done
+	sed '1d' $save/segments > $save/tmp; cat $save/tmp > $save/segments; rm $save/tmp
 
-# else
-# 	data_num=`ls $data | wc -w`
-# 	data_list=`ls $data`
+else
+	data_num=`ls $data | wc -w`
+	data_list=`ls $data`
 
-# 	for txt in `seq 1 $data_num`; do
-# 		data_name=`echo $data_list | cut -d' ' -f$txt`
-# 		snt_list=`ls $data/$data_name | grep .TextGrid`
-# 		snt_num=`echo $snt_list | wc -w`
+	for txt in `seq 1 $data_num`; do
+		data_name=`echo $data_list | cut -d' ' -f$txt`
+		snt_list=`ls $data/$data_name | grep .TextGrid`
+		snt_num=`echo $snt_list | wc -w`
 
-# 		for snt in `seq 1 $snt_num`; do
-# 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
-# 			wav_snt=`echo $get_snt | sed 's/.TextGrid//g'`
-# 			time1=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | sed -n '1p'`
-# 			time2=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | sed -n '2p'`
-# 			echo "$wav_snt $wav_snt $time1 $time2" >> $save/segments || exit 1
-# 		done
-# 	done
-# fi
-# echo "segments file was generated."
+		for snt in `seq 1 $snt_num`; do
+			get_snt=`echo $snt_list | cut -d' ' -f$snt`
+			wav_snt=`echo $get_snt | sed 's/.TextGrid//g'`
+			time1=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | sed -n '1p'`
+			time2=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | sed -n '2p'`
+			echo "$wav_snt $wav_snt $time1 $time2" >> $save/segments || exit 1
+		done
+	done
+fi
+echo "segments file was generated."
 

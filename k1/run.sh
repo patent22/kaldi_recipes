@@ -2,65 +2,66 @@
 # This script buils Korean ASR model based on kaldi toolkit.
 # 														Hyungwon Yang
 # 														hyung8758@gmail.com
-# 														EMCS Labs
+# 														NAMZ & EMCS Labs
 
-# This code trains and decodes the model based on the Korean readspeech corpus dataset.
-# Therefore, if anyone who would like to train their corpus dataset by running this sciprt 
-# they needs to modify this script. 
-# Before running this script, corpus dataset needs to be divided into 
-# two parts: train and test. Allocate datasets such as 'fv01', or 'mv07'
-# to train and test folders. This script will detect folder names and 
-# extract data features.
+# This code trains and decodes the Korean readspeech corpus dataset with various training techniques.
+# Therefore, if anyone who would like to train their corpus dataset by running this sciprt, simply modify this script. 
+# Before running this script, corpus dataset needs to be divided into two parts: train and test. 
+# Allocate speech data into train and test folders. 
+# For those who wish to run this script for learining kaldi, small set of Korean read-speech corpus is provided, 
+# so download it from the link in the README file and follow the tutorial from my blog.
 
 ### Set path and requisite variables.
 # Kaldi root: Where is your kaldi directory?
-kaldi=/Users/hyungwonyang/kaldi
+kaldi=/home/kaldi
 # Source data: Where is your source (wavefile) data directory?
-source=/Users/hyungwonyang/Documents/data/krs_data
+source=/home/corpus/krs_data
 # Log file: Log file will be saved with the name set below.
 logfile=1st_test
 log_dir=log
 # Result file name
 resultfile=result.txt
-export LC_ALL=C
-export LANG=ko_KR.UTF_8
 
 ### Number of jobs.
 train_nj=2
 decode_nj=2
 
+### CMD
+train_cmd=utils/run.pl
+decode_cmd=utils/run.pl
+
 ### Directories.
 train_dir=data/train
-test_dir=data/test
+test_dir=data/train
 lang_dir=data/lang
 dict_dir=data/local/dict
 log_dir=log
 
 ### Data: Give 1 to activate the following steps. Give 0 to deactivate the following steps.
-prepare_data=1
-prepare_lm=1
-extract_train_mfcc=1
-extract_test_mfcc=1
+prepare_data=0
+prepare_lm=0
+extract_train_mfcc=0
+extract_test_mfcc=0
 extract_train_plp=0
 extract_test_plp=0
 
 ### Training: Give 1 to activate the following steps. Give 0 to deactivate the following steps.
-train_mono=1
-train_tri1=1
-train_tri2=1
-train_tri3=1
-train_sgmm=1
-train_mmi=1
-train_dnn=1
+train_mono=0
+train_tri1=0
+train_tri2=0
+train_tri3=0
+train_sgmm=0
+train_mmi=0
+train_dnn=0
 
 ### Decoding : Give 1 to activate the following steps. Give 0 to deactivate the following steps.
-decode_mono=1
-decode_tri1=1
-decode_tri2=1
-decode_tri3=1
-decode_sgmm=1
-decode_mmi=1
-decode_dnn=1
+decode_mono=0
+decode_tri1=0
+decode_tri2=0
+decode_tri3=0
+decode_sgmm=0
+decode_mmi=0
+decode_dnn=0
 
 ### Result
 display_result=0
@@ -114,7 +115,7 @@ echo DATA_ROOT: $source | tee -a $log_dir/$logfile.log
 START=`date +%s`
 
 # This step will generate path.sh based on written path above.
-source path.sh $kaldi
+. path.sh $kaldi
 . local/check_code.sh $kaldi
 
 
@@ -138,6 +139,9 @@ if [ $prepare_data -eq 1 ]; then
 		local/krs_prep_data.sh \
 			$source/$set \
 			data/$set || exit 1
+
+		utils/validate_data_dir.sh data/$set
+		utils/fix_data_dir.sh data/$set
 	done
 
 	end1=`date +%s`; log_e1=`date | awk '{print $4}'`
@@ -215,6 +219,7 @@ if [ $extract_train_mfcc -eq 1 ] || [ $extract_test_mfcc -eq 1 ] || [ $extract_t
 	if [ $extract_train_mfcc -eq 1 ]; then
 		echo "Extracting train data MFCC features..." | tee -a $log_dir/$logfile.log
 		steps/make_mfcc.sh \
+			--nj $train_nj \
 		 	$train_dir \
 		 	exp/make_mfcc/train \
 		 	$mfccdir
@@ -228,6 +233,7 @@ if [ $extract_train_mfcc -eq 1 ] || [ $extract_test_mfcc -eq 1 ] || [ $extract_t
 	if [ $extract_test_mfcc -eq 1 ]; then
 		echo "Extracting test data MFCC features..." | tee -a $log_dir/$logfile.log
 		steps/make_mfcc.sh \
+		    --nj $train_nj \
 		 	$test_dir \
 		 	exp/make_mfcc/test \
 		 	$mfccdir
@@ -249,6 +255,7 @@ if [ $extract_train_mfcc -eq 1 ] || [ $extract_test_mfcc -eq 1 ] || [ $extract_t
 		# plp feature extraction.
 		echo "Extracting train data PLP features..." | tee -a $log_dir/$logfile.log
 	 	steps/make_plp.sh \
+	 	    --nj $train_nj \
 			$train_dir \
 			exp/make_plp/train \
 			$plpdir
@@ -263,6 +270,7 @@ if [ $extract_train_mfcc -eq 1 ] || [ $extract_test_mfcc -eq 1 ] || [ $extract_t
 		# plp feature extraction.
 		echo "Extracting test data PLP features..." | tee -a $log_dir/$logfile.log
 	 	steps/make_plp.sh \
+	 	    --nj $train_nj \
 			$test_dir \
 			exp/make_plp/test \
 			$plpdir
@@ -587,7 +595,7 @@ if [ $train_sgmm -eq 1 ] || [ $decode_sgmm -eq 1 ]; then
 			exp/sgmm/graph
 
 
-		# Data decoding: train and test datasets.
+		# Data decoding: test datasets.
 		echo "SGMM2 decoding options: $sgmm2_decode_opt"			| tee -a $log_dir/$logfile.log
 		echo "Decoding with SGMM2 model..." | tee -a $log_dir/$logfile.log
 		steps/decode_sgmm2.sh \

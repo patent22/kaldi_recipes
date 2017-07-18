@@ -35,9 +35,3 @@ LC_ALL=ko_KR.UTF-8
 LC_LOCALE_ALL=ko_KR.UTF-8
 export PATH=$PATH:$PWD/utils:$PWD/steps:$root/src/nnet2bin:$root/src/sgmm2bin
 
-# cmd
-export train_cmd=utils/run.pl
-export decode_cmd=utils/run.pl
-export mkgraph_cmd=utils.run.pl
-# Cuda application.
-export cuda_cmd="true"

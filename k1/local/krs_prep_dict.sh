@@ -1,10 +1,8 @@
 #!/bin/bash
-# 														EMCS Labs
+# # This scripts generate dictionray related parts.
 # 														Hyungwon Yang
 # 														hyung8758@gmail.com
-
-# This scripts generate dictionray related parts.
-# lexicon, lexiconp, silence, nonsilence, optional_silence, extra_questions
+# 														NAMZ & EMCS Labs
 
 
 if [ $# -ne 2 ]; then

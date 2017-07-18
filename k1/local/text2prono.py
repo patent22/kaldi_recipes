@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
+This script transforms Korean word list in the text file into pronunciation and then adds them to the original text file which is lexicon.txt
 
-*** Introduction ***
-This script transforms Korean word list in the text file into pronunciation and then
-added them to the original text file which is lexicon.txt
+ 														Hyungwon Yang
+ 														hyung8758@gmail.com
+ 														NAMZ & EMCS Labs
 
-*** USAGE ***
 
 """
 

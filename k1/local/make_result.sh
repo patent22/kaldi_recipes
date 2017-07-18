@@ -1,10 +1,10 @@
 #!/bin/bash
-# 2016.08.01											EMCS Labs
-# 														Hyungwon Yang
+# This script gathers the information of best_wer and displays the training result.
+#														Hyungwon Yang
 # 														hyung8758@gmail.com
+# 														NAMZ & EMCS Labs
 #
-# This script gathers the information of best_wer and displays
-# the training result.
+
 
 if [ $# -ne 3 ]; then
    echo "Three arguments should be assigned." 

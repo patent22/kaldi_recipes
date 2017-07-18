@@ -1,7 +1,9 @@
 #!/bin/bash
-
 # This script shows time taken from specific tasks.
 # It calculates the differences between two date.
+# 														Hyungwon Yang
+# 														hyung8758@gmail.com
+# 														NAMZ & EMCS Labs
 
 # Get the variables.
 if [ $# -ne 2 ]; then
