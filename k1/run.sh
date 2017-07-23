@@ -37,6 +37,7 @@ lang_dir=data/lang
 dict_dir=data/local/dict
 log_dir=log
 
+### Activation 
 ### Data: Give 1 to activate the following steps. Give 0 to deactivate the following steps.
 prepare_data=0
 prepare_lm=0

@@ -189,9 +189,10 @@ if [ -f $save/segments ] && [ ! -z $save/segments ]; then
 
 		for snt in `seq 1 $snt_num`; do
 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
-			wav_snt=`echo $get_snt | sed 's/.txt//g'`
-			time1=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | sed -n '1p'`
-			time2=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | sed -n '2p'`
+			wav_name=`echo $get_snt | sed 's/.txt/.wav/g'`
+			time1=0.0
+			tmp=`soxi -D $data/$data_name/$wav_name`
+			time2=`printf "%.2f\n" "$tmp"`
 			echo "$wav_snt $wav_snt $time1 $time2" >> $save/segments || exit 1
 		done
 	done
@@ -203,14 +204,15 @@ else
 
 	for txt in `seq 1 $data_num`; do
 		data_name=`echo $data_list | cut -d' ' -f$txt`
-		snt_list=`ls $data/$data_name | grep .TextGrid`
+		snt_list=`ls $data/$data_name | grep .txt`
 		snt_num=`echo $snt_list | wc -w`
 
 		for snt in `seq 1 $snt_num`; do
 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
-			wav_snt=`echo $get_snt | sed 's/.TextGrid//g'`
-			time1=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | sed -n '1p'`
-			time2=`cat $data/$data_name/$get_snt | sed '1,/"word"/d' | sed -n '2p'`
+			wav_name=`echo $get_snt | sed 's/.txt/.wav/g'`
+			time1=0.0
+			tmp=`soxi -D $data/$data_name/$wav_name`
+			time2=`printf "%.2f\n" "$tmp"`
 			echo "$wav_snt $wav_snt $time1 $time2" >> $save/segments || exit 1
 		done
 	done
