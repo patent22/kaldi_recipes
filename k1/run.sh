@@ -119,7 +119,6 @@ START=`date +%s`
 . path.sh $kaldi
 . local/check_code.sh $kaldi
 
-
 # Prepare data for training.
 if [ $prepare_data -eq 1 ]; then
 	echo ====================================================================== | tee -a $log_dir/$logfile.log

@@ -171,9 +171,8 @@ else
 fi
 echo "wav.scp file was generated."
 
-# We are not going to make segment files.
 # segments
-# Each sound dataset contains only one sentence. Therefore, segement information is not needed. 
+# In korean Readspeech corpus, each audio file contains only one sentence. Therefore, segement information is not needed. 
 # However, this script will generate segements file.
 if [ -f $save/segments ] && [ ! -z $save/segments ]; then
 	echo '' > $save/segments
@@ -190,10 +189,11 @@ if [ -f $save/segments ] && [ ! -z $save/segments ]; then
 		for snt in `seq 1 $snt_num`; do
 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
 			wav_name=`echo $get_snt | sed 's/.txt/.wav/g'`
+			wave=`echo $wav_name | sed 's/.wav//g'`
 			time1=0.0
 			tmp=`soxi -D $data/$data_name/$wav_name`
 			time2=`printf "%.2f\n" "$tmp"`
-			echo "$wav_snt $wav_snt $time1 $time2" >> $save/segments || exit 1
+			echo "$wave $wave $time1 $time2" >> $save/segments || exit 1
 		done
 	done
 	sed '1d' $save/segments > $save/tmp; cat $save/tmp > $save/segments; rm $save/tmp
@@ -210,10 +210,11 @@ else
 		for snt in `seq 1 $snt_num`; do
 			get_snt=`echo $snt_list | cut -d' ' -f$snt`
 			wav_name=`echo $get_snt | sed 's/.txt/.wav/g'`
+			wave=`echo $wav_name | sed 's/.wav//g'`
 			time1=0.0
 			tmp=`soxi -D $data/$data_name/$wav_name`
 			time2=`printf "%.2f\n" "$tmp"`
-			echo "$wav_snt $wav_snt $time1 $time2" >> $save/segments || exit 1
+			echo "$wave $wave $time1 $time2" >> $save/segments || exit 1
 		done
 	done
 fi
