@@ -7,9 +7,9 @@
 
 
 if [ $# -ne 2 ]; then
-   echo "Three arguments should be assigned." 
-   echo "1. Source data."
-   echo "2. The folder generated files saved." && exit 1
+   echo "Two arguments should be assigned." 
+   echo "1. Source data: corpus data."
+   echo "2. Save folder: generated files will be saved in this folder." && exit 1
 fi
 
 # Corpus directory: ./krs_data

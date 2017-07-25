@@ -6,7 +6,7 @@
 
 
 if [ $# -ne 2 ]; then
-   echo "Three arguments should be assigned." 
+   echo "Two arguments should be assigned." 
    echo "1. Source data."
    echo "2. The folder in which generated files are saved." && exit 1
 fi
