@@ -67,7 +67,6 @@ decode_dnn=0
 ### Result
 display_result=0
 
-
 ### Options.
 # Monophone
 mono_train_opt="--boost-silence 1.25 --nj $train_nj --cmd $train_cmd"
